@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Student</h1>
+<p>Student Name: {{student.name}}</p>
+<p>ID: {{student.id}}</p>
+<p>Gender: {{student.gender}}</p>
+<ul style="list-style-type:none;">
+  <li>
+    <a href="{{ url_for('edit', student_id=student.id)}}">
+      Edit
+    </a>
+  </li>
+  <li>
+    <a href="{{ url_for('delete')}}">
+      Delete
+    </a>
+  </li>
+  <li>
+    <a href="{{ url_for('index')}}">
+      Back
+    </a>
+  </li>
+</ul>
+{% endblock %}
