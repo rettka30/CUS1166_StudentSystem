@@ -1,11 +1,14 @@
 import sys
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
 from config import Config
 from models import *
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+bootstrap = Bootstrap(app)
 
 db.init_app(app)
 
@@ -43,8 +46,8 @@ def student(student_id):
 def main():
     if (len(sys.argv)==2):
         print(sys.argv)
-    if sys.argv[1] == 'createdb':
-        db.create_all()
+        if sys.argv[1] == 'createdb':
+            db.create_all()
     else:
         print("Run app using 'flask run")
         print("To create a database use 'python app.py createdb")
