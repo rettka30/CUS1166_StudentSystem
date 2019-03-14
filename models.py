@@ -26,7 +26,16 @@ class Professor(db.Model):
     birthday = db.Column(db.String(120), index=True)
 
 # Administrator Class
-
+class Administrator(db.Model):
+    __tablename__="administrators"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), index=True, unique=False)
+    gender = db.Column(db.String(6), index=True)
+    department = db.Column(db.String(120), index=True)
+    email = db.Column(db.String(120), index=True)
+    phone = db.Column(db.String(120), index=True)
+    birthday = db.Column(db.String(120), index=True)
+    courses = db.realtionship()
 # Course Class
 class Course (db.Model):
     __tablename__= "courses"
