@@ -1,5 +1,38 @@
 {% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
+{% block app_content %}
+    <h1>Hello, Friend!</h1>
+    <!--<h1>Hi, {{ current_user.username }}!</h1>-->
+    {% if form %}
+    {{ wtf.quick_form(form) }}
+    <br>
+    {% endif %}
+    {% for student in students %}
+      <ul>
+        <li>
+          <a href="{{ url_for('student', student_id=student.id) }}">
+                    {{student.id}}. {{student.name}}
+          </a>
+        </li>
+      </ul>
+    {% endfor %}
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> Newer posts
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    Older posts <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}
+<!--
 {% block body %}
   <h1>Hello, Friend!</h1>
   {% for student in students %}
@@ -15,3 +48,4 @@
     Add Student
   </a>
 {% endblock %}
+-->
