@@ -44,6 +44,20 @@ def student(student_id):
     student = Student.query.get(student_id)
     return render_template('students_details.html', student=student)
 
+#Creates Courses
+@app.route('/createcourse', methods=['GET', 'POST'])
+def add():
+    # Get information from the form.
+    if request.method == 'POST':
+        course_name = request.form.get('course_name')
+        course_subject = request.form.get('course_subject')
+        course_number = request.form.get('course_number')
+        course = Course(course_name=course_name, course_subject=course_subject, course_number=course_number)
+        db.session.add(course)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('create_course.html')
+
 def main():
     if (len(sys.argv)==2):
         print(sys.argv)
