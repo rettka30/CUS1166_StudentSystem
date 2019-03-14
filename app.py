@@ -1,20 +1,16 @@
 import sys
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from flask_bootstrap import Bootstrap
 from config import Config
 from models import *
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-bootstrap = Bootstrap(app)
-
 db.init_app(app)
 
 @app.route('/')
 def index():
-    # Equivalent to: "SELECT * from flights" SQL statement.
     students = Student.query.all()
     return render_template('index.html', students=students)
 
@@ -30,9 +26,12 @@ def add():
         return redirect(url_for('index'))
     return render_template('create_student.html')
 
-@app.route('/delete')
-def delete():
-    pass
+@app.route('/delete/<int:student_id>')
+def delete(student_id):
+    student = Student.query.get(student_id)
+    db.session.delete(student)
+    db.session.commit()
+    return redirect(url_for('index'))
 
 @app.route('/edit/<int:student_id>', methods=['GET, POST'])
 def edit(student_id):
