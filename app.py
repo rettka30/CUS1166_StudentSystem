@@ -19,8 +19,13 @@ def add():
     # Get information from the form.
     if request.method == 'POST':
         student_name = request.form.get('student_name')
-        student_gender = request.form.get('student_gender')
-        student = Student(name=student_name, gender=student_gender)
+        student_gender = request.form['student_gender']
+        student_year = request.form.get('student_year')
+        student_email = str(request.form.get('student_email'))
+        student_birthday = str(request.form.get('student_birthday'))
+        student_major = request.form.get('student_major')
+        student_phone = str(request.form.get('student_phone'))
+        student = Student(name=student_name, gender=student_gender, year=student_year, email=student_email, birthday=student_birthday, major=student_major, phone=student_phone)
         db.session.add(student)
         db.session.commit()
         return redirect(url_for('index'))
@@ -43,8 +48,8 @@ def student(student_id):
     return render_template('students_details.html', student=student)
 
 #Creates Courses
-@app.route('/createcourse', methods=['GET', 'POST'])
-def add():
+@app.route('/create_course', methods=['GET', 'POST'])
+def create_course():
     # Get information from the form.
     if request.method == 'POST':
         course_name = request.form.get('course_name')

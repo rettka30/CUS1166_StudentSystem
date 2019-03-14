@@ -5,6 +5,11 @@
 <p>Student Name: {{student.name}}</p>
 <p>ID: {{student.id}}</p>
 <p>Gender: {{student.gender}}</p>
+<p>Year: {{student.year}}</p>
+<p>Major: {{student.major}}
+<p>Email: {{student.email}}</p>
+<p>Birthday: {{student.birthday}}</p>
+<p>Phone: {{student.phone}}</p>
 <ul style="list-style-type:none;">
   <li>
     <a href="{{ url_for('edit', student_id=student.id)}}">
