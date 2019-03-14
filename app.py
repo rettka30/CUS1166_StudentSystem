@@ -1,13 +1,11 @@
 import sys
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from flask_bootstrap import Bootstrap
 from config import Config
 from models import *
 
 app = Flask(__name__)
 app.config.from_object(Config)
-bootstrap = Bootstrap(app)
 
 db.init_app(app)
 
