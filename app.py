@@ -11,11 +11,25 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    students = Student.query.all()
-    return render_template('index.html', students=students)
+    return render_template('index.html')
 
-@app.route('/add', methods=['GET', 'POST'])
-def add():
+@app.route('/student_roster')
+def student_roster():
+    students = Student.query.all()
+    return render_template('student_roster.html', students=students)
+
+@app.route('/professor_roster')
+def professor_roster():
+    professors = Professor.query.all()
+    return render_template('professor_roster.html', professors=professors)
+
+@app.route('/administrator_roster')
+def administrator_roster():
+    admins = Administrator.query.all()
+    return render_template('administrator_roster.html', admins=admins)
+
+@app.route('/create_student', methods=['GET', 'POST'])
+def create_student():
     # Get information from the form.
     if request.method == 'POST':
         student_name = request.form.get('student_name')
@@ -28,24 +42,89 @@ def add():
         student = Student(name=student_name, gender=student_gender, year=student_year, email=student_email, birthday=student_birthday, major=student_major, phone=student_phone)
         db.session.add(student)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('student_roster'))
     return render_template('create_student.html')
 
-@app.route('/delete/<int:student_id>')
-def delete(student_id):
-    student = Student.query.get(student_id)
-    db.session.delete(student)
-    db.session.commit()
-    return redirect(url_for('index'))
+@app.route('/create_professor', methods=['GET', 'POST'])
+def create_professor():
+    # Get information from the form.
+    if request.method == 'POST':
+        pro_name = request.form.get('professor_name')
+        pro_gender = request.form['professor_gender']
+        pro_department = request.form.get('professor_department')
+        pro_email = str(request.form.get('professor_email'))
+        pro_birthday = str(request.form.get('professor_birthday'))
+        pro_phone = str(request.form.get('professor_phone'))
+        pro = Professor(name=pro_name, gender=pro_gender, department=pro_department, email=pro_email, birthday=pro_birthday, phone=pro_phone)
+        db.session.add(pro)
+        db.session.commit()
+        return redirect(url_for('professor_roster'))
+    return render_template('create_professor.html')
 
-@app.route('/edit/<int:student_id>', methods=['GET, POST'])
-def edit(student_id):
-    pass
+@app.route('/create_administrator', methods=['GET', 'POST'])
+def create_administrator():
+    # Get information from the form.
+    if request.method == 'POST':
+        admin_name = request.form.get('administrator_name')
+        admin_gender = request.form['administrator_gender']
+        admin_department = request.form.get('administrator_department')
+        admin_email = str(request.form.get('administrator_email'))
+        admin_birthday = str(request.form.get('administrator_birthday'))
+        admin_phone = str(request.form.get('administrator_phone'))
+        admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
+        db.session.add(admin)
+        db.session.commit()
+        return redirect(url_for('administrator_roster'))
+    return render_template('create_administrator.html')
 
-@app.route('/student/<int:student_id>')
-def student(student_id):
-    student = Student.query.get(student_id)
-    return render_template('students_details.html', student=student)
+@app.route('/delete/<type>/<int:id>')
+def delete(type, id):
+    if type == "Student":
+        student = Student.query.get(id)
+        db.session.delete(student)
+        db.session.commit()
+        return redirect(url_for('student_roster'))
+    elif type == "Professor":
+        professor = Professor.query.get(id)
+        db.session.delete(professor)
+        db.session.commit()
+        return redirect(url_for('professor_roster'))
+    else:
+        admin = Administrator.query.get(id)
+        db.session.delete(admin)
+        db.session.commit()
+        return redirect(url_for('administrator_roster'))
+
+
+@app.route('/edit/<type>/<int:id>', methods=['GET, POST'])
+def edit(type, id):
+    if type == "Student":
+        student = Student.query.get(id)
+        db.session.delete(student)
+        db.session.commit()
+        return redirect(url_for('student_roster'))
+    elif type == "Professor":
+        professor = Professor.query.get(id)
+        db.session.delete(professor)
+        db.session.commit()
+        return redirect(url_for('professor_roster'))
+    else:
+        admin = Administrator.query.get(id)
+        db.session.delete(admin)
+        db.session.commit()
+        return redirect(url_for('administrator_roster'))
+
+@app.route('/user_details/<type>/<int:id>')
+def user_details(type, id):
+    if type == "Student":
+        student = Student.query.get(id)
+        return render_template('students_details.html', student=student)
+    elif type == "Professor":
+        prof = Professor.query.get(id)
+        return render_template('professor_details.html', prof=prof)
+    else:
+        admin = Administrator.query.get(id)
+        return render_template('administrator_details.html', admin=admin)
 
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])

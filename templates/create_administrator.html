@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Create Administrator</h1>
+  <form action="" method="POST">
+    <div>
+    	<label> Administrator Name: </label>
+    	<input type="text" name="admin_name" value={{request.form.admin_name}}>
+    </div>
+    <div>
+    	<p><label> Administrator Gender: </label></p>
+      <input type="radio" name="admin_gender" id="male" value="Male" checked> Male<br>
+      <input type="radio" name="admin_gender" id="female" value="Female"> Female<br>
+    </div>
+    <div>
+      <label> Department: </label>
+      <input type=text name="admin_department" value={{request.form.admin_department}}>
+    </div>
+    <div>
+      <label> Email: </label>
+      <input type="email" name="admin_email" value={{request.form.admin_email}}>
+    </div>
+    <div>
+      <label> Birthday: </label>
+      <input type="date" id="birthday" name="admin_birthday" value={{request.form.admin_birthday}}>
+    </div>
+    <div>
+      <label> Phone Number: </label>
+      <input type="tel" name="admin_phone" value={{request.form.admin_phone}}>
+    </div>
+  	<button type="submit"> Submit </button>
+  </form>
+{% endblock %}

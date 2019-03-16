@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Administrator</h1>
+<p>Admin Name: {{admin.name}}</p>
+<p>ID: {{admin.id}}</p>
+<p>Gender: {{admin.gender}}</p>
+<p>Department: {{admin.department}}</p>
+<p>Email: {{admin.email}}</p>
+<p>Birthday: {{admin.birthday}}</p>
+<p>Phone: {{admin.phone}}</p>
+<ul style="list-style-type:none;">
+  <li>
+    <a href="{{ url_for('edit', type='Administrator', id=admin.id)}}">
+      Edit
+    </a>
+  </li>
+  <li>
+    <a href="{{ url_for('delete', type='Administrator', id=admin.id)}}">
+      Delete
+    </a>
+  </li>
+  <li>
+    <a href="{{ url_for('administrator_roster')}}">
+      Back
+    </a>
+  </li>
+</ul>
+{% endblock %}
