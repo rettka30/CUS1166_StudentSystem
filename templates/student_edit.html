@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Edit Student Info</h1>
+  <form action="" method="POST">
+    <div>
+    	<label> Student Name: </label>
+    	<input type="text" name="student_name" value={{student.name}}>
+    </div>
+    <div>
+    	<p><label> Student Gender: </label></p>
+      <input type="radio" name="student_gender" id="male" value="Male" checked> Male<br>
+      <input type="radio" name="student_gender" id="female" value="Female"> Female<br>
+    </div>
+    <div>
+      <label>Year In School:</label>
+      <input type=text name="student_year" value={{student.year}}>
+    </div>
+    <div>
+      <label> Email: </label>
+      <input type="email" name="student_email" value={{student.email}}>
+    </div>
+    <div>
+      <label> Birthday: </label>
+      <input type="date" id="birthday" name="student_birthday" value={{student.birthday}}>
+    </div>
+    <div>
+      <label> Major: </label>
+      <input type="text" name="student_major" value={{student.major}}>
+    </div>
+    <div>
+      <label> Phone Number: </label>
+      <input type="tel" name="student_phone" value={{student.phone}}>
+    </div>
+  	<button type="submit"> Change </button>
+  </form>
+{% endblock %}
