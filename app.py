@@ -1,13 +1,20 @@
 import sys
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField
+from wtforms.validators import DataRequired
 from config import Config
 from models import *
+from forms import LoginForm
+from flask_login import current_user, LoginManager, login_user
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
+
 db.init_app(app)
+login = LoginManager(app)
 
 @app.route('/')
 def index():
@@ -27,6 +34,51 @@ def professor_roster():
 def administrator_roster():
     admins = Administrator.query.all()
     return render_template('administrator_roster.html', admins=admins)
+
+@app.route('/student_login', methods=['GET','POST'])
+def student_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Student.query.filter_by(id=form.id.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid id or password')
+            return redirect(url_for('login'))
+        login_user(id, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('student_login.html', title='Student Sign In', form=form)
+
+@app.route('/professor_login', methods=['GET','POST'])
+def professor_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Professor.query.filter_by(id=form.id.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid id or password')
+            return redirect(url_for('login'))
+        login_user(id, remember=form.remember_me.data)
+        return redirect(url_for('index')
+    return render_template('professor_login.html', title='Professor Sign In', form=form)
+
+@app.route('/admin_login', methods= ['GET','POST'])
+def admin_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Administrator.query.filter_by(id=form.id.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid id or password')
+            return redirect(url_for('login'))
+        login_user(id, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
+    return render_template('admin_login.html', title='Administrator Sign In', form=form)
 
 @app.route('/create_student', methods=['GET', 'POST'])
 def create_student():
