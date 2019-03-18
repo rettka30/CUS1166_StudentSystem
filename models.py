@@ -18,4 +18,4 @@ class Course (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     course_name = db.Column(db.String(120), index=True, unique=False)
     course_subject = db.Column(db.String(64), index=True)
-    course_number =  = db.Column(db.String(8), index=True)
+    course_number = db.Column(db.String(8), index=True)
