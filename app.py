@@ -3,8 +3,10 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-<<<<<<< HEAD
-#from forms import LoginForm
+from forms import LoginForm, GPAForm
+from flask_login import current_user, LoginManager, login_user, login_required
+from flask_bootstrap import Bootstrap
+
 #from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 #import logging
 #from logging.handlers import SMTPHandler
@@ -13,20 +15,15 @@ from models import *
 
 app = Flask(__name__)
 app.config.from_object(Config)
-=======
-from forms import LoginForm, GPAForm
-from flask_login import current_user, LoginManager, login_user
-from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
 app.config.from_object(Config)
 bootstrap = Bootstrap(app)
->>>>>>> a7beb6a01a2af080aa8d9c09ed2c9ccbc09467d3
 
 db.init_app(app)
-#login = LoginManager(app)
-#login_manager.init_app(app)
-#login.login_view = 'login'
+login = LoginManager(app)
+login.init_app(app)
+login.login_view = 'login'
 
 @app.route('/welcome')
 def welcome():
@@ -51,61 +48,41 @@ def administrator_roster():
     admins = Administrator.query.all()
     return render_template('administrator_roster.html', admins=admins)
 
-<<<<<<< HEAD
 @app.route('/login/<type>', methods=['GET','POST'])
 def login(type):
     if type == "Student":
-        return render_template('student_login.html')
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = Student.query.filter_by(id=form.id.data).first()
+            if user is None or not user.check_password(form.password.data):
+                flash('Invalid id or password')
+                return redirect(url_for('login'))
+            return redirect(url_for('index'))
+        return render_template('login.html', form=form)
     elif type == "Professor":
-        return render_template('professor_login.html')
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = Professor.query.filter_by(id=form.id.data).first()
+            if user is None or not user.check_password(form.password.data):
+                flash('Invalid id or password')
+                return redirect(url_for('login'))
+            return redirect(url_for('index'))
+        return render_template('login.html', form=form)
     else:
-        return render_template('admin_login.html')
-=======
-@app.route('/student_login', methods=['GET','POST'])
-def student_login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = Student.query.filter_by(id=form.id.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid id or password')
-            return redirect(url_for('login'))
-        login_user(id, remember=form.remember_me.data)
-        return redirect(url_for('index'))
-    return render_template('student_login.html', title='Student Sign In', form=form)
-
-@app.route('/professor_login', methods=['GET','POST'])
-def professor_login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = Professor.query.filter_by(id=form.id.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid id or password')
-            return redirect(url_for('login'))
-        login_user(id, remember=form.remember_me.data)
-        return redirect(url_for('index'))
-    return render_template('professor_login.html', title='Professor Sign In', form=form)
-
-@app.route('/admin_login', methods= ['GET','POST'])
-def admin_login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = Administrator.query.filter_by(id=form.id.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid id or password')
-            return redirect(url_for('login'))
-        login_user(id, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
-        return redirect(next_page)
-    return render_template('admin_login.html', title='Administrator Sign In', form=form)
->>>>>>> a7beb6a01a2af080aa8d9c09ed2c9ccbc09467d3
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = Administrator.query.filter_by(id=form.id.data).first()
+            if user is None or not user.check_password(form.password.data):
+                flash('Invalid id or password')
+                return redirect(url_for('login'))
+            return redirect(url_for('index'))
+        return render_template('login.html', form=form)
 
 @app.route('/create_student', methods=['GET', 'POST'])
 def create_student():
@@ -122,7 +99,8 @@ def create_student():
         b2=student_birthday[5:7]
         b3=student_birthday[8:10]
         student_password=b2+b3+b1
-        student = Student(name=student_name, gender=student_gender, year=student_year, email=student_email, birthday=student_birthday, major=student_major, phone=student_phone, password=student_password)
+        student = Student(name=student_name, gender=student_gender, year=student_year, email=student_email, birthday=student_birthday, major=student_major, phone=student_phone)
+        student.set_password(student_password)
         db.session.add(student)
         db.session.commit()
         return redirect(url_for('student_roster'))

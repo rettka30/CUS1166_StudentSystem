@@ -1,9 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 db = SQLAlchemy()
-#from flask_login import UserMixin
+
 
 # Professor Class
-class Professor(db.Model):
+class Professor(UserMixin, db.Model):
     __tablename__="professors"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), index=True, unique=False)
@@ -12,10 +14,19 @@ class Professor(db.Model):
     email = db.Column(db.String(120), index=True)
     phone = db.Column(db.String(120), index=True)
     birthday = db.Column(db.String(120), index=True)
-    password = db.Column(db.String(128))
+    password_hash = db.Column(db.String(128))
+
+    def __repr__(self):
+        return '<Professor {}>'.format(self.id)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 # Administrator Class
-class Administrator(db.Model):
+class Administrator(UserMixin, db.Model):
     __tablename__="administrators"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), index=True, unique=False)
@@ -24,10 +35,19 @@ class Administrator(db.Model):
     email = db.Column(db.String(120), index=True)
     phone = db.Column(db.String(120), index=True)
     birthday = db.Column(db.String(120), index=True)
-    password = db.Column(db.String(128))
+    password_hash = db.Column(db.String(128))
+
+    def __repr__(self):
+        return '<Administrator {}>'.format(self.id)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 # Student Class
-class Student(db.Model):
+class Student(UserMixin, db.Model):
     __tablename__= "students"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), index=True, unique=False)
@@ -38,7 +58,16 @@ class Student(db.Model):
     email = db.Column(db.String(120), index=True)
     birthday = db.Column(db.String(120), index=True)
     phone = db.Column(db.String(120), index=True)
-    password = db.Column(db.String(128))
+    password_hash = db.Column(db.String(128))
+
+    def __repr__(self):
+        return '<Student {}>'.format(self.id)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 # Course Class
 class Course (db.Model):
@@ -47,7 +76,3 @@ class Course (db.Model):
     name = db.Column(db.String(120), index=True, unique=False)
     subject = db.Column(db.String(64), index=True)
     number = db.Column(db.String(8), index=True)
-
-#from models.py in microblog to create password
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
