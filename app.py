@@ -261,4 +261,4 @@ def gpa():
         grades = form.current_grades.data
         # = request.form.get('student_gender')
         result = gpa_calculater(grades)
-    return render_template('gpa.html', result = result)
+    return render_template('gpa.html', result = result, form = form)
