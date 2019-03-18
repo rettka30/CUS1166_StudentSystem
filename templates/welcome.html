@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Welcome!</h1>
+<p>Please pick an option:</p>
+  <p>
+    <a href="{{ url_for('login', type='Student')}}">
+      Student
+    </a>
+  </p>
+  <p>
+    <a href="{{ url_for('login', type='Professor')}}">
+      Professor
+    </a>
+  </p>
+  <p>
+    <a href="{{ url_for('login', type='Administrator')}}">
+      Administrator
+    </a>
+  </p>
+{% endblock %}

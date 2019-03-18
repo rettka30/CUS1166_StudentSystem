@@ -12,7 +12,7 @@ class Professor(db.Model):
     email = db.Column(db.String(120), index=True)
     phone = db.Column(db.String(120), index=True)
     birthday = db.Column(db.String(120), index=True)
-    password_hash = db.Column(db.String(128))
+    password = db.Column(db.String(128))
 
 # Administrator Class
 class Administrator(db.Model):
@@ -24,7 +24,7 @@ class Administrator(db.Model):
     email = db.Column(db.String(120), index=True)
     phone = db.Column(db.String(120), index=True)
     birthday = db.Column(db.String(120), index=True)
-    password_hash = db.Column(db.String(128))
+    password = db.Column(db.String(128))
 
 # Student Class
 class Student(db.Model):
@@ -38,7 +38,7 @@ class Student(db.Model):
     email = db.Column(db.String(120), index=True)
     birthday = db.Column(db.String(120), index=True)
     phone = db.Column(db.String(120), index=True)
-    password_hash = db.Column(db.String(128))
+    password = db.Column(db.String(128))
 
 # Course Class
 class Course (db.Model):
