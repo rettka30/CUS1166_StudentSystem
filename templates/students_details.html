@@ -5,19 +5,24 @@
 <p>Student Name: {{student.name}}</p>
 <p>ID: {{student.id}}</p>
 <p>Gender: {{student.gender}}</p>
+<p>Year: {{student.year}}</p>
+<p>Major: {{student.major}}</p>
+<p>Email: {{student.email}}</p>
+<p>Birthday: {{student.birthday}}</p>
+<p>Phone: {{student.phone}}</p>
 <ul style="list-style-type:none;">
   <li>
-    <a href="{{ url_for('edit', student_id=student.id)}}">
+    <a href="{{ url_for('edit', type='Student', id=student.id)}}">
       Edit
     </a>
   </li>
   <li>
-    <a href="{{ url_for('delete', student_id=student.id)}}">
+    <a href="{{ url_for('delete', type='Student', id=student.id)}}">
       Delete
     </a>
   </li>
   <li>
-    <a href="{{ url_for('index')}}">
+    <a href="{{ url_for('student_roster')}}">
       Back
     </a>
   </li>

@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Create Professor</h1>
+  <form action="" method="POST">
+    <div>
+    	<label> Professor Name: </label>
+    	<input type="text" name="professor_name" value={{request.form.professor_name}}>
+    </div>
+    <div>
+    	<p><label> Professor Gender: </label></p>
+      <input type="radio" name="professor_gender" id="male" value="Male" checked> Male<br>
+      <input type="radio" name="professor_gender" id="female" value="Female"> Female<br>
+    </div>
+    <div>
+      <label> Department: </label>
+      <input type=text name="professor_department" value={{request.form.professor_department}}>
+    </div>
+    <div>
+      <label> Email: </label>
+      <input type="email" name="professor_email" value={{request.form.professor_email}}>
+    </div>
+    <div>
+      <label> Birthday: </label>
+      <input type="date" id="birthday" name="professor_birthday" value={{request.form.professor_birthday}}>
+    </div>
+    <div>
+      <label>Phone Number:</label>
+      <input type="tel" name="professor_phone" value={{request.form.professsor_phone}}>
+    </div>
+  	<button type="submit"> Submit </button>
+  </form>
+{% endblock %}

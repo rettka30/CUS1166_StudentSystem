@@ -1,48 +1,207 @@
 import sys
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from flask_bootstrap import Bootstrap
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField
+from wtforms.validators import DataRequired
 from config import Config
 from models import *
+from forms import LoginForm
+from flask_login import current_user, LoginManager, login_user
 
 app = Flask(__name__)
 app.config.from_object(Config)
-bootstrap = Bootstrap(app)
+
 
 db.init_app(app)
+login = LoginManager(app)
 
 @app.route('/')
 def index():
-    students = Student.query.all()
-    return render_template('index.html', students=students)
+    return render_template('index.html')
 
-@app.route('/add', methods=['GET', 'POST'])
-def add():
+@app.route('/student_roster')
+def student_roster():
+    students = Student.query.all()
+    return render_template('student_roster.html', students=students)
+
+@app.route('/professor_roster')
+def professor_roster():
+    professors = Professor.query.all()
+    return render_template('professor_roster.html', professors=professors)
+
+@app.route('/administrator_roster')
+def administrator_roster():
+    admins = Administrator.query.all()
+    return render_template('administrator_roster.html', admins=admins)
+
+@app.route('/student_login', methods=['GET','POST'])
+def student_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Student.query.filter_by(id=form.id.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid id or password')
+            return redirect(url_for('login'))
+        login_user(id, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('student_login.html', title='Student Sign In', form=form)
+
+@app.route('/professor_login', methods=['GET','POST'])
+def professor_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Professor.query.filter_by(id=form.id.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid id or password')
+            return redirect(url_for('login'))
+        login_user(id, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('professor_login.html', title='Professor Sign In', form=form)
+
+@app.route('/admin_login', methods= ['GET','POST'])
+def admin_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Administrator.query.filter_by(id=form.id.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid id or password')
+            return redirect(url_for('login'))
+        login_user(id, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
+    return render_template('admin_login.html', title='Administrator Sign In', form=form)
+
+@app.route('/create_student', methods=['GET', 'POST'])
+def create_student():
     # Get information from the form.
     if request.method == 'POST':
         student_name = request.form.get('student_name')
-        student_gender = request.form.get('student_gender')
-        student = Student(name=student_name, gender=student_gender)
+        student_gender = request.form['student_gender']
+        student_year = request.form.get('student_year')
+        student_email = str(request.form.get('student_email'))
+        student_birthday = str(request.form.get('student_birthday'))
+        student_major = request.form.get('student_major')
+        student_phone = str(request.form.get('student_phone'))
+        student = Student(name=student_name, gender=student_gender, year=student_year, email=student_email, birthday=student_birthday, major=student_major, phone=student_phone)
         db.session.add(student)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('student_roster'))
     return render_template('create_student.html')
 
-@app.route('/delete/<int:student_id>')
-def delete(student_id):
-    student = Student.query.get(student_id)
-    db.session.delete(student)
-    db.session.commit()
-    return redirect(url_for('index'))
+@app.route('/create_professor', methods=['GET', 'POST'])
+def create_professor():
+    # Get information from the form.
+    if request.method == 'POST':
+        pro_name = request.form.get('professor_name')
+        pro_gender = request.form['professor_gender']
+        pro_department = request.form.get('professor_department')
+        pro_email = str(request.form.get('professor_email'))
+        pro_birthday = str(request.form.get('professor_birthday'))
+        pro_phone = str(request.form.get('professor_phone'))
+        pro = Professor(name=pro_name, gender=pro_gender, department=pro_department, email=pro_email, birthday=pro_birthday, phone=pro_phone)
+        db.session.add(pro)
+        db.session.commit()
+        return redirect(url_for('professor_roster'))
+    return render_template('create_professor.html')
 
-@app.route('/edit/<int:student_id>', methods=['GET, POST'])
-def edit(student_id):
-    pass
+@app.route('/create_administrator', methods=['GET', 'POST'])
+def create_administrator():
+    # Get information from the form.
+    if request.method == 'POST':
+        admin_name = request.form.get('admin_name')
+        admin_gender = request.form['admin_gender']
+        admin_department = request.form.get('admin_department')
+        admin_email = str(request.form.get('admin_email'))
+        admin_birthday = str(request.form.get('admin_birthday'))
+        admin_phone = str(request.form.get('admin_phone'))
+        admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
+        db.session.add(admin)
+        db.session.commit()
+        return redirect(url_for('administrator_roster'))
+    return render_template('create_administrator.html')
 
-@app.route('/student/<int:student_id>')
-def student(student_id):
-    student = Student.query.get(student_id)
-    return render_template('students_details.html', student=student)
+@app.route('/delete/<type>/<int:id>')
+def delete(type, id):
+    if type == "Student":
+        student = Student.query.get(id)
+        db.session.delete(student)
+        db.session.commit()
+        return redirect(url_for('student_roster'))
+    elif type == "Professor":
+        professor = Professor.query.get(id)
+        db.session.delete(professor)
+        db.session.commit()
+        return redirect(url_for('professor_roster'))
+    else:
+        admin = Administrator.query.get(id)
+        db.session.delete(admin)
+        db.session.commit()
+        return redirect(url_for('administrator_roster'))
+
+
+@app.route('/edit/<type>/<int:id>', methods=['GET', 'POST'])
+def edit(type, id):
+    if type == "Student":
+        student = Student.query.get(id)
+        if request.method == 'POST':
+            student.name = request.form.get('student_name')
+            student.gender = request.form['student_gender']
+            student.year = request.form.get('student_year')
+            student.email = str(request.form.get('student_email'))
+            student.birthday = str(request.form.get('student_birthday'))
+            student.major = request.form.get('student_major')
+            student.phone = str(request.form.get('student_phone'))
+            db.session.add(student)
+            db.session.commit()
+            return redirect(url_for('user_details', type='Student', id=id))
+        return render_template('student_edit.html', student=student)
+    elif type == "Professor":
+        professor = Professor.query.get(id)
+        if request.method == 'POST':
+            professor.name = request.form.get('professor_name')
+            professor.gender = request.form['professor_gender']
+            professor.department = request.form.get('professor_department')
+            professor.email = str(request.form.get('professor_email'))
+            professor.birthday = str(request.form.get('professor_birthday'))
+            professor.phone = str(request.form.get('professor_phone'))
+            db.session.add(professor)
+            db.session.commit()
+            return redirect(url_for('user_details', type='Professor', id=id))
+        return render_template('prof_edit.html', professor=professor)
+    else:
+        admin = Administrator.query.get(id)
+        if request.method == 'POST':
+            admin.name = request.form.get('admin_name')
+            admin.gender = request.form['admin_gender']
+            admin.department = request.form.get('admin_department')
+            admin.email = str(request.form.get('admin_email'))
+            admin.birthday = str(request.form.get('admin_birthday'))
+            admin.phone = str(request.form.get('admin_phone'))
+            db.session.add(admin)
+            db.session.commit()
+            return redirect(url_for('user_details', type='Administrator', id=id))
+        return render_template('admin_edit.html', admin=admin)
+
+@app.route('/user_details/<type>/<int:id>')
+def user_details(type, id):
+    if type == "Student":
+        student = Student.query.get(id)
+        return render_template('students_details.html', student=student)
+    elif type == "Professor":
+        prof = Professor.query.get(id)
+        return render_template('professor_details.html', prof=prof)
+    else:
+        admin = Administrator.query.get(id)
+        return render_template('administrator_details.html', admin=admin)
 
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])

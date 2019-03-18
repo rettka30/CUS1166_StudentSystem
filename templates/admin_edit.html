@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Edit Administrator Info</h1>
+  <form action="" method="POST">
+    <div>
+    	<label> Administrator Name: </label>
+    	<input type="text" name="admin_name" value={{admin.name}}>
+    </div>
+    <div>
+    	<p><label> Administrator Gender: </label></p>
+      <input type="radio" name="admin_gender" id="male" value="Male" checked> Male<br>
+      <input type="radio" name="admin_gender" id="female" value="Female"> Female<br>
+    </div>
+    <div>
+      <label> Department: </label>
+      <input type=text name="admin_department" value={{admin.department}}>
+    </div>
+    <div>
+      <label> Email: </label>
+      <input type="email" name="admin_email" value={{admin.email}}>
+    </div>
+    <div>
+      <label> Birthday: </label>
+      <input type="date" id="birthday" name="admin_birthday" value={{admin.birthday}}>
+    </div>
+    <div>
+      <label> Phone Number: </label>
+      <input type="tel" name="admin_phone" value={{admin.phone}}>
+    </div>
+  	<button type="submit"> Change </button>
+  </form>
+{% endblock %}

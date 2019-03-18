@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Professor</h1>
+<p>Name: {{prof.name}}</p>
+<p>ID: {{prof.id}}</p>
+<p>Gender: {{prof.gender}}</p>
+<p>Department: {{prof.department}}</p>
+<p>Email: {{prof.email}}</p>
+<p>Birthday: {{prof.birthday}}</p>
+<p>Phone: {{prof.phone}}</p>
+<ul style="list-style-type:none;">
+  <li>
+    <a href="{{ url_for('edit', type='Professor', id=prof.id)}}">
+      Edit
+    </a>
+  </li>
+  <li>
+    <a href="{{ url_for('delete', type='Professor', id=prof.id)}}">
+      Delete
+    </a>
+  </li>
+  <li>
+    <a href="{{ url_for('professor_roster')}}">
+      Back
+    </a>
+  </li>
+</ul>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Professor Roster: </h1>
+  {% for professor in professors %}
+    <ul>
+      <li>
+        <a href="{{ url_for('user_details', type='Professor', id=professor.id) }}">
+                  {{professor.id}}. {{professor.name}}
+        </a>
+      </li>
+    </ul>
+  {% endfor %}
+  <div>
+    <a href="{{ url_for('create_professor') }}">
+      Add Professor
+    </a>
+  </div>
+  <div>
+    <a href="{{ url_for('index') }}">
+      Back
+    </a>
+  </div>
+{% endblock %}
