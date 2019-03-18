@@ -6,12 +6,13 @@ from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired
 from config import Config
 from models import *
-from forms import LoginForm
+from forms import LoginForm, GPAForm
 from flask_login import current_user, LoginManager, login_user
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
 app.config.from_object(Config)
-
+bootstrap = Bootstrap(app)
 
 db.init_app(app)
 login = LoginManager(app)
@@ -254,9 +255,10 @@ def gpa_calculater(grades):
 @app.route('/gpa', methods=['GET', 'POST'])
 def gpa():
     result=0
+    form = GPAForm()
     # Get information from the form.
-    if request.method == 'POST':
-        grades = request.form.get('grades')
+    if form.validate_on_submit():
+        grades = form.current_grades.data
         # = request.form.get('student_gender')
         result = gpa_calculater(grades)
     return render_template('gpa.html', result = result)
