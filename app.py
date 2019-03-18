@@ -212,11 +212,16 @@ def create_course():
         course_name = request.form.get('course_name')
         course_subject = request.form.get('course_subject')
         course_number = request.form.get('course_number')
-        course = Course(course_name=course_name, course_subject=course_subject, course_number=course_number)
+        course = Course(name=course_name, subject=course_subject, number=course_number)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('create_course.html')
+
+@app.route('/course_list')
+def course_list():
+    courses = Course.query.all()
+    return render_template('course_list.html', courses=courses)
 
 def main():
     if (len(sys.argv)==2):
