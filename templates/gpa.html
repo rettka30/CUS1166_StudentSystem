@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>GPA</h1>
+  <form class="form-inline" action="" method="POST">
+  	<label> GPA </label>
+  	<input type="text" name="grades" value={{request.form.grades}}>
+
+  	<button type="submit"> Submit </button>
+  </form>
+  <p>{{result}}</p>
+{% endblock %}

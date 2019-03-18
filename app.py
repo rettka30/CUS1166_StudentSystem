@@ -45,8 +45,8 @@ def student(student_id):
     return render_template('students_details.html', student=student)
 
 #Creates Courses
-@app.route('/createcourse', methods=['GET', 'POST'])
-def add():
+@app.route('/create_course', methods=['GET', 'POST'])
+def create_course():
     # Get information from the form.
     if request.method == 'POST':
         course_name = request.form.get('course_name')
@@ -70,3 +70,34 @@ def main():
 if __name__ == "__main__":
     with app.app_context():
         main()
+
+
+
+
+
+def gpa_calculate(grades):
+    gpa_dict = {'A+': 4.0, 'A': 4.0, 'A-': 3.7, 'B+': 3.3, 'B': 3.0, 'B-': 2.7, 'C+': 2.3, 'C': 2.0, 'C-': 1.7, 'D+': 1.3, 'D': 1, 'D-': 0.7, 'F': 0}
+    total= 0
+    grades=grades.upper().split(",")
+    numOfCourses=len(grades)
+    for element in grades:
+        total += gpa_dict[element]
+    gpa = total / numOfCourses
+    return gpa
+
+def gpa_calculater(grades):
+    try:
+        return round(gpa_calculate(grades),2)
+    except:
+        return 'please enter in the right form'
+
+#gpa counter
+@app.route('/gpa', methods=['GET', 'POST'])
+def gpa():
+    result=0
+    # Get information from the form.
+    if request.method == 'POST':
+        grades = request.form.get('grades')
+        # = request.form.get('student_gender')
+        result = gpa_calculater(grades)
+    return render_template('gpa.html', result = result)

@@ -1,9 +1,8 @@
 {% extends 'layout.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block body %}
   <h1>Create Student</h1>
-  <form action="" method="POST">
+  <form class="form-inline" action="" method="POST">
   	<label> Student Name </label>
   	<input type="text" name="student_name" value={{request.form.student_name}}>
   	<label> Student Gender </label>
