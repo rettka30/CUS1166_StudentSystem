@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block body %}
+  <h1>GPA</h1>
+  {% if form %}
+    {{ wtf.quick_form(form) }}
+    <br>
+    {% endif %}
+  <p>{{result}}</p>
+{% endblock %}

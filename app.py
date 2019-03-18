@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
+<<<<<<< HEAD
 #from forms import LoginForm
 #from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 #import logging
@@ -12,6 +13,15 @@ from models import *
 
 app = Flask(__name__)
 app.config.from_object(Config)
+=======
+from forms import LoginForm, GPAForm
+from flask_login import current_user, LoginManager, login_user
+from flask_bootstrap import Bootstrap
+
+app = Flask(__name__)
+app.config.from_object(Config)
+bootstrap = Bootstrap(app)
+>>>>>>> a7beb6a01a2af080aa8d9c09ed2c9ccbc09467d3
 
 db.init_app(app)
 #login = LoginManager(app)
@@ -41,6 +51,7 @@ def administrator_roster():
     admins = Administrator.query.all()
     return render_template('administrator_roster.html', admins=admins)
 
+<<<<<<< HEAD
 @app.route('/login/<type>', methods=['GET','POST'])
 def login(type):
     if type == "Student":
@@ -49,6 +60,52 @@ def login(type):
         return render_template('professor_login.html')
     else:
         return render_template('admin_login.html')
+=======
+@app.route('/student_login', methods=['GET','POST'])
+def student_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Student.query.filter_by(id=form.id.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid id or password')
+            return redirect(url_for('login'))
+        login_user(id, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('student_login.html', title='Student Sign In', form=form)
+
+@app.route('/professor_login', methods=['GET','POST'])
+def professor_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Professor.query.filter_by(id=form.id.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid id or password')
+            return redirect(url_for('login'))
+        login_user(id, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('professor_login.html', title='Professor Sign In', form=form)
+
+@app.route('/admin_login', methods= ['GET','POST'])
+def admin_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Administrator.query.filter_by(id=form.id.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid id or password')
+            return redirect(url_for('login'))
+        login_user(id, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
+    return render_template('admin_login.html', title='Administrator Sign In', form=form)
+>>>>>>> a7beb6a01a2af080aa8d9c09ed2c9ccbc09467d3
 
 @app.route('/create_student', methods=['GET', 'POST'])
 def create_student():
@@ -193,11 +250,16 @@ def create_course():
         course_name = request.form.get('course_name')
         course_subject = request.form.get('course_subject')
         course_number = request.form.get('course_number')
-        course = Course(course_name=course_name, course_subject=course_subject, course_number=course_number)
+        course = Course(name=course_name, subject=course_subject, number=course_number)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('create_course.html')
+
+@app.route('/course_list')
+def course_list():
+    courses = Course.query.all()
+    return render_template('course_list.html', courses=courses)
 
 def main():
     if (len(sys.argv)==2):
@@ -211,3 +273,35 @@ def main():
 if __name__ == "__main__":
     with app.app_context():
         main()
+
+
+
+
+
+def gpa_calculate(grades):
+    gpa_dict = {'A+': 4.0, 'A': 4.0, 'A-': 3.7, 'B+': 3.3, 'B': 3.0, 'B-': 2.7, 'C+': 2.3, 'C': 2.0, 'C-': 1.7, 'D+': 1.3, 'D': 1, 'D-': 0.7, 'F': 0}
+    total= 0
+    grades=grades.upper().split(",")
+    numOfCourses=len(grades)
+    for element in grades:
+        total += gpa_dict[element]
+    gpa = total / numOfCourses
+    return gpa
+
+def gpa_calculater(grades):
+    try:
+        return round(gpa_calculate(grades),2)
+    except:
+        return 'please enter in the right form'
+
+#gpa counter
+@app.route('/gpa', methods=['GET', 'POST'])
+def gpa():
+    result=0
+    form = GPAForm()
+    # Get information from the form.
+    if form.validate_on_submit():
+        grades = form.current_grades.data
+        # = request.form.get('student_gender')
+        result = gpa_calculater(grades)
+    return render_template('gpa.html', result = result, form = form)

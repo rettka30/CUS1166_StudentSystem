@@ -44,9 +44,9 @@ class Student(db.Model):
 class Course (db.Model):
     __tablename__= "courses"
     id = db.Column(db.Integer, primary_key=True)
-    course_name = db.Column(db.String(120), index=True, unique=False)
-    course_subject = db.Column(db.String(64), index=True)
-    course_number = db.Column(db.String(8), index=True)
+    name = db.Column(db.String(120), index=True, unique=False)
+    subject = db.Column(db.String(64), index=True)
+    number = db.Column(db.String(8), index=True)
 
 #from models.py in microblog to create password
     def set_password(self, password):
