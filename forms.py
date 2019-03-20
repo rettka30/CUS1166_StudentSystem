@@ -19,7 +19,7 @@ class CreateStudentForm(FlaskForm):
     student_gender = RadioField('Student Gender:', choices = [('Female','Female'),('Male','Male')])
     student_year = StringField('Year In School:', validators = [DataRequired()])
     student_email = EmailField('Email:', validators = [DataRequired(),Email()])
-    birthday = DateField('Birthday:')
+    student_birthday = DateField('Birthday: (ex. %m-%d-%y)', format='%m-%d-%Y')
     student_major = StringField('Major:', validators = [DataRequired()])
     student_phone = StringField('Phone Number:', validators = [DataRequired()])
     submit = SubmitField('Submit')

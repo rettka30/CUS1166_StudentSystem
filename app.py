@@ -1,17 +1,12 @@
 import sys
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
 from forms import LoginForm, GPAForm, CreateStudentForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
-
-#from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-#import logging
-#from logging.handlers import SMTPHandler
-#from logging.handlers import RotatingFileHandler
-
+import datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -58,7 +53,7 @@ def login(type):
             user = Student.query.filter_by(id=form.id.data).first()
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid id or password')
-                return redirect(url_for('login'))
+                return redirect(url_for('login', type='Student'))
             return redirect(url_for('index'))
         return render_template('login.html', form=form)
     elif type == "Professor":
@@ -69,7 +64,7 @@ def login(type):
             user = Professor.query.filter_by(id=form.id.data).first()
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid id or password')
-                return redirect(url_for('login'))
+                return redirect(url_for('login', type='Professor'))
             return redirect(url_for('index'))
         return render_template('login.html', form=form)
     else:
@@ -80,7 +75,7 @@ def login(type):
             user = Administrator.query.filter_by(id=form.id.data).first()
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid id or password')
-                return redirect(url_for('login'))
+                return redirect(url_for('login', type='Administrator'))
             return redirect(url_for('index'))
         return render_template('login.html', form=form)
 
@@ -90,18 +85,18 @@ def create_student():
     form = CreateStudentForm()
     # Get information from the form.
     if form.validate_on_submit():
-        grades = form.current_grades.data
         student_name = form.student_name.data
         student_gender = form.student_gender.data
         student_year = form.student_year.data
         student_email = form.student_email.data
-        student_birthday = str(form.student_birthday.data)
+        t = form.student_birthday.data
+        student_birthday = t.strftime('%m/%d/%Y')
         student_major = form.student_major.data
         student_phone = str(form.student_phone.data)
-        b1=student_birthday[:4]
-        b2=student_birthday[5:7]
-        b3=student_birthday[8:10]
-        student_password=b2+b3+b1
+        b1=student_birthday[:2]
+        b2=student_birthday[3:5]
+        b3=student_birthday[6:10]
+        student_password=b1+b2+b3
         student = Student(name=student_name, gender=student_gender, year=student_year, email=student_email, birthday=student_birthday, major=student_major, phone=student_phone)
         student.set_password(student_password)
         db.session.add(student)
@@ -123,7 +118,8 @@ def create_professor():
         p2=pro_birthday[5:7]
         p3=pro_birthday[8:10]
         pro_password=p2+p3+p1
-        pro = Professor(name=pro_name, gender=pro_gender, department=pro_department, email=pro_email, birthday=pro_birthday, phone=pro_phone, password=pro_password)
+        pro = Professor(name=pro_name, gender=pro_gender, department=pro_department, email=pro_email, birthday=pro_birthday, phone=pro_phone)
+        pro.set_password(pro_password)
         db.session.add(pro)
         db.session.commit()
         return redirect(url_for('professor_roster'))
@@ -143,7 +139,8 @@ def create_administrator():
         a2=admin_birthday[5:7]
         a3=admin_birthday[8:10]
         admin_password=a2+a3+a1
-        admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone, password=admin_password)
+        admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
+        admin.set_password(admin_password)
         db.session.add(admin)
         db.session.commit()
         return redirect(url_for('administrator_roster'))
