@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import LoginForm, GPAForm
+from forms import LoginForm, GPAForm, CreateStudentForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
 
@@ -87,14 +87,17 @@ def login(type):
 @app.route('/create_student', methods=['GET', 'POST'])
 def create_student():
     # Get information from the form.
-    if request.method == 'POST':
-        student_name = request.form.get('student_name')
-        student_gender = request.form['student_gender']
-        student_year = request.form.get('student_year')
-        student_email = str(request.form.get('student_email'))
-        student_birthday = str(request.form.get('student_birthday'))
-        student_major = request.form.get('student_major')
-        student_phone = str(request.form.get('student_phone'))
+    form = CreateStudentForm()
+    # Get information from the form.
+    if form.validate_on_submit():
+        grades = form.current_grades.data
+        student_name = form.student_name.data
+        student_gender = form.student_gender.data
+        student_year = form.student_year.data
+        student_email = form.student_email.data
+        student_birthday = str(form.student_birthday.data)
+        student_major = form.student_major.data
+        student_phone = str(form.student_phone.data)
         b1=student_birthday[:4]
         b2=student_birthday[5:7]
         b3=student_birthday[8:10]
@@ -104,7 +107,7 @@ def create_student():
         db.session.add(student)
         db.session.commit()
         return redirect(url_for('student_roster'))
-    return render_template('create_student.html')
+    return render_template('create_student.html', form = form)
 
 @app.route('/create_professor', methods=['GET', 'POST'])
 def create_professor():

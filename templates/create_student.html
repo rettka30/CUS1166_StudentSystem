@@ -1,37 +1,13 @@
 {% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block body %}
-  <h1>Create Student</h1>
-  <form action="" method="POST">
-    <div>
-    	<label> Student Name: </label>
-    	<input type="text" name="student_name" value={{request.form.student_name}}>
-    </div>
-    <div>
-    	<p><label> Student Gender: </label></p>
-      <input type="radio" name="student_gender" id="male" value="Male" checked> Male<br>
-      <input type="radio" name="student_gender" id="female" value="Female"> Female<br>
-    </div>
-    <div>
-      <label>Year In School:</label>
-      <input type=text name="student_year" value={{request.form.student_year}}>
-    </div>
-    <div>
-      <label> Email: </label>
-      <input type="email" name="student_email" value={{request.form.student_email}}>
-    </div>
-    <div>
-      <label> Birthday: </label>
-      <input type="date" id="birthday" name="student_birthday" value={{request.form.student_birthday}}>
-    </div>
-    <div>
-      <label> Major: </label>
-      <input type="text" name="student_major" value={{request.form.student_major}}>
-    </div>
-    <div>
-      <label> Phone Number: </label>
-      <input type="tel" name="student_phone" value={{request.form.student_phone}}>
-    </div>
-  	<button type="submit"> Submit </button>
-  </form>
+  <div class="page-header">
+    <h1>Create Student</h1>
+  </div>
+
+  {% if form %}
+    {{ wtf.quick_form(form) }}
+    <br>
+  {% endif %}
 {% endblock %}
