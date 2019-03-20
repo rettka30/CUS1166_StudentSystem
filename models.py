@@ -3,7 +3,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 db = SQLAlchemy()
 
-
 # Professor Class
 class Professor(UserMixin, db.Model):
     __tablename__="professors"
@@ -24,6 +23,12 @@ class Professor(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def add_course(self,name,subject,number):
+        # Notice that we set the foreign key for the passenger class.
+        new_course = Course(name=name, subject=subject, number=number )
+        db.session.add(new_course)
+        db.session.commit()
 
 # Administrator Class
 class Administrator(UserMixin, db.Model):
@@ -57,7 +62,6 @@ class Student(UserMixin, db.Model):
     phone = db.Column(db.String(120), index=True)
     email = db.Column(db.String(120), index=True)
     birthday = db.Column(db.String(120), index=True)
-    phone = db.Column(db.String(120), index=True)
     password_hash = db.Column(db.String(128))
 
     def __repr__(self):

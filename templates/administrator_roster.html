@@ -5,7 +5,7 @@
   {% for admin in admins %}
     <ul>
       <li>
-        <a href="{{ url_for('user_details', type='Administrator', id=admin.id) }}">
+        <a href="{{ url_for('details', type='Administrator', id=admin.id) }}">
                   {{admin.id}}. {{admin.name}}
         </a>
       </li>

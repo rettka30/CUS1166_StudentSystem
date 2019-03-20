@@ -158,11 +158,18 @@ def delete(type, id):
         db.session.delete(professor)
         db.session.commit()
         return redirect(url_for('professor_roster'))
-    else:
+    elif type == "Administrator":
         admin = Administrator.query.get(id)
         db.session.delete(admin)
         db.session.commit()
         return redirect(url_for('administrator_roster'))
+    elif type == "Course":
+        course = Course.query.get(id)
+        db.session.delete(course)
+        db.session.commit()
+        return redirect(url_for('course_list'))
+    else:
+        return render_template('error.html')
 
 
 @app.route('/edit/<type>/<int:id>', methods=['GET', 'POST'])
@@ -179,7 +186,7 @@ def edit(type, id):
             student.phone = str(request.form.get('student_phone'))
             db.session.add(student)
             db.session.commit()
-            return redirect(url_for('user_details', type='Student', id=id))
+            return redirect(url_for('details', type='Student', id=id))
         return render_template('student_edit.html', student=student)
     elif type == "Professor":
         professor = Professor.query.get(id)
@@ -192,9 +199,9 @@ def edit(type, id):
             professor.phone = str(request.form.get('professor_phone'))
             db.session.add(professor)
             db.session.commit()
-            return redirect(url_for('user_details', type='Professor', id=id))
+            return redirect(url_for('details', type='Professor', id=id))
         return render_template('prof_edit.html', professor=professor)
-    else:
+    elif type == "Administrator":
         admin = Administrator.query.get(id)
         if request.method == 'POST':
             admin.name = request.form.get('admin_name')
@@ -205,20 +212,37 @@ def edit(type, id):
             admin.phone = str(request.form.get('admin_phone'))
             db.session.add(admin)
             db.session.commit()
-            return redirect(url_for('user_details', type='Administrator', id=id))
+            return redirect(url_for('details', type='Administrator', id=id))
         return render_template('admin_edit.html', admin=admin)
+    elif type == "Course":
+        course = Course.query.get(id)
+        if request.method == 'POST':
+            course.subject = request.form.get('course_subject')
+            course.number = request.form.get('course_number')
+            course.name = request.form.get('course_name')
+            db.session.add(course)
+            db.session.commit()
+            return redirect(url_for('details', type='Course', id=id))
+        return render_template('course_edit.html', course=course)
+    else:
+        return render_template('error.html')
 
-@app.route('/user_details/<type>/<int:id>')
-def user_details(type, id):
+@app.route('/details/<type>/<int:id>')
+def details(type, id):
     if type == "Student":
         student = Student.query.get(id)
         return render_template('students_details.html', student=student)
     elif type == "Professor":
         prof = Professor.query.get(id)
         return render_template('professor_details.html', prof=prof)
-    else:
+    elif type == "Administrator":
         admin = Administrator.query.get(id)
         return render_template('administrator_details.html', admin=admin)
+    elif type == "Course":
+        course = Course.query.get(id)
+        return render_template('course_details.html', course=course)
+    else:
+        return render_template('error.html')
 
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])
@@ -231,7 +255,7 @@ def create_course():
         course = Course(name=course_name, subject=course_subject, number=course_number)
         db.session.add(course)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('course_list'))
     return render_template('create_course.html')
 
 @app.route('/course_list')

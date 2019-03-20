@@ -5,7 +5,7 @@
   {% for professor in professors %}
     <ul>
       <li>
-        <a href="{{ url_for('user_details', type='Professor', id=professor.id) }}">
+        <a href="{{ url_for('details', type='Professor', id=professor.id) }}">
                   {{professor.id}}. {{professor.name}}
         </a>
       </li>
