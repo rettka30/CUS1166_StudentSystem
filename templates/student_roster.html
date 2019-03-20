@@ -5,7 +5,7 @@
   {% for student in students %}
     <ul>
       <li>
-        <a href="{{ url_for('user_details', type='Student', id=student.id) }}">
+        <a href="{{ url_for('details', type='Student', id=student.id) }}">
                   {{student.id}}. {{student.name}}
         </a>
       </li>
