@@ -1,8 +1,21 @@
 body {
-  background-color: lightblue;
+  background-color: skyblue;
 }
 
-h1 {
+#welcome {
   color: white;
   text-align: center;
+}
+
+.button {
+  background-color: #e7e7e7;
+  border: none;
+  color: #999999;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
 }
