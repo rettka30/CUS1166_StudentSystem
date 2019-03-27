@@ -8,10 +8,15 @@
   </div>
   {% if form %}
     {{ wtf.quick_form(form) }}
+    <p>{{result}}</p>
+    <br>
+  {% endif %}
+  {% if form1 %}
+    {{ wtf.quick_form(form1) }}
+    <p>{{result1}}</p>
     <br>
   {% endif %}
 
-  <p>{{result}}</p>
   <p>
     <a href="{{ url_for('student_roster')}}">
       Back to Roster

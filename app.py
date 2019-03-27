@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import LoginForm, GPAForm, CreateStudentForm
+from forms import LoginForm, GPAForm, CreateStudentForm, GPAPForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
 import datetime
@@ -300,10 +300,34 @@ def gpa_calculater(grades):
 @app.route('/gpa', methods=['GET', 'POST'])
 def gpa():
     result=0
+    result1=0
     form = GPAForm()
+    form1 = GPAPForm()
     # Get information from the form.
     if form.validate_on_submit():
         grades = form.current_grades.data
         # = request.form.get('student_gender')
         result = gpa_calculater(grades)
-    return render_template('gpa.html', result = result, form = form)
+    if form1.validate_on_submit():
+        current_GPA = form1.current_GPA.data
+        Num_of_course = form1.Num_of_course.data
+        future_grades = form1.future_grades.data
+        # = request.form.get('student_gender')
+        result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
+    return render_template('gpa.html', result = result, form = form, form1 = form1, result1 =result1)
+
+def gpa_predict(current_grades,times, future_grades):
+    gpa_dict = {'F': 0, 'D-': 0.7, 'D': 1.0, 'D+': 1.3, 'C-': 1.7, 'C': 2.0, 'C+': 2.3, 'B-': 2.7, 'B': 3.0, 'B+': 3.3, 'A-': 3.7, 'A': 4.0, 'A+': 4.0}
+    total = current_grades*times
+    grades=future_grades.upper().split(",")
+    numOfCourses=len(grades)
+    for element in grades:
+        total += gpa_dict[element]
+    gpa = total / (numOfCourses+times)
+    return gpa
+
+def gpa_predictor(current_grades,times, future_grades):
+    try:
+        return round(gpa_predict(current_grades,times, future_grades),2)
+    except:
+        return 'please enter in the right form'
