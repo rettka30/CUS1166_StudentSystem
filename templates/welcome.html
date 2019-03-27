@@ -10,20 +10,22 @@
 <div class="container">
   <h1 id="welcome">Welcome!</h1>
   <p>Please pick an option:</p>
-  <p>
-    <a href="{{ url_for('login', type='Student')}}" class="button">
-        Student
-    </a>
-  </p>
-  <p>
-    <a href="{{ url_for('login', type='Professor')}}" class="button">
-      Professor
-    </a>
-  </p>
-  <p>
-    <a href="{{ url_for('login', type='Administrator')}}" class="button">
-      Administrator
-    </a>
-  </p>
+  <div class="row">
+    <div class="col-auto">
+      <a href="{{ url_for('login', type='Student')}}" class="button">
+          Student
+      </a>
+    </div>
+    <div class="col-auto">
+      <a href="{{ url_for('login', type='Professor')}}" class="button">
+        Professor
+      </a>
+    </div>
+    <div class="col-auto">
+      <a href="{{ url_for('login', type='Administrator')}}" class="button">
+        Administrator
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock %}
