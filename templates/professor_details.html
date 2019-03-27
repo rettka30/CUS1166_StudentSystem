@@ -9,21 +9,19 @@
 <p>Email: {{prof.email}}</p>
 <p>Birthday: {{prof.birthday}}</p>
 <p>Phone: {{prof.phone}}</p>
-<ul style="list-style-type:none;">
-  <li>
-    <a href="{{ url_for('edit', type='Professor', id=prof.id)}}">
-      Edit
-    </a>
-  </li>
-  <li>
-    <a href="{{ url_for('delete', type='Professor', id=prof.id)}}">
-      Delete
-    </a>
-  </li>
-  <li>
-    <a href="{{ url_for('professor_roster')}}">
-      Back
-    </a>
-  </li>
-</ul>
+<div>
+  <a href="{{ url_for('edit', type='Professor', id=prof.id)}}">
+    Edit
+  </a>
+</div>
+<div>
+  <a href="{{ url_for('delete', type='Professor', id=prof.id)}}">
+    Delete
+  </a>
+</div>
+<div>
+  <a href="{{ url_for('professor_roster')}}">
+    Back
+  </a>
+</div>
 {% endblock %}

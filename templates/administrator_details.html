@@ -9,21 +9,19 @@
 <p>Email: {{admin.email}}</p>
 <p>Birthday: {{admin.birthday}}</p>
 <p>Phone: {{admin.phone}}</p>
-<ul style="list-style-type:none;">
-  <li>
-    <a href="{{ url_for('edit', type='Administrator', id=admin.id)}}">
-      Edit
-    </a>
-  </li>
-  <li>
-    <a href="{{ url_for('delete', type='Administrator', id=admin.id)}}">
-      Delete
-    </a>
-  </li>
-  <li>
-    <a href="{{ url_for('administrator_roster')}}">
-      Back
-    </a>
-  </li>
-</ul>
+<div>
+  <a href="{{ url_for('edit', type='Administrator', id=admin.id)}}">
+    Edit
+  </a>
+</div>
+<div>
+  <a href="{{ url_for('delete', type='Administrator', id=admin.id)}}">
+    Delete
+  </a>
+</div>
+<div>
+  <a href="{{ url_for('administrator_roster')}}">
+    Back
+  </a>
+</div>
 {% endblock %}

@@ -10,26 +10,24 @@
 <p>Email: {{student.email}}</p>
 <p>Birthday: {{student.birthday}}</p>
 <p>Phone: {{student.phone}}</p>
-<ul style="list-style-type:none;">
-  <li>
-    <a href="{{ url_for('edit', type='Student', id=student.id)}}">
-      Edit
-    </a>
-  </li>
-  <li>
-    <a href="{{ url_for('delete', type='Student', id=student.id)}}">
-      Delete
-    </a>
-  </li>
-  <li>
-    <a href="{{ url_for('gpa')}}">
-      GPA Calculator
-    </a>
-  </li>
-  <li>
-    <a href="{{ url_for('student_roster')}}">
-      Back
-    </a>
-  </li>
-</ul>
+<div>
+  <a href="{{ url_for('edit', type='Student', id=student.id)}}">
+    Edit
+  </a>
+</div>
+<div>
+  <a href="{{ url_for('delete', type='Student', id=student.id)}}">
+    Delete
+  </a>
+</div>
+<div>
+  <a href="{{ url_for('gpa')}}">
+    GPA Calculator
+  </a>
+</div>
+<div>
+  <a href="{{ url_for('student_roster')}}">
+    Back
+  </a>
+</div>
 {% endblock %}
