@@ -19,3 +19,8 @@ body {
   margin: 4px 2px;
   cursor: pointer;
 }
+
+#login {
+  -webkit-column-count: 3;
+  -webkit-column-gap: 20px;
+}
