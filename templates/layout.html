@@ -2,6 +2,13 @@
 
 {% block title %} Novus {% endblock %}
 
+{%- block styles %}
+    <link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/welcome.css">
+{%- endblock styles %}
+
 {% block navbar %}
   <nav class="navbar navbar-inverse">
     <div class="container">
