@@ -6,7 +6,7 @@ from models import *
 from forms import LoginForm, GPAForm, CreateStudentForm, GPAPForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
-import datetime
+import datetime, pygal
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -303,6 +303,8 @@ def gpa():
     result1=0
     form = GPAForm()
     form1 = GPAPForm()
+    GPA_chart = pygal.Bar()
+    graph_data = GPA_chart.render_data_uri()
     # Get information from the form.
     if form.validate_on_submit():
         grades = form.current_grades.data
@@ -314,7 +316,13 @@ def gpa():
         future_grades = form1.future_grades.data
         # = request.form.get('student_gender')
         result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
-    return render_template('gpa.html', result = result, form = form, form1 = form1, result1 =result1)
+    if result != 0:
+        grades = a_4(grades)
+        for element in grades:
+            GPA_chart.add('', element)
+        graph_data = GPA_chart.render_data_uri()
+
+    return render_template('gpa.html', graph_data = graph_data, result = result, form = form, form1 = form1, result1 =result1)
 
 def gpa_predict(current_grades,times, future_grades):
     gpa_dict = {'F': 0, 'D-': 0.7, 'D': 1.0, 'D+': 1.3, 'C-': 1.7, 'C': 2.0, 'C+': 2.3, 'B-': 2.7, 'B': 3.0, 'B+': 3.3, 'A-': 3.7, 'A': 4.0, 'A+': 4.0}
@@ -325,6 +333,14 @@ def gpa_predict(current_grades,times, future_grades):
         total += gpa_dict[element]
     gpa = total / (numOfCourses+times)
     return gpa
+
+def a_4(a):
+    gpa_dict = {'F': 0, 'D-': 0.7, 'D': 1.0, 'D+': 1.3, 'C-': 1.7, 'C': 2.0, 'C+': 2.3, 'B-': 2.7, 'B': 3.0, 'B+': 3.3, 'A-': 3.7, 'A': 4.0, 'A+': 4.0}
+    grades=a.upper().split(",")
+    grades_m = []
+    for element in grades:
+        grades_m.append(gpa_dict[element])
+    return grades_m
 
 def gpa_predictor(current_grades,times, future_grades):
     try:

@@ -16,7 +16,9 @@
     <p>{{result1}}</p>
     <br>
   {% endif %}
-
+  <div class="container" align="left">
+  			<embed type="image/svg+xml" src={{graph_data|safe}} style='max-width:1000px'/>
+  	  </div>
   <p>
     <a href="{{ url_for('student_roster')}}">
       Back to Roster
