@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9446e852982b73544f896fd2e5556c56d6ece88e94d1bf35bbf2ab2d3c1b3143"
+            "sha256": "b674b3bb13324213e11c570f0ae64623049c363cb67e1fc333a4a28332756d26"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -115,11 +115,19 @@
             ],
             "version": "==1.1.1"
         },
+        "pygal": {
+            "hashes": [
+                "sha256:27abab93cbc31e21f3c6bdecc05bda6cd3570cbdbd8297b7caa6904051b50d72",
+                "sha256:9204f05380b02a8a32f9bf99d310b51aa2a932cba5b369f7a4dc3705f0a4ce83"
+            ],
+            "index": "pypi",
+            "version": "==2.4.0"
+        },
         "sqlalchemy": {
             "hashes": [
-                "sha256:781fb7b9d194ed3fc596b8f0dd4623ff160e3e825dd8c15472376a438c19598b"
+                "sha256:d5432832f91d200c3d8b473a266d59442d825f9ea744c467e68c5d9a9479fbce"
             ],
-            "version": "==1.3.1"
+            "version": "==1.3.2"
         },
         "visitor": {
             "hashes": [
@@ -129,10 +137,10 @@
         },
         "werkzeug": {
             "hashes": [
-                "sha256:c3fd7a7d41976d9f44db327260e263132466836cef6f91512889ed60ad26557c",
-                "sha256:d5da73735293558eb1651ee2fddc4d0dedcfa06538b8813a2e20011583c9e49b"
+                "sha256:0a73e8bb2ff2feecfc5d56e6f458f5b99290ef34f565ffb2665801ff7de6af7a",
+                "sha256:7fad9770a8778f9576693f0cc29c7dcc36964df916b83734f4431c0e612a7fbc"
             ],
-            "version": "==0.14.1"
+            "version": "==0.15.2"
         },
         "wtforms": {
             "hashes": [

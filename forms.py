@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, PasswordField, SubmitField, RadioField, DateField
+from wtforms import StringField, IntegerField, PasswordField, SubmitField, RadioField, DateField, FloatField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from models import Student, Professor, Administrator
@@ -12,6 +12,12 @@ class LoginForm(FlaskForm):
 
 class GPAForm(FlaskForm):
     current_grades = StringField('Current Grades:', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+class GPAPForm(FlaskForm):
+    current_GPA =  FloatField('Current GPA:', validators=[DataRequired()])
+    Num_of_course = IntegerField('Num of Course took:', validators=[DataRequired()])
+    future_grades = StringField('predict future Grades:', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class CreateStudentForm(FlaskForm):

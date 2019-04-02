@@ -11,6 +11,7 @@ flask-sqlalchemy = "*"
 flask-wtf = "*"
 flask = "*"
 flask-login = "*"
+pygal = "*"
 
 [requires]
 python_version = "3.6"
