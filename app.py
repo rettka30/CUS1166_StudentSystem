@@ -248,15 +248,19 @@ def details(type, id):
 @app.route('/create_course', methods=['GET', 'POST'])
 def create_course():
     # Get information from the form.
+    professors = Professor.query.all()
     if request.method == 'POST':
         course_name = request.form.get('course_name')
         course_subject = request.form.get('course_subject')
         course_number = request.form.get('course_number')
-        course = Course(name=course_name, subject=course_subject, number=course_number)
+        course_professor = str(request.form.get('professor_list'))
+        professor = db.session.query(Professor).filter(Professor.name==course_professor).first()
+        professor_id = professor.id
+        course = Course(name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for('course_list'))
-    return render_template('create_course.html')
+    return render_template('create_course.html', professors=professors)
 
 @app.route('/course_list')
 def course_list():
