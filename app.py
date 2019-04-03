@@ -308,7 +308,9 @@ def gpa():
     form = GPAForm()
     form1 = GPAPForm()
     GPA_chart = pygal.Bar()
+    GPA_chart2 = pygal.Radar()
     graph_data = GPA_chart.render_data_uri()
+    graph_data2 = GPA_chart2.render_data_uri()
     # Get information from the form.
     if form.validate_on_submit():
         grades = form.current_grades.data
@@ -322,11 +324,14 @@ def gpa():
         result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
     if result != 0:
         grades = a_4(grades)
+        GPA_chart2.add("grades",grades)
         for element in grades:
             GPA_chart.add('', element)
-        graph_data = GPA_chart.render_data_uri()
 
-    return render_template('gpa.html', graph_data = graph_data, result = result, form = form, form1 = form1, result1 =result1)
+        graph_data = GPA_chart.render_data_uri()
+        graph_data2 = GPA_chart2.render_data_uri()
+
+    return render_template('gpa.html', graph_data = graph_data, graph_data2 = graph_data2, result = result, form = form, form1 = form1, result1 =result1)
 
 def gpa_predict(current_grades,times, future_grades):
     gpa_dict = {'F': 0, 'D-': 0.7, 'D': 1.0, 'D+': 1.3, 'C-': 1.7, 'C': 2.0, 'C+': 2.3, 'B-': 2.7, 'B': 3.0, 'B+': 3.3, 'A-': 3.7, 'A': 4.0, 'A+': 4.0}
