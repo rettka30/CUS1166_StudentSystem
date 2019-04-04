@@ -244,6 +244,10 @@ def details(type, id):
     else:
         return render_template('error.html')
 
+@app.route('/rating', methods=['GET','POST'])
+def rating():
+    pass
+
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])
 def create_course():

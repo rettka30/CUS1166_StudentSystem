@@ -6,9 +6,25 @@ body {
   background-size: cover;
 }
 
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%)
+}
+
 #welcome, #direction {
   color: white;
   text-align: center;
+}
+
+#welcome {
+  font-size: 700%;
+}
+
+#direction {
+  font-size: 300%;
 }
 
 .button {
