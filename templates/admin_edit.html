@@ -28,6 +28,10 @@
       <label> Phone Number: </label>
       <input type="tel" name="admin_phone" value={{admin.phone}}>
     </div>
+    <div>
+      <label> Password: </label>
+      <input type=text name="admin_password" value={{admin.password_hash}}>
+    </div>
   	<button type="submit"> Change </button>
   </form>
 {% endblock %}
