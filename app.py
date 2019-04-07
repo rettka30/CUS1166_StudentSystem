@@ -184,6 +184,7 @@ def edit(type, id):
             student.birthday = str(request.form.get('student_birthday'))
             student.major = request.form.get('student_major')
             student.phone = str(request.form.get('student_phone'))
+            student.set_password(request.form.get('student_password'))
             db.session.add(student)
             db.session.commit()
             return redirect(url_for('details', type='Student', id=id))
@@ -197,6 +198,7 @@ def edit(type, id):
             professor.email = str(request.form.get('professor_email'))
             professor.birthday = str(request.form.get('professor_birthday'))
             professor.phone = str(request.form.get('professor_phone'))
+            professor.set_password(request.form.get('professor_password'))
             db.session.add(professor)
             db.session.commit()
             return redirect(url_for('details', type='Professor', id=id))
@@ -210,6 +212,7 @@ def edit(type, id):
             admin.email = str(request.form.get('admin_email'))
             admin.birthday = str(request.form.get('admin_birthday'))
             admin.phone = str(request.form.get('admin_phone'))
+            admin.set_password(request.form.get('admin_password'))
             db.session.add(admin)
             db.session.commit()
             return redirect(url_for('details', type='Administrator', id=id))
@@ -244,6 +247,10 @@ def details(type, id):
     else:
         return render_template('error.html')
 
+@app.route('/rating', methods=['GET','POST'])
+def rating():
+    pass
+
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])
 def create_course():
@@ -253,7 +260,7 @@ def create_course():
         course_name = request.form.get('course_name')
         course_subject = request.form.get('course_subject')
         course_number = request.form.get('course_number')
-        course_professor = str(request.form.get('professor_list'))
+        course_professor = request.form.get('professor_name')
         professor = db.session.query(Professor).filter(Professor.name==course_professor).first()
         professor_id = professor.id
         course = Course(name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)

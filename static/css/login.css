@@ -14,33 +14,16 @@ body {
   transform: translate(-50%, -50%)
 }
 
-#welcome, #direction {
-  color: white;
-  text-align: center;
+#login{
+  background-color: #dfdfdf;
 }
 
-#welcome {
-  font-size: 700%;
-}
-
-#direction {
-  font-size: 300%;
-}
-
-.button {
-  background-color: #e7e7e7;
+input[type=button] {
+  background-color: #4CAF50;
   border: none;
-  color: #999999;
-  padding: 15px 32px;
-  text-align: center;
+  color: white;
+  padding: 16px 32px;
   text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
-}
-
-#login {
-  -webkit-column-count: 3;
-  -webkit-column-gap: 20px;
 }

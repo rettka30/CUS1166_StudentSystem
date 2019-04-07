@@ -1,24 +1,42 @@
 {% extends 'layout.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/login.css">
+{% endblock %}
+
 {% block app_content %}
-  <h1>Please login</h1>
-  <form action="" method="post" novalidate>
+<div class="container">
+  <form action="" method="post" id="login" novalidate>
         {{ form.hidden_tag() }}
-        <p>
-
-            {{ wtf.form_field(form.id) }}<br>
-            {% for error in form.id.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-
-            {{ wtf.form_field(form.password) }}<br>
-            {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ wtf.form_field(form.submit) }}</p>
+        <h1>Please login</h1>
+        <div class="row" id="r1">
+          <div class="col-xs-5" id="id">
+            <p id="f1">
+                {{ wtf.form_field(form.id) }}<br>
+                {% for error in form.id.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+          </div>
+        </div>
+        <div class="row" id="r2">
+          <div class="col-xs-5" id="password">
+            <p id="f2">
+                {{ wtf.form_field(form.password) }}<br>
+                {% for error in form.password.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+          </div>
+        </div>
+        <div class="row" id="r3">
+          <div class="col-auto" id="signin">
+            <input class="btn btn-primary" type="submit" value="Sign In">
+          </div>
+        </div>
   </form>
+</div>
 {% endblock %}
