@@ -9,12 +9,12 @@
 {% block app_content %}
 <div class="row">
   <div class="leftcolumn">
-    <div class="card">
+    <div class="card" id="opt">
       <ul>
-        <ol><a href="{{ url_for('index', type='Professor', id=professor.id )}}">Profile</a></ol>
-        <ol><a href="{{ url_for('edit', type='Professor', id=professor.id)}}">Edit Profiles</a></ol>
-        <ol><a href="{{ url_for('create_course')}}">Course Sign Up</a></ol>
-        <ol>Gradebook</ol>
+        <ol><a href="{{ url_for('index', type='Professor', id=professor.id )}}" class="button">Profile</a></ol>
+        <ol><a href="{{ url_for('edit', type='Professor', id=professor.id)}}" class="button">Edit Profiles</a></ol>
+        <ol><a href="{{ url_for('create_course')}}" class="button">Course Sign Up</a></ol>
+        <ol><a href="{{ url_for('gradebook')}}" class="button">Gradebook</a></ol>
       </ul>
     </div>
   </div>
@@ -36,9 +36,13 @@
   </div>
   <div class="rightcolumn">
     <div class="card">
-      <h2>About Me</h2>
-      <div class="fakeimg" style="height:100px;">Image</div>
-      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
+      <h2>{{professor.name}}</h2>
+      <p>ID: {{professor.id}}</p>
+      <p>Gender: {{professor.gender}}</p>
+      <p>Birthday: {{professor.birthday}}</p>
+      <p>Department: {{professor.department}}</p>
+      <p>Email: {{professor.email}}</p>
+      <p>Phone: {{professor.phone}}</p>
     </div>
     <div class="card">
       <h3>Popular Post</h3>

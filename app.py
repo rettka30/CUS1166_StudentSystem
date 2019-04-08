@@ -89,6 +89,10 @@ def login(type):
             return redirect(url_for('index'))
         return render_template('login.html', form=form)
 
+@app.route("/gradebook")
+def gradebook():
+    pass
+
 @app.route('/create_student', methods=['GET', 'POST'])
 def create_student():
     # Get information from the form.
