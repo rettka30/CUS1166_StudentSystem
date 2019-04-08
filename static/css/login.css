@@ -14,8 +14,30 @@ body {
   transform: translate(-50%, -50%)
 }
 
-#login{
+.form {
+  max-width: 500px;
+  margin: auto;
+}
+
+#login {
+  display: inline-block;
+  vertical-align: middle;
   background-color: #dfdfdf;
+  padding: 15px 5px 15px 5px;
+  height: 600px;
+  width: 400px;
+  border-radius: 4px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#title {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-group {
+  text-align: center;
 }
 
 input[type=button] {
