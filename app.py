@@ -57,36 +57,36 @@ def administrator_roster():
 def login(type):
     if type == "Student":
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Student", id=form.id.data))
         form = LoginForm()
         if form.validate_on_submit():
             user = Student.query.filter_by(id=form.id.data).first()
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid id or password')
                 return redirect(url_for('login', type='Student'))
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Student", id=form.id.data))
         return render_template('login.html', form=form)
     elif type == "Professor":
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Professor", id=form.id.data))
         form = LoginForm()
         if form.validate_on_submit():
             user = Professor.query.filter_by(id=form.id.data).first()
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid id or password')
                 return redirect(url_for('login', type='Professor'))
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Professor", id=form.id.data))
         return render_template('login.html', form=form)
     else:
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Administrator", id=form.id.data))
         form = LoginForm()
         if form.validate_on_submit():
             user = Administrator.query.filter_by(id=form.id.data).first()
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid id or password')
                 return redirect(url_for('login', type='Administrator'))
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Administrator", id=form.id.data))
         return render_template('login.html', form=form)
 
 @app.route("/gradebook")
