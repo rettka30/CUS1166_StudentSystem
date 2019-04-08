@@ -24,9 +24,19 @@ login.login_view = 'login'
 def welcome():
     return render_template('welcome.html')
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/index/<type>/<int:id>')
+def index(type, id):
+    if type == "Student":
+        student = Student.query.get(id)
+        return render_template('student_index.html', student=student)
+    elif type == "Professor":
+        professor = Professor.query.get(id)
+        return render_template('porfessor_index.html', professor=profeesor)
+    elif type == "Administrator":
+        admin = Administrator.query.get(id)
+        return render_template('admin_index.html', admin=admin)
+    else:
+        return render_template('error.html')
 
 @app.route('/student_roster')
 def student_roster():
