@@ -24,6 +24,10 @@ login.login_view = 'login'
 def welcome():
     return render_template('welcome.html')
 
+@app.route('/')
+def home():
+    return render_template('home.html')
+
 @app.route('/index/<type>/<int:id>')
 def index(type, id):
     if type == "Student":

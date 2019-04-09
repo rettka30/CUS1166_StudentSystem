@@ -11,21 +11,17 @@
   <div class="leftcolumn">
     <div class="card" id="opt">
       <ul>
-        <ol><a href="{{ url_for('index', type='Student', id=student.id )}}" class="button">Profile</a></ol>
-        <ol><a href="{{ url_for('edit', type='Student', id=student.id)}}" class="button">Edit Profile</a></ol>
-        <ol><a href="{{ url_for('create_course')}}" class="button">Course Sign Up</a></ol>
-        <ol><a href="{{ url_for('gradebook')}}" class="button">Gradebook</a></ol>
+        <ol><a href="{{ url_for('welcome')}}" class="button">Login In</a></ol>
       </ul>
     </div>
   </div>
   <div class="centercolumn">
     <div class="card">
-      <h4>Courses</h4>
-      {% for course in courses %}
-      <p><a href="{{ url_for('details', type='Course', id=course.id) }}">
-                {{course.name}}
-      </a></p>
-      {% endfor %}
+      <h2>TITLE HEADING</h2>
+      <h5>Title description, Sep 2, 2017</h5>
+      <div class="fakeimg" style="height:200px;">Image</div>
+      <p>Some text..</p>
+      <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
     </div>
     <div class="card">
       <h2>TITLE HEADING</h2>
@@ -37,14 +33,8 @@
   </div>
   <div class="rightcolumn">
     <div class="card">
-      <h2>{{student.name}}</h2>
-      <p>ID: {{student.id}}</p>
-      <p>Gender: {{student.gender}}</p>
-      <p>Birthday: {{student.birthday}}</p>
-      <p>Year: {{student.year}}</p>
-      <p>Major: {{student.major}}</p>
-      <p>Email: {{student.email}}</p>
-      <p>Phone: {{student.phone}}</p>
+      <h2>Welcome!</h2>
+      <p>Welcome to the university website. Here you are able to access your account. There you will be able to see the courses you are taking, make edits to your account, and sign up for courses.</p>
     </div>
     <div class="card">
       <h3>Popular Post</h3>
