@@ -28,10 +28,12 @@ def welcome():
 def index(type, id):
     if type == "Student":
         student = Student.query.get(id)
-        return render_template('student_index.html', student=student)
+        courses = student.courses
+        return render_template('student_index.html', student=student, courses=courses)
     elif type == "Professor":
         professor = Professor.query.get(id)
-        return render_template('porfessor_index.html', professor=profeesor)
+        courses = professor.courses
+        return render_template('professor_index.html', professor=professor, courses=courses)
     elif type == "Administrator":
         admin = Administrator.query.get(id)
         return render_template('admin_index.html', admin=admin)
@@ -201,7 +203,7 @@ def edit(type, id):
             student.set_password(request.form.get('student_password'))
             db.session.add(student)
             db.session.commit()
-            return redirect(url_for('details', type='Student', id=id))
+            return redirect(url_for('index', type='Student', id=id))
         return render_template('student_edit.html', student=student)
     elif type == "Professor":
         professor = Professor.query.get(id)
@@ -215,7 +217,7 @@ def edit(type, id):
             professor.set_password(request.form.get('professor_password'))
             db.session.add(professor)
             db.session.commit()
-            return redirect(url_for('details', type='Professor', id=id))
+            return redirect(url_for('index', type='Professor', id=id))
         return render_template('prof_edit.html', professor=professor)
     elif type == "Administrator":
         admin = Administrator.query.get(id)
@@ -229,7 +231,7 @@ def edit(type, id):
             admin.set_password(request.form.get('admin_password'))
             db.session.add(admin)
             db.session.commit()
-            return redirect(url_for('details', type='Administrator', id=id))
+            return redirect(url_for('index', type='Administrator', id=id))
         return render_template('admin_edit.html', admin=admin)
     elif type == "Course":
         course = Course.query.get(id)
@@ -257,7 +259,8 @@ def details(type, id):
         return render_template('administrator_details.html', admin=admin)
     elif type == "Course":
         course = Course.query.get(id)
-        return render_template('course_details.html', course=course)
+        professor = Professor.query.get(course.professor_id)
+        return render_template('course_details.html', course=course, professor=professor)
     else:
         return render_template('error.html')
 
@@ -274,8 +277,8 @@ def create_course():
         course_name = request.form.get('course_name')
         course_subject = request.form.get('course_subject')
         course_number = request.form.get('course_number')
-        course_professor = request.form.get('professor_name')
-        professor = db.session.query(Professor).filter(Professor.name==course_professor).first()
+        professor_name = request.form.get('professor_name')
+        professor = Professor.query.filter_by(name=professor_name).first()
         professor_id = professor.id
         course = Course(name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
         db.session.add(course)
@@ -345,7 +348,7 @@ def gpa():
         result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
     if result != 0:
         grades = a_4(grades)
-<<<<<<< HEAD
+# <<<<<<< HEAD
         GPA_chart.title = "GPA Chart"
         GPA_chart.y_labels = [
             {'label': 'A', 'value': 4.0},
@@ -360,9 +363,9 @@ def gpa():
             {'label': 'D', 'value': 1.0},
             {'label': 'D-', 'value': 0.7},
             {'label': 'F', 'value': 0}]
-=======
+# =======
         GPA_chart2.add("grades",grades)
->>>>>>> b43c1c36bdbaa58362b080afb9b30a902fb3cceb
+# >>>>>>> b43c1c36bdbaa58362b080afb9b30a902fb3cceb
         for element in grades:
             GPA_chart.add('', element)
 

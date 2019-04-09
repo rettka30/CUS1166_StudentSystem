@@ -12,7 +12,7 @@
     <label> Assign Professor </label>
     <select name="professor_name" form="courseform">
       {% for professor in professors %}
-        <option value={{professor.name}}>{{professor.name}}</option>
+        <option value="{{professor.name}}">{{professor.name}}</option>
       {% endfor %}
     </select>
 

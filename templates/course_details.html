@@ -6,7 +6,7 @@
 <p>Course Number: {{course.number}}</p>
 <p>Course Name: {{course.name}}</p>
 <p>Course ID: {{course.id}}</p>
-<!––<p>Instructor: {{course.professor}}</p>-->
+<p>Instructor: {{professor.name}}</p>
 <ul style="list-style-type:none;">
   <li>
     <a href="{{ url_for('edit', type='Course', id=course.id)}}">
