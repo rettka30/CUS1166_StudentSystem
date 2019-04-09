@@ -1,24 +1,49 @@
 {% extends 'layout.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/login.css">
+{% endblock %}
+
 {% block app_content %}
-  <h1>Please login</h1>
-  <form action="" method="post" novalidate>
+<div class="container">
+  <div class="form">
+  <form action="" method="post" id="login" novalidate>
         {{ form.hidden_tag() }}
-        <p>
-
-            {{ wtf.form_field(form.id) }}<br>
-            {% for error in form.id.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-
-            {{ wtf.form_field(form.password) }}<br>
-            {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ wtf.form_field(form.submit) }}</p>
+        <h1 id="title">Login</h1>
+        <br>
+        <br>
+        <div class="row" id="r1">
+          <div class="col-xs-8 col-lg-offset-2" id="id">
+            <div class='form-group'>
+                {{ wtf.form_field(form.id) }}<br>
+                {% for error in form.id.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <div class="row" id="r2">
+          <div class="col-xs-8 col-lg-offset-2" id="password">
+            <div class='form-group'>
+                {{ wtf.form_field(form.password) }}<br>
+                {% for error in form.password.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row" id="r3">
+          <div class="col-auto" id="signin">
+            <input class="btn btn-primary" type="submit" value="Sign In">
+          </div>
+        </div>
   </form>
+  </div>
+</div>
 {% endblock %}

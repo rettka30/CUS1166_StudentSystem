@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+{% endblock %}
+
+{% block app_content %}
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card" id="opt">
+      <ul>
+        <ol><a href="{{ url_for('index', type='Administrator', id=admin.id )}}" class="button">Profile</a></ol>
+        <ol><a href="{{ url_for('edit', type='Administrator', id=admin.id)}}" class="button">Edit Profile</a></ol>
+        <ol><a href="{{ url_for('create_course')}}" class="button">Course Sign Up</a></ol>
+        <ol><a href="{{ url_for('student_roster')}}" class="button">Student Roster</a></ol>
+        <ol><a href="{{ url_for('professor_roster')}}" class="button">Professor Roster</a></ol>
+        <ol><a href="{{ url_for('administrator_roster')}}" class="button">Administrator Roster</a></ol>
+      </ul>
+    </div>
+  </div>
+  <div class="centercolumn">
+    <div class="card">
+      <h2>TITLE HEADING</h2>
+      <h5>Title description, Dec 7, 2017</h5>
+      <div class="fakeimg" style="height:200px;">Image</div>
+      <p>Some text..</p>
+      <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+    </div>
+    <div class="card">
+      <h2>TITLE HEADING</h2>
+      <h5>Title description, Sep 2, 2017</h5>
+      <div class="fakeimg" style="height:200px;">Image</div>
+      <p>Some text..</p>
+      <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+    </div>
+  </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <h2>{{admin.name}}</h2>
+      <p>ID: {{admin.id}}</p>
+      <p>Gender: {{admin.gender}}</p>
+      <p>Birthday: {{admin.birthday}}</p>
+      <p>Department: {{admin.department}}</p>
+      <p>Email: {{admin.email}}</p>
+      <p>Phone: {{admin.phone}}</p>
+    </div>
+    <div class="card">
+      <h3>Popular Post</h3>
+      <div class="fakeimg"><p>Image</p></div>
+      <div class="fakeimg"><p>Image</p></div>
+      <div class="fakeimg"><p>Image</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <h2>Footer</h2>
+</div>
+{% endblock %}

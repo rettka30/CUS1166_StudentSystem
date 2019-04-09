@@ -24,9 +24,19 @@ login.login_view = 'login'
 def welcome():
     return render_template('welcome.html')
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/index/<type>/<int:id>')
+def index(type, id):
+    if type == "Student":
+        student = Student.query.get(id)
+        return render_template('student_index.html', student=student)
+    elif type == "Professor":
+        professor = Professor.query.get(id)
+        return render_template('porfessor_index.html', professor=profeesor)
+    elif type == "Administrator":
+        admin = Administrator.query.get(id)
+        return render_template('admin_index.html', admin=admin)
+    else:
+        return render_template('error.html')
 
 @app.route('/student_roster')
 def student_roster():
@@ -47,37 +57,41 @@ def administrator_roster():
 def login(type):
     if type == "Student":
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Student", id=form.id.data))
         form = LoginForm()
         if form.validate_on_submit():
             user = Student.query.filter_by(id=form.id.data).first()
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid id or password')
                 return redirect(url_for('login', type='Student'))
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Student", id=form.id.data))
         return render_template('login.html', form=form)
     elif type == "Professor":
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Professor", id=form.id.data))
         form = LoginForm()
         if form.validate_on_submit():
             user = Professor.query.filter_by(id=form.id.data).first()
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid id or password')
                 return redirect(url_for('login', type='Professor'))
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Professor", id=form.id.data))
         return render_template('login.html', form=form)
     else:
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Administrator", id=form.id.data))
         form = LoginForm()
         if form.validate_on_submit():
             user = Administrator.query.filter_by(id=form.id.data).first()
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid id or password')
                 return redirect(url_for('login', type='Administrator'))
-            return redirect(url_for('index'))
+            return redirect(url_for('index', type="Administrator", id=form.id.data))
         return render_template('login.html', form=form)
+
+@app.route("/gradebook")
+def gradebook():
+    pass
 
 @app.route('/create_student', methods=['GET', 'POST'])
 def create_student():
@@ -184,6 +198,7 @@ def edit(type, id):
             student.birthday = str(request.form.get('student_birthday'))
             student.major = request.form.get('student_major')
             student.phone = str(request.form.get('student_phone'))
+            student.set_password(request.form.get('student_password'))
             db.session.add(student)
             db.session.commit()
             return redirect(url_for('details', type='Student', id=id))
@@ -197,6 +212,7 @@ def edit(type, id):
             professor.email = str(request.form.get('professor_email'))
             professor.birthday = str(request.form.get('professor_birthday'))
             professor.phone = str(request.form.get('professor_phone'))
+            professor.set_password(request.form.get('professor_password'))
             db.session.add(professor)
             db.session.commit()
             return redirect(url_for('details', type='Professor', id=id))
@@ -210,6 +226,7 @@ def edit(type, id):
             admin.email = str(request.form.get('admin_email'))
             admin.birthday = str(request.form.get('admin_birthday'))
             admin.phone = str(request.form.get('admin_phone'))
+            admin.set_password(request.form.get('admin_password'))
             db.session.add(admin)
             db.session.commit()
             return redirect(url_for('details', type='Administrator', id=id))
@@ -244,19 +261,27 @@ def details(type, id):
     else:
         return render_template('error.html')
 
+@app.route('/rating', methods=['GET','POST'])
+def rating():
+    pass
+
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])
 def create_course():
     # Get information from the form.
+    professors = Professor.query.all()
     if request.method == 'POST':
         course_name = request.form.get('course_name')
         course_subject = request.form.get('course_subject')
         course_number = request.form.get('course_number')
-        course = Course(name=course_name, subject=course_subject, number=course_number)
+        course_professor = request.form.get('professor_name')
+        professor = db.session.query(Professor).filter(Professor.name==course_professor).first()
+        professor_id = professor.id
+        course = Course(name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for('course_list'))
-    return render_template('create_course.html')
+    return render_template('create_course.html', professors=professors)
 
 @app.route('/course_list')
 def course_list():
@@ -304,7 +329,9 @@ def gpa():
     form = GPAForm()
     form1 = GPAPForm()
     GPA_chart = pygal.Bar()
+    GPA_chart2 = pygal.Radar()
     graph_data = GPA_chart.render_data_uri()
+    graph_data2 = GPA_chart2.render_data_uri()
     # Get information from the form.
     if form.validate_on_submit():
         grades = form.current_grades.data
@@ -318,6 +345,7 @@ def gpa():
         result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
     if result != 0:
         grades = a_4(grades)
+<<<<<<< HEAD
         GPA_chart.title = "GPA Chart"
         GPA_chart.y_labels = [
             {'label': 'A', 'value': 4.0},
@@ -332,11 +360,16 @@ def gpa():
             {'label': 'D', 'value': 1.0},
             {'label': 'D-', 'value': 0.7},
             {'label': 'F', 'value': 0}]
+=======
+        GPA_chart2.add("grades",grades)
+>>>>>>> b43c1c36bdbaa58362b080afb9b30a902fb3cceb
         for element in grades:
             GPA_chart.add('', element)
-        graph_data = GPA_chart.render_data_uri()
 
-    return render_template('gpa.html', graph_data = graph_data, result = result, form = form, form1 = form1, result1 =result1)
+        graph_data = GPA_chart.render_data_uri()
+        graph_data2 = GPA_chart2.render_data_uri()
+
+    return render_template('gpa.html', graph_data = graph_data, graph_data2 = graph_data2, result = result, form = form, form1 = form1, result1 =result1)
 
 def gpa_predict(current_grades,times, future_grades):
     gpa_dict = {'F': 0, 'D-': 0.7, 'D': 1.0, 'D+': 1.3, 'C-': 1.7, 'C': 2.0, 'C+': 2.3, 'B-': 2.7, 'B': 3.0, 'B+': 3.3, 'A-': 3.7, 'A': 4.0, 'A+': 4.0}

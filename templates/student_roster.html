@@ -2,7 +2,7 @@
 
 {% block app_content %}
   <h1>Student Roster: </h1>
-  {% for student in students %}
+<!--  {% for student in students %}
     <ul>
       <li>
         <a href="{{ url_for('details', type='Student', id=student.id) }}">
@@ -10,7 +10,26 @@
         </a>
       </li>
     </ul>
-  {% endfor %}
+  {% endfor %} -->
+  <div style="text-align:center">
+    <table class="table table-striped" >
+      <tr>
+        <th>ID</th>
+        <th>Student Name</th>
+        <th>year</th>
+        <th>Major</th>
+      </tr>
+      {% for student in students %}
+      <tr class="text-left">
+        <td>{{student.id}}</td>
+        <td><a href="{{ url_for('details', type='Student', id=student.id) }}">{{student.name}}</a></td>
+        <td>{{student.year}}</td>
+        <td>{{student.major}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
   <div>
     <a href="{{ url_for('create_student') }}">
       Add Student
