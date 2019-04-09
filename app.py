@@ -318,6 +318,20 @@ def gpa():
         result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
     if result != 0:
         grades = a_4(grades)
+        GPA_chart.title = "GPA Chart"
+        GPA_chart.y_labels = [
+            {'label': 'A', 'value': 4.0},
+            {'label': 'A-', 'value': 3.7},
+            {'label': 'B+', 'value': 3.3},
+            {'label': 'B', 'value': 3.0},
+            {'label': 'B-', 'value': 2.7},
+            {'label': 'C+', 'value': 2.3},
+            {'label': 'C', 'value': 2.0},
+            {'label': 'C-', 'value': 1.7},
+            {'label': 'D+', 'value': 1.3},
+            {'label': 'D', 'value': 1.0},
+            {'label': 'D-', 'value': 0.7},
+            {'label': 'F', 'value': 0}]
         for element in grades:
             GPA_chart.add('', element)
         graph_data = GPA_chart.render_data_uri()
