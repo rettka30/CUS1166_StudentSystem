@@ -6,6 +6,7 @@ from models import *
 from forms import LoginForm, GPAForm, CreateStudentForm, GPAPForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
+from scrape import *
 import datetime, pygal
 
 app = Flask(__name__)
@@ -257,7 +258,7 @@ def details(type, id):
         return render_template('students_details.html', student=student)
     elif type == "Professor":
         prof = Professor.query.get(id)
-        return render_template('professor_details.html', prof=prof)
+        return render_template('professor_details.html', prof=prof, review=review)
     elif type == "Administrator":
         admin = Administrator.query.get(id)
         return render_template('administrator_details.html', admin=admin)
@@ -267,10 +268,6 @@ def details(type, id):
         return render_template('course_details.html', course=course, professor=professor)
     else:
         return render_template('error.html')
-
-@app.route('/rating', methods=['GET','POST'])
-def rating():
-    pass
 
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])

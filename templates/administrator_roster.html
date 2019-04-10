@@ -1,19 +1,51 @@
 {% extends 'layout.html' %}
 
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/roster.css">
+{% endblock %}
+
 {% block app_content %}
-  <h1>Administrator Roster: </h1>
-  {% for admin in admins %}
-    <ul>
-      <li>
-        <a href="{{ url_for('details', type='Administrator', id=admin.id) }}">
-                  {{admin.id}}. {{admin.name}}
-        </a>
-      </li>
-    </ul>
-  {% endfor %}
-  <div>
-    <a href="{{ url_for('create_administrator') }}">
-      Add Admin
-    </a>
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card" id="opt">
+      <h1>Administrator Roster: </h1>
+      <!-- {% for admin in admins %}
+        <ul>
+          <li>
+            <a href="{{ url_for('details', type='Administrator', id=admin.id) }}">
+                      {{admin.id}}. {{admin.name}}
+            </a>
+          </li>
+        </ul>
+      {% endfor %} -->
+      <div style="text-align:center">
+        <table class="table table-striped" >
+          <tr>
+            <th>ID</th>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>Department</th>
+          </tr>
+          {% for admin in admins %}
+          <tr class="text-left">
+            <td>{{admin.id}}</td>
+            <td><a href="{{ url_for('details', type='Administrator', id=admin.id) }}">{{admin.name}}</a></td>
+            <td>{{admin.email}}</td>
+            <td>{{admin.department}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
   </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <a href="{{ url_for('create_administrator') }}" class="button">
+        Add Admin
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}

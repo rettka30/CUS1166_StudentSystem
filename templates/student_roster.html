@@ -1,38 +1,51 @@
 {% extends 'layout.html' %}
 
-{% block app_content %}
-  <h1>Student Roster: </h1>
-<!--  {% for student in students %}
-    <ul>
-      <li>
-        <a href="{{ url_for('details', type='Student', id=student.id) }}">
-                  {{student.id}}. {{student.name}}
-        </a>
-      </li>
-    </ul>
-  {% endfor %} -->
-  <div style="text-align:center">
-    <table class="table table-striped" >
-      <tr>
-        <th>ID</th>
-        <th>Student Name</th>
-        <th>year</th>
-        <th>Major</th>
-      </tr>
-      {% for student in students %}
-      <tr class="text-left">
-        <td>{{student.id}}</td>
-        <td><a href="{{ url_for('details', type='Student', id=student.id) }}">{{student.name}}</a></td>
-        <td>{{student.year}}</td>
-        <td>{{student.major}}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/roster.css">
+{% endblock %}
 
-  <div>
-    <a href="{{ url_for('create_student') }}">
-      Add Student
-    </a>
+{% block app_content %}
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card" id="opt">
+      <h1>Student Roster: </h1>
+    <!--  {% for student in students %}
+        <ul>
+          <li>
+            <a href="{{ url_for('details', type='Student', id=student.id) }}">
+                      {{student.id}}. {{student.name}}
+            </a>
+          </li>
+        </ul>
+      {% endfor %} -->
+      <div style="text-align:center">
+        <table class="table table-striped" >
+          <tr>
+            <th>ID</th>
+            <th>Student Name</th>
+            <th>year</th>
+            <th>Major</th>
+          </tr>
+          {% for student in students %}
+          <tr class="text-left">
+            <td>{{student.id}}</td>
+            <td><a href="{{ url_for('details', type='Student', id=student.id) }}">{{student.name}}</a></td>
+            <td>{{student.year}}</td>
+            <td>{{student.major}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
   </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <a href="{{ url_for('create_student') }}" class="button">
+        Add Student
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}

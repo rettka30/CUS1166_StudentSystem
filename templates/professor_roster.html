@@ -1,19 +1,51 @@
 {% extends 'layout.html' %}
 
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/roster.css">
+{% endblock %}
+
 {% block app_content %}
-  <h1>Professor Roster: </h1>
-  {% for professor in professors %}
-    <ul>
-      <li>
-        <a href="{{ url_for('details', type='Professor', id=professor.id) }}">
-                  {{professor.id}}. {{professor.name}}
-        </a>
-      </li>
-    </ul>
-  {% endfor %}
-  <div>
-    <a href="{{ url_for('create_professor') }}">
-      Add Professor
-    </a>
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card" id="opt">
+      <h1>Professor Roster: </h1>
+      <!-- {% for professor in professors %}
+        <ul>
+          <li>
+            <a href="{{ url_for('details', type='Professor', id=professor.id) }}">
+                      {{professor.id}}. {{professor.name}}
+            </a>
+          </li>
+        </ul>
+      {% endfor %} -->
+      <div style="text-align:center">
+        <table class="table table-striped" >
+          <tr>
+            <th>ID</th>
+            <th>Professor Name</th>
+            <th>Email</th>
+            <th>Department</th>
+          </tr>
+          {% for professor in professors %}
+          <tr class="text-left">
+            <td>{{professor.id}}</td>
+            <td><a href="{{ url_for('details', type='Professor', id=professor.id) }}">{{professor.name}}</a></td>
+            <td>{{professor.email}}</td>
+            <td>{{professor.department}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
   </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <a href="{{ url_for('create_professor') }}" class="button">
+        Add Professor
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}
