@@ -41,6 +41,7 @@
       <p>Department: {{admin.department}}</p>
       <p>Email: {{admin.email}}</p>
       <p>Phone: {{admin.phone}}</p>
+      <p><a href="{{url_for('change_password', type='Administrator', id=admin.id)}}">Change Password</a></p>
     </div>
     <div class="card">
       <h3>Popular Post</h3>
