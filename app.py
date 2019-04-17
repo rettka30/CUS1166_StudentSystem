@@ -336,6 +336,20 @@ def change_password(type, id):
     else:
         return render_template('error.html')
 
+@app.route('/registration/<int:id>')
+def register(id):
+    student = Student.query.get(id)
+    registered = student.courses
+    return render_template('register.html', student=student, registered=registered)
+
+@app.route('/search_course/<int:id>', methods=['GET','POST'])
+def search_course(id):
+    form = SearchCourseForm()
+    return render_template('search_course.html', form=form)
+
+@app.route('/results/<int:id>', methods=['GET','POST'])
+    return render_template('results.html')
+
 
 def main():
     if (len(sys.argv)==2):
