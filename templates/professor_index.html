@@ -40,6 +40,7 @@
       <p>Department: {{professor.department}}</p>
       <p>Email: {{professor.email}}</p>
       <p>Phone: {{professor.phone}}</p>
+      <p><a href="{{url_for('change_password', type='Professor', id=professor.id)}}">Change Password</a></p>
     </div>
     <div class="card">
       <h3>Popular Post</h3>
