@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
 db = SQLAlchemy()
 
 # Professor Class
@@ -18,6 +19,7 @@ class Professor(UserMixin, db.Model):
     birthday = db.Column(db.String(120), index=True)
     password_hash = db.Column(db.String(128))
     courses = relationship("Course", backref="professors")
+    posts = relationship("Post", backref="professors")
 
     def __repr__(self):
         return '<Professor {}>'.format(self.id)
@@ -93,4 +95,15 @@ class Course (db.Model):
     subject = db.Column(db.String(64), index=True)
     number = db.Column(db.String(8), index=True)
     professor_id = Column(Integer, ForeignKey('professors.id'))
+    posts = relationship("Post", backref="courses")
     students = relationship("Student", secondary=class_registration_table, back_populates="courses")
+
+# Post Class
+class Post(db.Model):
+    __tablename__= "posts"
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(300), index=True, unique=False)
+    type = db.Column(db.String(20), index=True, unique=False)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    professor_id = Column(Integer, ForeignKey('professors.id'))
+    course_id = Column(Integer, ForeignKey('courses.id'))
