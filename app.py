@@ -348,8 +348,8 @@ def search_course(id):
     return render_template('search_course.html', form=form)
 
 @app.route('/results/<int:id>', methods=['GET','POST'])
+def results(id):
     return render_template('results.html')
-
 
 def main():
     if (len(sys.argv)==2):
