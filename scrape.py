@@ -31,7 +31,7 @@ class RateMyProfScraper:
                     i) + "&filter=teacherlastname_sort_s+asc&query=*%3A*&queryoption=TEACHER&queryBy=schoolId&sid=" + str(
                     self.UniversityId))
                 temp_jsonpage = json.loads(page.content)
-                temp_list = temp_jsonpage['professors']
+                temp_list = temp_jsonpage["professors"]
                 tempprofessorlist.extend(temp_list)
                 i += 1
             return tempprofessorlist
@@ -42,7 +42,7 @@ class RateMyProfScraper:
                     id))  # get request for page
             temp_jsonpage = json.loads(page.content)
             num_of_prof = temp_jsonpage[
-                              'remaining'] + 20  # get the number of professors at William Paterson University
+                              "remaining"] + 20  # get the number of professors at William Paterson University
             return num_of_prof
 
         def SearchProfessor(self, ProfessorName):
@@ -52,7 +52,7 @@ class RateMyProfScraper:
 
         def GetProfessorIndex(self,ProfessorName):  # function searches for professor in list
             for i in range(0, len(self.professorlist)):
-                if (ProfessorName == (self.professorlist[i]['tFname'] + " " + self.professorlist[i]['tLname'])):
+                if (ProfessorName == (self.professorlist[i]["tFname"] + " " + self.professorlist[i]["tLname"])):
                     return i
             return False  # Return False is not found
 

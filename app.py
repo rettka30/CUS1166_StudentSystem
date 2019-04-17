@@ -255,7 +255,8 @@ def edit(type, id):
 def details(type, id):
     if type == "Student":
         student = Student.query.get(id)
-        return render_template('students_details.html', student=student)
+        graph_data = barchart_generator(Student)
+        return render_template('students_details.html', student=student, graph_data=graph_data)
     elif type == "Professor":
         prof = Professor.query.get(id)
         return render_template('professor_details.html', prof=prof, review=review)
@@ -349,7 +350,6 @@ def gpa():
         result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
     if result != 0:
         grades = a_4(grades)
-# <<<<<<< HEAD
         GPA_chart.title = "GPA Chart"
         GPA_chart.y_labels = [
             {'label': 'A', 'value': 4.0},
@@ -364,9 +364,7 @@ def gpa():
             {'label': 'D', 'value': 1.0},
             {'label': 'D-', 'value': 0.7},
             {'label': 'F', 'value': 0}]
-# =======
         GPA_chart2.add("grades",grades)
-# >>>>>>> b43c1c36bdbaa58362b080afb9b30a902fb3cceb
         for element in grades:
             GPA_chart.add('', element)
 
@@ -398,3 +396,26 @@ def gpa_predictor(current_grades,times, future_grades):
         return round(gpa_predict(current_grades,times, future_grades),2)
     except:
         return 'please enter in the right form'
+
+def barchart_generator(Student):
+    GPA_chart = pygal.Bar()
+    graph_data = GPA_chart.render_data_uri()
+    grades = a_4("a,a-,b,b+")
+    GPA_chart.title = "GPA Chart"
+    GPA_chart.y_labels = [
+        {'label': 'A', 'value': 4.0},
+        {'label': 'A-', 'value': 3.7},
+        {'label': 'B+', 'value': 3.3},
+        {'label': 'B', 'value': 3.0},
+        {'label': 'B-', 'value': 2.7},
+        {'label': 'C+', 'value': 2.3},
+        {'label': 'C', 'value': 2.0},
+        {'label': 'C-', 'value': 1.7},
+        {'label': 'D+', 'value': 1.3},
+        {'label': 'D', 'value': 1.0},
+        {'label': 'D-', 'value': 0.7},
+        {'label': 'F', 'value': 0}]
+    for element in grades:
+        GPA_chart.add('', element)
+    graph_data = GPA_chart.render_data_uri()
+    return graph_data
