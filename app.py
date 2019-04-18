@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, GPAPForm
+from forms import LoginForm, GPAForm, CreateStudentForm, GPAPForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
 from scrape import *
@@ -205,6 +205,7 @@ def edit(type, id):
             student.birthday = str(request.form.get('student_birthday'))
             student.major = request.form.get('student_major')
             student.phone = str(request.form.get('student_phone'))
+            student.set_password(request.form.get('student_password'))
             db.session.add(student)
             db.session.commit()
             return redirect(url_for('index', type='Student', id=id))
@@ -218,6 +219,7 @@ def edit(type, id):
             professor.email = str(request.form.get('professor_email'))
             professor.birthday = str(request.form.get('professor_birthday'))
             professor.phone = str(request.form.get('professor_phone'))
+            professor.set_password(request.form.get('professor_password'))
             db.session.add(professor)
             db.session.commit()
             return redirect(url_for('index', type='Professor', id=id))
@@ -231,6 +233,7 @@ def edit(type, id):
             admin.email = str(request.form.get('admin_email'))
             admin.birthday = str(request.form.get('admin_birthday'))
             admin.phone = str(request.form.get('admin_phone'))
+            admin.set_password(request.form.get('admin_password'))
             db.session.add(admin)
             db.session.commit()
             return redirect(url_for('index', type='Administrator', id=id))
@@ -256,7 +259,7 @@ def details(type, id):
         return render_template('students_details.html', student=student, graph_data=graph_data)
     elif type == "Professor":
         prof = Professor.query.get(id)
-        return render_template('professor_details.html', prof=prof)
+        return render_template('professor_details.html', prof=prof, review=review)
     elif type == "Administrator":
         admin = Administrator.query.get(id)
         return render_template('administrator_details.html', admin=admin)
@@ -289,54 +292,6 @@ def create_course():
 def course_list():
     courses = Course.query.all()
     return render_template('course_list.html', courses=courses)
-
-@app.route('/change_password/<type>/<int:id>',methods=['GET','POST'])
-def change_password(type, id):
-    if type == "Student":
-        user = Student.query.get(id)
-        # if user.is_authenticated:
-        #     return redirect(url_for('index', type="Student", id=id))
-        form = PasswordForm()
-        if form.validate_on_submit():
-            if user is None or not user.check_password(form.password.data):
-                    flash('Invalid password')
-                    return redirect(url_for('change_password', type='Student', id=id))
-            user.set_password(form.np.data)
-            db.session.add(user)
-            db.session.commit()
-            return redirect(url_for('index', type='Student', id=id))
-        return render_template('student_password.html', form=form)
-    elif type == "Professor":
-        user = Professor.query.get(id)
-        # if user.is_authenticated:
-        #     return redirect(url_for('index', type="Student", id=id))
-        form = PasswordForm()
-        if form.validate_on_submit():
-            if user is None or not user.check_password(form.password.data):
-                    flash('Invalid password')
-                    return redirect(url_for('change_password', type='Professor', id=id))
-            user.set_password(form.np.data)
-            db.session.add(user)
-            db.session.commit()
-            return redirect(url_for('index', type='Professor', id=id))
-        return render_template('prof_password.html', form=form)
-    elif type == "Administrator":
-        user = Administrator.query.get(id)
-        # if user.is_authenticated:
-        #     return redirect(url_for('index', type="Student", id=id))
-        form = PasswordForm()
-        if form.validate_on_submit():
-            if user is None or not user.check_password(form.password.data):
-                    flash('Invalid password')
-                    return redirect(url_for('change_password', type='Administrator', id=id))
-            user.set_password(form.np.data)
-            db.session.add(user)
-            db.session.commit()
-            return redirect(url_for('index', type='Administrator', id=id))
-        return render_template('admin_password.html', form=form)
-    else:
-        return render_template('error.html')
-
 
 def main():
     if (len(sys.argv)==2):
