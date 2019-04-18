@@ -94,6 +94,9 @@ class Course (db.Model):
     name = db.Column(db.String(120), index=True, unique=False)
     subject = db.Column(db.String(64), index=True)
     number = db.Column(db.String(8), index=True)
+    day = db.Column(db.String(10), index=True)
+    start_time = db.Column(db.Time, index=True)
+    end_time = db.Column(db.Time, index=True)
     professor_id = Column(Integer, ForeignKey('professors.id'))
     posts = relationship("Post", backref="courses")
     students = relationship("Student", secondary=class_registration_table, back_populates="courses")
@@ -102,8 +105,29 @@ class Course (db.Model):
 class Post(db.Model):
     __tablename__= "posts"
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(300), index=True, unique=False)
+    body = db.Column(db.String(300), unique=False)
     type = db.Column(db.String(20), index=True, unique=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     professor_id = Column(Integer, ForeignKey('professors.id'))
     course_id = Column(Integer, ForeignKey('courses.id'))
+
+# Assignment class
+class Assignment(db.Model):
+    __tablename__= "assignments"
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(300), unique=False)
+    type = db.Column(db.String(20), index=True, unique=False)
+    total = db.Column(db.Integer)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    course_id = Column(Integer, ForeignKey('courses.id'))
+
+# Submission class
+class Submission(db.Model):
+    __tablename__= "submissions"
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    points = db.Column(db.Integer)
+    student_id = Column(Integer, ForeignKey('students.id'))
+    assign_id = Column(Integer, ForeignKey('assignments.id'))
+    assign_total = Column(Integer, ForeignKey('assignments.total'))
+    # assign_type = Column(String, ForeignKey('assignments.type'))

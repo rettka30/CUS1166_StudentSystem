@@ -15,6 +15,9 @@ class PasswordForm(FlaskForm):
     np = StringField('New Password', validators = [DataRequired()])
     submit = SubmitField('Change')
 
+class SearchCourseForm(FlaskForm):
+    submit = SubmitField('Search')
+
 class GPAForm(FlaskForm):
     current_grades = StringField('Current Grades:', validators=[DataRequired()])
     submit = SubmitField('Submit')
