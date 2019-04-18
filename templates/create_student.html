@@ -1,13 +1,86 @@
 {% extends 'layout.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
-{% block app_content %}
-  <div class="page-header">
-    <h1>Create Student</h1>
-  </div>
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/create.css">
+{% endblock %}
 
-  {% if form %}
-    {{ wtf.quick_form(form) }}
-    <br>
-  {% endif %}
+{% block app_content %}
+<div class="row">
+  <div class="centercolumn">
+    <div class="card">
+      <div class="form">
+      <form action="" method="post" id="create" novalidate>
+            {{ form.hidden_tag() }}
+            <h1 id="title">Create Student</h1>
+            <br>
+            <br>
+            <div class="row" id="r1">
+              <div class="col-xs-8 col-lg-offset-2" id="name">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.student_name) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r2">
+              <div class="col-xs-8 col-lg-offset-2" id="gender">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.student_gender) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r3">
+              <div class="col-xs-8 col-lg-offset-2" id="year">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.student_year) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r4">
+              <div class="col-xs-8 col-lg-offset-2" id="email">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.student_email) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r5">
+              <div class="col-xs-8 col-lg-offset-2" id="birthday">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.student_birthday) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r3">
+              <div class="col-xs-8 col-lg-offset-2" id="major">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.student_major) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r6">
+              <div class="col-xs-8 col-lg-offset-2" id="phone">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.student_phone) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r7">
+              <div class="col-auto" id="create">
+                <input class="btn btn-primary" type="submit" value="Create Student">
+              </div>
+            </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

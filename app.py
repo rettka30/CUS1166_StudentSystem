@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, GPAPForm
+from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, GPAPForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
 from scrape import *
@@ -128,44 +128,50 @@ def create_student():
 @app.route('/create_professor', methods=['GET', 'POST'])
 def create_professor():
     # Get information from the form.
-    if request.method == 'POST':
-        pro_name = request.form.get('professor_name')
-        pro_gender = request.form['professor_gender']
-        pro_department = request.form.get('professor_department')
-        pro_email = str(request.form.get('professor_email'))
-        pro_birthday = str(request.form.get('professor_birthday'))
-        pro_phone = str(request.form.get('professor_phone'))
-        p1=pro_birthday[:4]
-        p2=pro_birthday[5:7]
-        p3=pro_birthday[8:10]
-        pro_password=p2+p3+p1
-        pro = Professor(name=pro_name, gender=pro_gender, department=pro_department, email=pro_email, birthday=pro_birthday, phone=pro_phone)
-        pro.set_password(pro_password)
-        db.session.add(pro)
+    form = CreateProfessorForm()
+    # Get information from the form.
+    if form.validate_on_submit():
+        professor_name = form.professor_name.data
+        professor_gender = form.professor_gender.data
+        professor_department = form.professor_year.data
+        professor_email = form.professor_email.data
+        t = form.professor_birthday.data
+        professor_birthday = t.strftime('%m/%d/%Y')
+        professor_phone = str(form.professor_phone.data)
+        p1=professor_birthday[:2]
+        p2=professor_birthday[3:5]
+        p3=professor_birthday[6:10]
+        professor_password=p1+p2+p3
+        professor = Professor(name=professor_name, gender=professor_gender, department=professor_department, email=professpr_email, birthday=professor_birthday, major=professor_major, phone=professor_phone)
+        professor.set_password(professor_password)
+        db.session.add(professor)
         db.session.commit()
         return redirect(url_for('professor_roster'))
-    return render_template('create_professor.html')
+    return render_template('create_professor.html', form = form)
 
 @app.route('/create_administrator', methods=['GET', 'POST'])
 def create_administrator():
     # Get information from the form.
-    if request.method == 'POST':
-        admin_name = request.form.get('admin_name')
-        admin_gender = request.form['admin_gender']
-        admin_department = request.form.get('admin_department')
-        admin_email = str(request.form.get('admin_email'))
-        admin_birthday = str(request.form.get('admin_birthday'))
-        admin_phone = str(request.form.get('admin_phone'))
-        a1=admin_birthday[:4]
-        a2=admin_birthday[5:7]
-        a3=admin_birthday[8:10]
-        admin_password=a2+a3+a1
-        admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
+    form = CreateAdministratorForm()
+    # Get information from the form.
+    if form.validate_on_submit():
+        admin_name = form.admin_name.data
+        admin_gender = form.admin_gender.data
+        admin_department = form.admin_department.data
+        admin_email = form.admin_email.data
+        t = form.admin_birthday.data
+        admin_birthday = t.strftime('%m/%d/%Y')
+        admin_phone = str(form.admin_phone.data)
+        a1=admin_birthday[:2]
+        a2=admin_birthday[3:5]
+        a3=admin_birthday[6:10]
+        admin_password=a1+a2+a3
+        admin = Administrator(name=admin_name, gender=admin_gender, department=admin_year, email=admin_email, birthday=admin_birthday, major=admin_major, phone=admin_phone)
         admin.set_password(admin_password)
         db.session.add(admin)
         db.session.commit()
         return redirect(url_for('administrator_roster'))
-    return render_template('create_administrator.html')
+    return render_template('create_administrator.html', form = form)
 
 @app.route('/delete/<type>/<int:id>')
 def delete(type, id):
