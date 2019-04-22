@@ -397,6 +397,12 @@ def assignment(id):
     assignment = Assignment.query.get(id)
     return render_template('assignment.html', assignment=assignment)
 
+@app.route('/course/roster/<int:id>')
+def course_roster(id):
+    course = Course.query.get(id)
+    students = course.students
+    return render_template('course_roster.html', course=course, students=students)
+
 def main():
     if (len(sys.argv)==2):
         print(sys.argv)

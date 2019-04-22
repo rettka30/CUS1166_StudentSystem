@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/roster.css">
+{% endblock %}
+
+{% block app_content %}
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card" id="opt">
+      <h1>{{course.name}}: </h1>
+      <!-- {% for admin in admins %}
+        <ul>
+          <li>
+            <a href="{{ url_for('details', type='Administrator', id=admin.id) }}">
+                      {{admin.id}}. {{admin.name}}
+            </a>
+          </li>
+        </ul>
+      {% endfor %} -->
+      <div style="text-align:center">
+        <table class="table table-striped" >
+          <tr>
+            <th>ID</th>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>Year</th>
+          </tr>
+          {% for student in students %}
+          <tr class="text-left">
+            <td>{{student.id}}</td>
+            <td><a href="{{ url_for('details', type='Student', id=student.id) }}">{{student.name}}</a></td>
+            <td>{{student.email}}</td>
+            <td>{{student.year}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <a href="{{ url_for('details', type='Course', id=course.id) }}" class="button">
+        Back
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
