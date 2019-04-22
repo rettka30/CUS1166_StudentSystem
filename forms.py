@@ -18,6 +18,12 @@ class PasswordForm(FlaskForm):
 class SearchCourseForm(FlaskForm):
     submit = SubmitField('Search')
 
+class CreateAssignment(FlaskForm):
+    description = StringField('Description', validators=[DataRequired()])
+    type = StringField('Type', validators=[DataRequired()])
+    total = IntegerField('Point Total for Assignment', validators=[DataRequired()])
+    submit = SubmitField('Add Assignment')
+
 class GPAForm(FlaskForm):
     current_grades = StringField('Current Grades:', validators=[DataRequired()])
     submit = SubmitField('Submit')

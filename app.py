@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, GPAPForm
+from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
 from scrape import *
@@ -356,6 +356,19 @@ def search_course(id):
 @app.route('/results/<int:id>', methods=['GET','POST'])
 def results(id):
     return render_template('results.html')
+
+@app.route('/add_assignment/<int:id>', methods=['GET','POST'])
+def add_assignment(id):
+    form = CreateAssignment()
+    if form.validate_on_submit():
+        description = form.description.data
+        type = form.type.data
+        total = form.total.data
+        assignment = Assignment(description=description, type=type, total=total, course_id=id)
+        db.session.add(assignment)
+        db.session.commit()
+        return redirect(url_for('details', type='Course',  id=id))
+    return render_template('add_assignment.html', form=form)
 
 def main():
     if (len(sys.argv)==2):
