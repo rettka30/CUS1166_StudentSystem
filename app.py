@@ -346,26 +346,40 @@ def change_password(type, id):
     else:
         return render_template('error.html')
 
-@app.route('/registration/<int:id>')
-def register(id):
+@app.route('/registered/<int:id>')
+def registered(id):
     student = Student.query.get(id)
     registered = student.courses
-    return render_template('registered.html', student=student, registered=registered)
+    professor=Professor
+    return render_template('registered.html', student=student, registered=registered, Professor=professor)
 
 @app.route('/search_course/<int:id>', methods=['GET','POST'])
 def search_course(id):
     form = SearchCourseForm()
-    course_subject = form.course_subject.data
+    #course_subject = form.course_subject.data
     course_name = form.course_name.data
-    course_number = form.course_number.data
-    professor_id = form.professor_id.data
-    courses = Course.query.filter(Course.subject == course_subject if course_subject != None else None, Course.name.like('%' + course_name + '%') if course_name != None else None, Course.number.like('%' + course_number + '%') if course_number != None else None, Course.professor_id.like('%' + professor_id + '%') if professor_id != None else None)
+    #course_number = form.course_number.data
+    #professor_id = form.professor_id.data
+    courses = Course.query.filter(Course.name==course_name)
+    #(Course.subject == course_subject) if course_subject != None else None, (Course.name==course_name) if course_name != None else None, (Course.number == course_number) if course_number != None else None, (Course.professor_id==professor_id) if professor_id != None else None
+    #print(course_name)
+    professor=Professor
+    #if course_subject != None else None, Course.name.like('%' + course_name + '%') if course_name != None else None, Course.number.like('%' + course_number + '%') if course_number != None else None, Course.professor_id.like('%' + professor_id + '%') if professor_id != None else None)
     #Professor.query.filter(Professor.professor_name)
-    return render_template('search_course.html', form=form, courses=courses)
+    return render_template('search_course.html', form=form, Professor=professor, courses=courses)
 
-@app.route('/results/<int:id>', methods=['GET','POST'])
-def results(id):
-    return render_template('results.html')
+@app.route('/register/<int:id>', methods=['GET','POST'])
+def register(id):
+    form = ResiterCourseForm()
+    if form.validate_on_submit():
+        course_id=form.course_id.data
+        course = Course.query.get(course_id)
+        student =Student.query.get(id)
+        student.courses.append(course)
+        db.session.add(student)
+        db.session.commit()
+        return redirect(url_for('registered', id=id))
+    return render_template('register.html', form=form)
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
 def add_assignment(id):

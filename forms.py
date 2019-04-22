@@ -15,8 +15,9 @@ class PasswordForm(FlaskForm):
     np = StringField('New Password', validators = [DataRequired()])
     submit = SubmitField('Change')
 
-class SearchCourseForm(FlaskForm):
-    submit = SubmitField('Search')
+class ResiterCourseForm(FlaskForm):
+    course_id = IntegerField('Course ID', validators=[DataRequired()])
+    submit = SubmitField('register')
 
 class CreateAssignment(FlaskForm):
     description = StringField('Description', validators=[DataRequired()])
@@ -35,10 +36,10 @@ class GPAPForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class SearchCourseForm(FlaskForm):
-    course_subject = StringField('Course Subject:')
+    #course_subject = StringField('Course Subject:')
     course_name = StringField('Course Name:')
-    course_number = StringField('Year In School:')
-    professor_id = IntegerField('Professor ID')
+    #course_number = StringField('Year In School:')
+    #professor_id = IntegerField('Professor ID')
     submit = SubmitField('Submit')
 
 class CreateStudentForm(FlaskForm):
