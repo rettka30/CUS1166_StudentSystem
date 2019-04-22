@@ -17,6 +17,14 @@
             <h1 id="title">Add Assignment</h1>
             <br>
             <div class="row" id="r1">
+              <div class="col-xs-8 col-lg-offset-2" id="name">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.name) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r1">
               <div class="col-xs-8 col-lg-offset-2" id="description">
                 <div class='form-group'>
                     {{ wtf.form_field(form.description) }}<br>
