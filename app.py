@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import LoginForm, GPAForm, CreateStudentForm, GPAPForm
+from forms import *
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
 from scrape import *
@@ -344,12 +344,18 @@ def change_password(type, id):
 def register(id):
     student = Student.query.get(id)
     registered = student.courses
-    return render_template('register.html', student=student, registered=registered)
+    return render_template('registered.html', student=student, registered=registered)
 
 @app.route('/search_course/<int:id>', methods=['GET','POST'])
 def search_course(id):
     form = SearchCourseForm()
-    return render_template('search_course.html', form=form)
+    course_subject = form.course_subject.data
+    course_name = form.course_name.data
+    course_number = form.course_number.data
+    professor_id = form.professor_id.data
+    courses = Course.query.filter(Course.subject == course_subject if course_subject != None else None, Course.name.like('%' + course_name + '%') if course_name != None else None, Course.number.like('%' + course_number + '%') if course_number != None else None, Course.professor_id.like('%' + professor_id + '%') if professor_id != None else None)
+    #Professor.query.filter(Professor.professor_name)
+    return render_template('search_course.html', form=form, courses=courses)
 
 @app.route('/results/<int:id>', methods=['GET','POST'])
 def results(id):

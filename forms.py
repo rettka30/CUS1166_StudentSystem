@@ -28,6 +28,13 @@ class GPAPForm(FlaskForm):
     future_grades = StringField('predict future Grades:', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+class SearchCourseForm(FlaskForm):
+    course_subject = StringField('Course Subject:')
+    course_name = StringField('Course Name:')
+    course_number = StringField('Year In School:')
+    professor_id = IntegerField('Professor ID')
+    submit = SubmitField('Submit')
+
 class CreateStudentForm(FlaskForm):
     student_name = StringField('Student Name:', validators = [DataRequired()])
     student_gender = RadioField('Student Gender:', choices = [('Female','Female'),('Male','Male')])
