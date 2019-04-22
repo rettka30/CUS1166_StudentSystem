@@ -97,6 +97,7 @@ class Course (db.Model):
     end_time = db.Column(db.Time, index=True)
     professor_id = Column(Integer, ForeignKey('professors.id'))
     posts = relationship("Post", backref="courses")
+    assignments = relationship("Assignment", backref="courses")
     students = relationship("Student", secondary=class_registration_table, back_populates="courses")
 
 # Post Class
@@ -113,6 +114,7 @@ class Post(db.Model):
 class Assignment(db.Model):
     __tablename__= "assignments"
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), index=True, unique=False)
     description = db.Column(db.String(300), unique=False)
     type = db.Column(db.String(20), index=True, unique=False)
     total = db.Column(db.Integer)
