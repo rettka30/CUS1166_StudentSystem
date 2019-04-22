@@ -7,49 +7,15 @@ from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 db = SQLAlchemy()
 
-# Professor Class
-class Professor(UserMixin, db.Model):
-    __tablename__="professors"
+class User(UserMixin, db.Model):
+    __tablename__="users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), index=True, unique=False)
     gender = db.Column(db.String(6), index=True)
-    department = db.Column(db.String(120), index=True)
     email = db.Column(db.String(120), index=True)
     phone = db.Column(db.String(120), index=True)
     birthday = db.Column(db.String(120), index=True)
     password_hash = db.Column(db.String(128))
-    courses = relationship("Course", backref="professors")
-    posts = relationship("Post", backref="professors")
-
-    def __repr__(self):
-        return '<Professor {}>'.format(self.id)
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-    def add_course(self,name,subject,number):
-        # Notice that we set the foreign key for the passenger class.
-        new_course = Course(name=name, subject=subject, number=number )
-        db.session.add(new_course)
-        db.session.commit()
-
-# Administrator Class
-class Administrator(UserMixin, db.Model):
-    __tablename__="administrators"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), index=True, unique=False)
-    gender = db.Column(db.String(6), index=True)
-    department = db.Column(db.String(120), index=True)
-    email = db.Column(db.String(120), index=True)
-    phone = db.Column(db.String(120), index=True)
-    birthday = db.Column(db.String(120), index=True)
-    password_hash = db.Column(db.String(128))
-
-    def __repr__(self):
-        return '<Administrator {}>'.format(self.id)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -61,31 +27,47 @@ class_registration_table = db.Table('registration',
     db.Column('student_id', Integer(), ForeignKey('students.id')),
     db.Column('course_id', Integer(), ForeignKey('courses.id'))
 )
-
 # Student Class
-class Student(UserMixin, db.Model):
+class Student(User, UserMixin, db.Model):
     __tablename__= "students"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), index=True, unique=False)
-    gender = db.Column(db.String(6), index=True)
     year = db.Column(db.String(10), index=True)
     major = db.Column(db.String(120), index=True)
-    phone = db.Column(db.String(120), index=True)
-    email = db.Column(db.String(120), index=True)
-    birthday = db.Column(db.String(120), index=True)
-    password_hash = db.Column(db.String(128))
     courses = relationship("Course", secondary=class_registration_table, back_populates="students")
+    posts = relationship("Post", backref="students")
 
     def __repr__(self):
         return '<Student {}>'.format(self.id)
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+# Professor Class
+class Professor(User, UserMixin, db.Model):
+    __tablename__="professors"
+    id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
+    department = db.Column(db.String(120), index=True)
+    courses = relationship("Course", backref="professors")
+    posts = relationship("Post", backref="professors")
 
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+    def __repr__(self):
+        return '<Professor {}>'.format(self.id)
+
+# Administrator Class
+class Administrator(User, UserMixin, db.Model):
+    __tablename__="administrators"
+    department = db.Column(db.String(120), index=True)
+
+    def __repr__(self):
+        return '<Administrator {}>'.format(self.id)
 
 
+class Roles(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+class UserRoles(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id'))
 
 # Course Class
 class Course (db.Model):

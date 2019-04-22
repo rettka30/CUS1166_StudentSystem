@@ -21,6 +21,7 @@ login = LoginManager(app)
 login.init_app(app)
 login.login_view = 'login'
 
+
 @app.route('/welcome')
 def welcome():
     return render_template('welcome.html')
@@ -118,8 +119,10 @@ def create_student():
         b2=student_birthday[3:5]
         b3=student_birthday[6:10]
         student_password=b1+b2+b3
+        student_role = Role(name='Student')
         student = Student(name=student_name, gender=student_gender, year=student_year, email=student_email, birthday=student_birthday, major=student_major, phone=student_phone)
         student.set_password(student_password)
+        student.roles = [student_role,]
         db.session.add(student)
         db.session.commit()
         return redirect(url_for('student_roster'))
@@ -142,8 +145,10 @@ def create_professor():
         p2=professor_birthday[3:5]
         p3=professor_birthday[6:10]
         professor_password=p1+p2+p3
+        professor_role = Role(name='Professor')
         professor = Professor(name=professor_name, gender=professor_gender, department=professor_department, email=professor_email, birthday=professor_birthday, phone=professor_phone)
         professor.set_password(professor_password)
+        professor.roles = [professor_role,]
         db.session.add(professor)
         db.session.commit()
         return redirect(url_for('professor_roster'))
@@ -166,8 +171,10 @@ def create_administrator():
         a2=admin_birthday[3:5]
         a3=admin_birthday[6:10]
         admin_password=a1+a2+a3
+        admin_role = Role(name='Admin')
         admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
         admin.set_password(admin_password)
+        admin.roles = [admin_role,]
         db.session.add(admin)
         db.session.commit()
         return redirect(url_for('administrator_roster'))
