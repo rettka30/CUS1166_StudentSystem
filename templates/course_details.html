@@ -12,6 +12,7 @@
     <div class="card" id="opt">
       <ul>
         <ol><a href="{{ url_for('add_assignment', id=course.id )}}" class="button">Add Assignment</a></ol>
+        <ol><a href="{{ url_for('course_roster', id=course.id )}}" class="button">Student Roster</a></ol>
       </ul>
     </div>
   </div>
@@ -20,9 +21,30 @@
       <h4>Assignments</h4>
         <ul>
           {% for assignment in assignments %}
-            <p>{{assignment.description}}</p>
+            <p><a href="{{ url_for('assignment', id=assignment.id )}}">{{assignment.name}}</a></p>
           {% endfor %}
         </ul>
+    </div>
+    <div class="table" id="opt">
+      <h1>Registered Students</h1>
+      <div style="text-align:center">
+        <table class="table table-striped" >
+          <tr>
+            <th>ID</th>
+            <th>Student Name</th>
+            <th>year</th>
+            <th>Major</th>
+          </tr>
+          {% for student in course.students %}
+          <tr class="text-left">
+            <td>{{student.id}}</td>
+            <td><a href="{{ url_for('details', type='Student', id=student.id) }}">{{student.name}}</a></td>
+            <td>{{student.year}}</td>
+            <td>{{student.major}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
     </div>
     <div class="card">
       <h3>Options</h3>
