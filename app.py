@@ -6,6 +6,7 @@ from models import *
 from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm, RegisterCourseForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
+from flask_user import login_required, UserManager, UserMixin, roles_required
 from scrape import *
 import datetime, pygal
 

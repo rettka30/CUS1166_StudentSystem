@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+from flask_user import UserManager, UserMixin
 from datetime import datetime
 db = SQLAlchemy()
 
@@ -24,12 +25,13 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 class_registration_table = db.Table('registration',
-    db.Column('student_id', Integer(), ForeignKey('students.id')),
-    db.Column('course_id', Integer(), ForeignKey('courses.id'))
+    db.Column('student_id', Integer, ForeignKey('students.id')),
+    db.Column('course_id', Integer, ForeignKey('courses.id'))
 )
 # Student Class
 class Student(User, UserMixin, db.Model):
     __tablename__= "students"
+    id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
     year = db.Column(db.String(10), index=True)
     major = db.Column(db.String(120), index=True)
     courses = relationship("Course", secondary=class_registration_table, back_populates="students")
@@ -52,19 +54,20 @@ class Professor(User, UserMixin, db.Model):
 # Administrator Class
 class Administrator(User, UserMixin, db.Model):
     __tablename__="administrators"
+    id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
     department = db.Column(db.String(120), index=True)
 
     def __repr__(self):
         return '<Administrator {}>'.format(self.id)
 
 
-class Roles(db.Model):
+class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(50), unique=True)
 
 class UserRoles(db.Model):
-    __tablename__ = 'roles'
+    __tablename__ = 'user_roles'
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
     role_id = db.Column(db.Integer(), db.ForeignKey('roles.id'))
@@ -92,6 +95,7 @@ class Post(db.Model):
     type = db.Column(db.String(20), index=True, unique=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     professor_id = Column(Integer, ForeignKey('professors.id'))
+    student_id = Column(Integer, ForeignKey('students.id'))
     course_id = Column(Integer, ForeignKey('courses.id'))
 
 # Assignment class
