@@ -15,7 +15,7 @@ class PasswordForm(FlaskForm):
     np = StringField('New Password', validators = [DataRequired()])
     submit = SubmitField('Change')
 
-class ResiterCourseForm(FlaskForm):
+class RegisterCourseForm(FlaskForm):
     course_id = IntegerField('Course ID', validators=[DataRequired()])
     submit = SubmitField('register')
 

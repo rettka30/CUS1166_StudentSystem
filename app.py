@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm
+from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm, RegisterCourseForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
 from scrape import *
@@ -364,11 +364,14 @@ def search_course(id):
     #if course_subject != None else None, Course.name.like('%' + course_name + '%') if course_name != None else None, Course.number.like('%' + course_number + '%') if course_number != None else None, Course.professor_id.like('%' + professor_id + '%') if professor_id != None else None)
     #Professor.query.filter(Professor.professor_name)
     return render_template('search_course.html', form=form, Professor=professor, courses=courses)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 03173f6bfc57be2a5d2aa422cad670d40e1b0fa7
 
 @app.route('/register/<int:id>', methods=['GET','POST'])
 def register(id):
-    form = ResiterCourseForm()
+    form = RegisterCourseForm()
     if form.validate_on_submit():
         course_id=form.course_id.data
         course = Course.query.get(course_id)
