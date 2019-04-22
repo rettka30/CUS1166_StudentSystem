@@ -364,10 +364,6 @@ def search_course(id):
     #if course_subject != None else None, Course.name.like('%' + course_name + '%') if course_name != None else None, Course.number.like('%' + course_number + '%') if course_number != None else None, Course.professor_id.like('%' + professor_id + '%') if professor_id != None else None)
     #Professor.query.filter(Professor.professor_name)
     return render_template('search_course.html', form=form, Professor=professor, courses=courses)
-<<<<<<< HEAD
-
-=======
->>>>>>> 03173f6bfc57be2a5d2aa422cad670d40e1b0fa7
 
 @app.route('/register/<int:id>', methods=['GET','POST'])
 def register(id):
