@@ -133,7 +133,7 @@ def create_professor():
     if form.validate_on_submit():
         professor_name = form.professor_name.data
         professor_gender = form.professor_gender.data
-        professor_department = form.professor_year.data
+        professor_department = form.professor_department.data
         professor_email = form.professor_email.data
         t = form.professor_birthday.data
         professor_birthday = t.strftime('%m/%d/%Y')
@@ -142,7 +142,7 @@ def create_professor():
         p2=professor_birthday[3:5]
         p3=professor_birthday[6:10]
         professor_password=p1+p2+p3
-        professor = Professor(name=professor_name, gender=professor_gender, department=professor_department, email=professpr_email, birthday=professor_birthday, major=professor_major, phone=professor_phone)
+        professor = Professor(name=professor_name, gender=professor_gender, department=professor_department, email=professor_email, birthday=professor_birthday, phone=professor_phone)
         professor.set_password(professor_password)
         db.session.add(professor)
         db.session.commit()
@@ -166,7 +166,7 @@ def create_administrator():
         a2=admin_birthday[3:5]
         a3=admin_birthday[6:10]
         admin_password=a1+a2+a3
-        admin = Administrator(name=admin_name, gender=admin_gender, department=admin_year, email=admin_email, birthday=admin_birthday, major=admin_major, phone=admin_phone)
+        admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
         admin.set_password(admin_password)
         db.session.add(admin)
         db.session.commit()
