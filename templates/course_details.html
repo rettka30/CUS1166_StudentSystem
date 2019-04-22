@@ -25,21 +25,21 @@
         </ul>
     </div>
     <div class="table" id="opt">
-      <h1>Registered Course</h1>
+      <h1>Registered Students</h1>
       <div style="text-align:center">
         <table class="table table-striped" >
           <tr>
             <th>ID</th>
-            <th>Course Name</th>
-            <th>Course Date</th>
-            <th>Professor</th>
+            <th>Student Name</th>
+            <th>year</th>
+            <th>Major</th>
           </tr>
-          {% for student in course %}
+          {% for student in course.students %}
           <tr class="text-left">
-            <td>{{course.id}}</td>
-            <td><a href="{{ url_for('details', type='Course', id=course.id) }}">{{course.name}}</a></td>
-            <td>{{course.day}}</td>
-            <td>{{Professor.query.get(course.professor_id)}}</td>
+            <td>{{student.id}}</td>
+            <td><a href="{{ url_for('details', type='Student', id=student.id) }}">{{student.name}}</a></td>
+            <td>{{student.year}}</td>
+            <td>{{student.major}}</td>
           </tr>
           {% endfor %}
         </table>

@@ -347,17 +347,12 @@ def change_password(type, id):
 def registered(id):
     student = Student.query.get(id)
     registered = student.courses
-<<<<<<< HEAD
     professor=Professor
     return render_template('registered.html', student=student, registered=registered, Professor=professor)
-=======
-    return render_template('register.html', student=student, registered=registered)
->>>>>>> bcb6f5ec27cf01510245bda8a54788328d2a5446
 
 @app.route('/search_course/<int:id>', methods=['GET','POST'])
 def search_course(id):
     form = SearchCourseForm()
-<<<<<<< HEAD
     #course_subject = form.course_subject.data
     course_name = form.course_name.data
     #course_number = form.course_number.data
@@ -369,9 +364,7 @@ def search_course(id):
     #if course_subject != None else None, Course.name.like('%' + course_name + '%') if course_name != None else None, Course.number.like('%' + course_number + '%') if course_number != None else None, Course.professor_id.like('%' + professor_id + '%') if professor_id != None else None)
     #Professor.query.filter(Professor.professor_name)
     return render_template('search_course.html', form=form, Professor=professor, courses=courses)
-=======
-    return render_template('search_course.html', form=form)
->>>>>>> bcb6f5ec27cf01510245bda8a54788328d2a5446
+
 
 @app.route('/register/<int:id>', methods=['GET','POST'])
 def register(id):

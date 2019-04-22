@@ -36,7 +36,6 @@ class GPAPForm(FlaskForm):
     future_grades = StringField('predict future Grades:', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
-<<<<<<< HEAD
 class SearchCourseForm(FlaskForm):
     #course_subject = StringField('Course Subject:')
     course_name = StringField('Course Name:')
@@ -44,8 +43,6 @@ class SearchCourseForm(FlaskForm):
     #professor_id = IntegerField('Professor ID')
     submit = SubmitField('Submit')
 
-=======
->>>>>>> bcb6f5ec27cf01510245bda8a54788328d2a5446
 class CreateStudentForm(FlaskForm):
     student_name = StringField('Student Name:', validators = [DataRequired()])
     student_gender = RadioField('Student Gender:', choices = [('Female','Female'),('Male','Male')])
