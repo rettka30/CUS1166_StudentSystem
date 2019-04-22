@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+{% endblock %}
+
+{% block app_content %}
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card" id="opt">
+      <ul>
+        <ol><a href="{{ url_for('details', type='Course', id=assignment.course_id )}}" class="button">Back</a></ol>
+      </ul>
+    </div>
+  </div>
+  <div class="centercolumn">
+    <div class="card">
+      <h1 id="title">{{assignment.name}}</h1>
+      <br>
+      <ul>
+        <ol>Description: {{assignment.description}}</ol>
+        <ol>Type: {{assignment.type}}</ol>
+        <ol>Time Posted: {{assignment.timestamp}}</ol>
+        <ol>Total Points: {{assignment.total}}</ol>
+      </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

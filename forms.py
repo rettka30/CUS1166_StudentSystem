@@ -19,6 +19,7 @@ class SearchCourseForm(FlaskForm):
     submit = SubmitField('Search')
 
 class CreateAssignment(FlaskForm):
+    name = StringField('Name of Assignment', validators=[DataRequired()])
     description = StringField('Description', validators=[DataRequired()])
     type = StringField('Type', validators=[DataRequired()])
     total = IntegerField('Point Total for Assignment', validators=[DataRequired()])
@@ -32,13 +33,6 @@ class GPAPForm(FlaskForm):
     current_GPA =  FloatField('Current GPA:', validators=[DataRequired()])
     Num_of_course = IntegerField('Num of Course took:', validators=[DataRequired()])
     future_grades = StringField('predict future Grades:', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-
-class SearchCourseForm(FlaskForm):
-    course_subject = StringField('Course Subject:')
-    course_name = StringField('Course Name:')
-    course_number = StringField('Year In School:')
-    professor_id = IntegerField('Professor ID')
     submit = SubmitField('Submit')
 
 class CreateStudentForm(FlaskForm):

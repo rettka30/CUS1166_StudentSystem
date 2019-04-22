@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import *
+from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
 from scrape import *
@@ -211,7 +211,6 @@ def edit(type, id):
             student.birthday = str(request.form.get('student_birthday'))
             student.major = request.form.get('student_major')
             student.phone = str(request.form.get('student_phone'))
-            student.set_password(request.form.get('student_password'))
             db.session.add(student)
             db.session.commit()
             return redirect(url_for('index', type='Student', id=id))
@@ -225,7 +224,6 @@ def edit(type, id):
             professor.email = str(request.form.get('professor_email'))
             professor.birthday = str(request.form.get('professor_birthday'))
             professor.phone = str(request.form.get('professor_phone'))
-            professor.set_password(request.form.get('professor_password'))
             db.session.add(professor)
             db.session.commit()
             return redirect(url_for('index', type='Professor', id=id))
@@ -239,7 +237,6 @@ def edit(type, id):
             admin.email = str(request.form.get('admin_email'))
             admin.birthday = str(request.form.get('admin_birthday'))
             admin.phone = str(request.form.get('admin_phone'))
-            admin.set_password(request.form.get('admin_password'))
             db.session.add(admin)
             db.session.commit()
             return redirect(url_for('index', type='Administrator', id=id))
@@ -261,18 +258,18 @@ def edit(type, id):
 def details(type, id):
     if type == "Student":
         student = Student.query.get(id)
-        graph_data = barchart_generator(Student)
-        return render_template('students_details.html', student=student, graph_data=graph_data)
+        return render_template('students_details.html', student=student)
     elif type == "Professor":
         prof = Professor.query.get(id)
-        return render_template('professor_details.html', prof=prof, review=review)
+        return render_template('professor_details.html', prof=prof)
     elif type == "Administrator":
         admin = Administrator.query.get(id)
         return render_template('administrator_details.html', admin=admin)
     elif type == "Course":
         course = Course.query.get(id)
         professor = Professor.query.get(course.professor_id)
-        return render_template('course_details.html', course=course, professor=professor)
+        assignments = course.assignments
+        return render_template('course_details.html', course=course, professor=professor, assignments=assignments)
     else:
         return render_template('error.html')
 
@@ -350,18 +347,12 @@ def change_password(type, id):
 def register(id):
     student = Student.query.get(id)
     registered = student.courses
-    return render_template('registered.html', student=student, registered=registered)
+    return render_template('register.html', student=student, registered=registered)
 
 @app.route('/search_course/<int:id>', methods=['GET','POST'])
 def search_course(id):
     form = SearchCourseForm()
-    course_subject = form.course_subject.data
-    course_name = form.course_name.data
-    course_number = form.course_number.data
-    professor_id = form.professor_id.data
-    courses = Course.query.filter(Course.subject == course_subject if course_subject != None else None, Course.name.like('%' + course_name + '%') if course_name != None else None, Course.number.like('%' + course_number + '%') if course_number != None else None, Course.professor_id.like('%' + professor_id + '%') if professor_id != None else None)
-    #Professor.query.filter(Professor.professor_name)
-    return render_template('search_course.html', form=form, courses=courses)
+    return render_template('search_course.html', form=form)
 
 @app.route('/results/<int:id>', methods=['GET','POST'])
 def results(id):
@@ -371,14 +362,20 @@ def results(id):
 def add_assignment(id):
     form = CreateAssignment()
     if form.validate_on_submit():
+        name = form.name.data
         description = form.description.data
         type = form.type.data
         total = form.total.data
-        assignment = Assignment(description=description, type=type, total=total, course_id=id)
+        assignment = Assignment(name=name, description=description, type=type, total=total, course_id=id)
         db.session.add(assignment)
         db.session.commit()
         return redirect(url_for('details', type='Course',  id=id))
     return render_template('add_assignment.html', form=form)
+
+@app.route('/assignment/<int:id>')
+def assignment(id):
+    assignment = Assignment.query.get(id)
+    return render_template('assignment.html', assignment=assignment)
 
 def main():
     if (len(sys.argv)==2):
@@ -437,6 +434,7 @@ def gpa():
         result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
     if result != 0:
         grades = a_4(grades)
+# <<<<<<< HEAD
         GPA_chart.title = "GPA Chart"
         GPA_chart.y_labels = [
             {'label': 'A', 'value': 4.0},
@@ -451,7 +449,9 @@ def gpa():
             {'label': 'D', 'value': 1.0},
             {'label': 'D-', 'value': 0.7},
             {'label': 'F', 'value': 0}]
+# =======
         GPA_chart2.add("grades",grades)
+# >>>>>>> b43c1c36bdbaa58362b080afb9b30a902fb3cceb
         for element in grades:
             GPA_chart.add('', element)
 
@@ -483,26 +483,3 @@ def gpa_predictor(current_grades,times, future_grades):
         return round(gpa_predict(current_grades,times, future_grades),2)
     except:
         return 'please enter in the right form'
-
-def barchart_generator(Student):
-    GPA_chart = pygal.Bar()
-    graph_data = GPA_chart.render_data_uri()
-    grades = a_4("a,a-,b,b+")
-    GPA_chart.title = "GPA Chart"
-    GPA_chart.y_labels = [
-        {'label': 'A', 'value': 4.0},
-        {'label': 'A-', 'value': 3.7},
-        {'label': 'B+', 'value': 3.3},
-        {'label': 'B', 'value': 3.0},
-        {'label': 'B-', 'value': 2.7},
-        {'label': 'C+', 'value': 2.3},
-        {'label': 'C', 'value': 2.0},
-        {'label': 'C-', 'value': 1.7},
-        {'label': 'D+', 'value': 1.3},
-        {'label': 'D', 'value': 1.0},
-        {'label': 'D-', 'value': 0.7},
-        {'label': 'F', 'value': 0}]
-    for element in grades:
-        GPA_chart.add('', element)
-    graph_data = GPA_chart.render_data_uri()
-    return graph_data
