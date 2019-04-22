@@ -18,6 +18,12 @@ class PasswordForm(FlaskForm):
 class SearchCourseForm(FlaskForm):
     submit = SubmitField('Search')
 
+class CreateAssignment(FlaskForm):
+    description = StringField('Description', validators=[DataRequired()])
+    type = StringField('Type', validators=[DataRequired()])
+    total = IntegerField('Point Total for Assignment', validators=[DataRequired()])
+    submit = SubmitField('Add Assignment')
+
 class GPAForm(FlaskForm):
     current_grades = StringField('Current Grades:', validators=[DataRequired()])
     submit = SubmitField('Submit')
@@ -43,6 +49,48 @@ class CreateStudentForm(FlaskForm):
     student_birthday = DateField('Birthday: (ex. %m-%d-%y)', format='%m-%d-%Y')
     student_major = StringField('Major:', validators = [DataRequired()])
     student_phone = StringField('Phone Number:', validators = [DataRequired()])
+    submit = SubmitField('Submit')
+
+    def validate_phone(form, field):
+        if len(field.data) > 16:
+            raise ValidationError('Invalid phone number.')
+        try:
+            input_number = phonenumbers.parse(field.data)
+            if not (phonenumbers.is_valid_number(input_number)):
+                raise ValidationError('Invalid phone number.')
+        except:
+            input_number = phonenumbers.parse("+1"+field.data)
+            if not (phonenumbers.is_valid_number(input_number)):
+                raise ValidationError('Invalid phone number.')
+
+class CreateProfessorForm(FlaskForm):
+    professor_name = StringField('Professor Name:', validators = [DataRequired()])
+    professor_gender = RadioField('Professor Gender:', choices = [('Female','Female'),('Male','Male')])
+    professor_department = StringField('Department:', validators = [DataRequired()])
+    professor_email = EmailField('Email:', validators = [DataRequired(),Email()])
+    professor_birthday = DateField('Birthday: (ex. %m-%d-%y)', format='%m-%d-%Y')
+    professor_phone = StringField('Phone Number:', validators = [DataRequired()])
+    submit = SubmitField('Submit')
+
+    def validate_phone(form, field):
+        if len(field.data) > 16:
+            raise ValidationError('Invalid phone number.')
+        try:
+            input_number = phonenumbers.parse(field.data)
+            if not (phonenumbers.is_valid_number(input_number)):
+                raise ValidationError('Invalid phone number.')
+        except:
+            input_number = phonenumbers.parse("+1"+field.data)
+            if not (phonenumbers.is_valid_number(input_number)):
+                raise ValidationError('Invalid phone number.')
+
+class CreateAdministratorForm(FlaskForm):
+    admin_name = StringField('Administrator Name:', validators = [DataRequired()])
+    admin_gender = RadioField('Administrator Gender:', choices = [('Female','Female'),('Male','Male')])
+    admin_department = StringField('Department:', validators = [DataRequired()])
+    admin_email = EmailField('Email:', validators = [DataRequired(),Email()])
+    admin_birthday = DateField('Birthday: (ex. %m-%d-%y)', format='%m-%d-%Y')
+    admin_phone = StringField('Phone Number:', validators = [DataRequired()])
     submit = SubmitField('Submit')
 
     def validate_phone(form, field):

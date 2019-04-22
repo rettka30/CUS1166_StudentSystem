@@ -1,33 +1,78 @@
 {% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/create.css">
+{% endblock %}
 
 {% block app_content %}
-  <h1>Create Administrator</h1>
-  <form action="" method="POST">
-    <div>
-    	<label> Administrator Name: </label>
-    	<input type="text" name="admin_name" value={{request.form.admin_name}}>
+<div class="row">
+  <div class="centercolumn">
+    <div class="card">
+      <div class="form">
+      <form action="" method="post" id="create" novalidate>
+            {{ form.hidden_tag() }}
+            <h1 id="title">Create Administrator</h1>
+            <br>
+            <br>
+            <div class="row" id="r1">
+              <div class="col-xs-8 col-lg-offset-2" id="name">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.admin_name) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r2">
+              <div class="col-xs-8 col-lg-offset-2" id="gender">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.admin_gender) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r3">
+              <div class="col-xs-8 col-lg-offset-2" id="department">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.admin_department) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r4">
+              <div class="col-xs-8 col-lg-offset-2" id="email">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.admin_email) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r5">
+              <div class="col-xs-8 col-lg-offset-2" id="birthday">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.admin_birthday) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r6">
+              <div class="col-xs-8 col-lg-offset-2" id="phone">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.admin_phone) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r7">
+              <div class="col-auto" id="create">
+                <input class="btn btn-primary" type="submit" value="Create Administrator">
+              </div>
+            </div>
+      </form>
+      </div>
     </div>
-    <div>
-    	<p><label> Administrator Gender: </label></p>
-      <input type="radio" name="admin_gender" id="male" value="Male" checked> Male<br>
-      <input type="radio" name="admin_gender" id="female" value="Female"> Female<br>
-    </div>
-    <div>
-      <label> Department: </label>
-      <input type=text name="admin_department" value={{request.form.admin_department}}>
-    </div>
-    <div>
-      <label> Email: </label>
-      <input type="email" name="admin_email" value={{request.form.admin_email}}>
-    </div>
-    <div>
-      <label> Birthday: </label>
-      <input type="date" id="birthday" name="admin_birthday" value={{request.form.admin_birthday}}>
-    </div>
-    <div>
-      <label> Phone Number: </label>
-      <input type="tel" name="admin_phone" value={{request.form.admin_phone}}>
-    </div>
-  	<button type="submit"> Submit </button>
-  </form>
+  </div>
+</div>
 {% endblock %}

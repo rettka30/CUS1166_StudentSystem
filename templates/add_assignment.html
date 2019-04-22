@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/create.css">
+{% endblock %}
+
+{% block app_content %}
+<div class="row">
+  <div class="centercolumn">
+    <div class="card">
+      <div class="form">
+      <form action="" method="post" id="create" novalidate>
+            {{ form.hidden_tag() }}
+            <h1 id="title">Add Assignment</h1>
+            <br>
+            <div class="row" id="r1">
+              <div class="col-xs-8 col-lg-offset-2" id="description">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.description) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r2">
+              <div class="col-xs-8 col-lg-offset-2" id="type">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.type) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r3">
+              <div class="col-xs-8 col-lg-offset-2" id="total">
+                <div class='form-group'>
+                    {{ wtf.form_field(form.total) }}<br>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row" id="r7">
+              <div class="col-auto" id="create">
+                <input class="btn btn-primary" type="submit" value="Add Assignment">
+              </div>
+            </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
