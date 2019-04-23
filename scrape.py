@@ -1,16 +1,3 @@
-#from bs4 import BeautifulSoup
-#import requests
-
-#ource = requests.get(https://www.ratemyprofessors.com/campusRatings.jsp?sid=842).text
-
-
-#soup = BeautifulSoup(html_file, 'lxml')
-
-#div = soup.find('div id="body"')
-
-#headline = div.
-
-
 import requests
 import json
 import math
