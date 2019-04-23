@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+
+{% block app_content %}
+
+<!how do i reference scrape.py for this>
+<link rel="stylesheet" href="scrape.py">
+
+<script>
+function showRating(jsonObj)
+  var scrape = jsonObj['RateMyProfScraper', 'SearchProfessor', 'PrintProfessorDetail']
+
+  for(var i = 0; i < scrape.length; i++){
+    var myPara1 = document.createElement('p');
+    var myPara2 = document.createElement('p');
+    var myPara3 = document.createElement('p');
+    var myPara4 = document.createElement('p');
+    var myPara1 = document.createElement('p');
+    var myPara2 = document.createElement('p');
+    var myPara3 = document.createElement('p');
+    var myPara4 = document.createElement('p');
+    var myPara1 = document.createElement('p');
+    var myPara2 = document.createElement('p');
+    var myPara3 = document.createElement('p');
+    var myPara4 = document.createElement('p');
+
+  }
+
+</script>
+
+{% endblock %}
+
+
+
+
+#{'tDept': 'Computer Science',
+#'tSid': '842',
+# 'institution_name': "St. John's University",
+#  'tFname': 'Christoforos',
+#  'tMiddlename': '',
+#  'tLname': 'Christoforou',
+#  'tid': 2227830,
+#  'tNumRatings': 7,
+#  'rating_class': 'average',
+#  'contentType': 'TEACHER',
+#  'categoryType': 'PROFESSOR',
+#  'overall_rating': '3.3'}

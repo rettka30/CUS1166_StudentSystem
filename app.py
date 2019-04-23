@@ -9,6 +9,9 @@ from flask_bootstrap import Bootstrap
 from flask_user import login_required, UserManager, UserMixin, roles_required
 from scrape import *
 import datetime, pygal
+import requests
+import urllib.parse
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -30,6 +33,7 @@ def welcome():
 @app.route('/')
 def home():
     return render_template('home.html')
+
 
 @app.route('/index/<type>/<int:id>')
 def index(type, id):
@@ -517,3 +521,23 @@ def gpa_predictor(current_grades,times, future_grades):
         return round(gpa_predict(current_grades,times, future_grades),2)
     except:
         return 'please enter in the right form'
+
+
+@app.route('/ratemyprof')
+def ratemyprof():
+    scrape = RateMyProfScraper(842)
+    json_data=requests.get(scrape).json()
+
+    json_tDept = scrape.json_data['tDept']
+    json_tSid = scrape.json_data['tSid']
+    json_institution_name  = scrape.json_data['institution_name']
+    json_tFname = scrape.json_data['tFname']
+    json_tMiddlename = scrape.json_data['tMiddlename']
+    json_tLname = scrape.json_data['tLname']
+    json_tid = scrape.json_data['tid']
+    json_tNumRatings = scrape.json_data['tNumRatings']
+    json_rating_class = scrape.json_data['rating_class']
+    json_contentType = scrape.json_data['contentType']
+    json_categoryType = scrape.json_data['categoryType']
+    json_overall_rating = scrape.json_data['overall_rating']
+    return render_template('ratemyprof.html')
