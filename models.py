@@ -60,7 +60,6 @@ class Administrator(User, UserMixin, db.Model):
     def __repr__(self):
         return '<Administrator {}>'.format(self.id)
 
-
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer(), primary_key=True)
