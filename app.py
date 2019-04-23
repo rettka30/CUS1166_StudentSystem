@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm, RegisterCourseForm
+from forms import LoginForm, PasswordForm, SubmitGradeForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm, RegisterCourseForm
 from flask_login import current_user, LoginManager, login_user, login_required
 from flask_bootstrap import Bootstrap
 from flask_user import login_required, UserManager, UserMixin, roles_required
@@ -114,11 +114,25 @@ def login(type):
             return redirect(url_for('index', type="Administrator", id=form.id.data))
         return render_template('login.html', form=form)
 
+<<<<<<< HEAD
 @app.route("/gradebook")
 # @login_required
 # @roles_required('Professor')
 def gradebook():
     pass
+=======
+@app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
+def gradebook(id):
+    assignment = Assignment.query.get(id)
+    course = Course.query.get(assignment.course_id)
+    students = course.students
+    form = SubmitGradeForm()
+    # if form.validate_on_submit():
+    #     for student in students:
+    #
+    #     return redirect(url_for('assignment', id=id))
+    return render_template('gradebook.html', assignment=assignment, students=students, form=form)
+>>>>>>> 3e68395eebc242f5e15bf1913f238650f527e506
 
 @app.route('/create_student', methods=['GET', 'POST'])
 @login_required
@@ -564,6 +578,7 @@ def gpa_predictor(current_grades,times, future_grades):
         return 'please enter in the right form'
 
 
+<<<<<<< HEAD
 # @app.route('/ratemyprof')
 # def ratemyprof():
 #     scrape = RateMyProfScraper(842)
@@ -582,3 +597,37 @@ def gpa_predictor(current_grades,times, future_grades):
 #     json_categoryType = scrape.json_data['categoryType']
 #     json_overall_rating = scrape.json_data['overall_rating']
 #     return render_template('ratemyprof.html')
+=======
+@app.route('/ratemyprof')
+def ratemyprof():
+    scrape = RateMyProfScraper(842)
+    json_object = scrape.SearchProfessor("Christoforos Christoforou")
+    json_tDept = scrape.PrintProfessorDetail("tDept")
+    json_tSid = scrape.PrintProfessorDetail("tSid")
+    json_institution_name = scrape.PrintProfessorDetail("institution_name")
+    json_tFname = scrape.PrintProfessorDetail("tFname")
+    json_tMiddlename = scrape.PrintProfessorDetail("tMiddlename")
+    json_tLname = scrape.PrintProfessorDetail("tLname")
+    json_tid = scrape.PrintProfessorDetail("tid")
+    json_tNumRatings = scrape.PrintProfessorDetail("tNumRatings")
+    json_rating_class = scrape.PrintProfessorDetail("rating_class")
+    json_contentType = scrape.PrintProfessorDetail("contentType")
+    json_categoryType = scrape.PrintProfessorDetail("categoryType")
+    json_overall_rating = scrape.PrintProfessorDetail("overall_rating")
+    # json_data=requests.get(scrape).json()
+    # json_tDept = scrape.json_data['tDept']
+    # json_tSid = scrape.json_data['tSid']
+    # json_institution_name  = scrape.json_data['institution_name']
+    # json_tFname = scrape.json_data['tFname']
+    # json_tMiddlename = scrape.json_data['tMiddlename']
+    # json_tLname = scrape.json_data['tLname']
+    # json_tid = scrape.json_data['tid']
+    # json_tNumRatings = scrape.json_data['tNumRatings']
+    # json_rating_class = scrape.json_data['rating_class']
+    # json_contentType = scrape.json_data['contentType']
+    # json_categoryType = scrape.json_data['categoryType']
+    # json_overall_rating = scrape.json_data['overall_rating']
+    return render_template('ratemyprof.html', tDept=json_tDept, tSid=json_tSid, institution_name=json_institution_name,
+                            tFname=json_tFname, tMiddlename=json_tMiddlename, tLname=json_tLname, tid=json_tid, tNumRatings=json_tNumRatings,
+                            rating_class=json_rating_class, contentType=json_contentType, categoryType=json_categoryType, overall_rating=json_overall_rating)
+>>>>>>> 3e68395eebc242f5e15bf1913f238650f527e506

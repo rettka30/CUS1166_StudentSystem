@@ -34,7 +34,7 @@ class RateMyProfScraper:
 
         def SearchProfessor(self, ProfessorName):
             self.indexnumber = self.GetProfessorIndex(ProfessorName)
-            self.PrintProfessorInfo()
+            # self.PrintProfessorInfo()
             return self.indexnumber
 
         def GetProfessorIndex(self,ProfessorName):  # function searches for professor in list
@@ -54,9 +54,9 @@ class RateMyProfScraper:
                 print("error")
                 return "error"
             else:
-                print(self.professorlist[self.indexnumber][key])
+                # print(self.professorlist[self.indexnumber][key])
                 return self.professorlist[self.indexnumber][key]
 
-SJU= RateMyProfScraper(842)
-SJU.SearchProfessor("Christoforos Christoforou")
-SJU.PrintProfessorDetail("overall_rating")
+# SJU= RateMyProfScraper(842)
+# SJU.SearchProfessor("Christoforos Christoforou")
+# SJU.PrintProfessorDetail("overall_rating")

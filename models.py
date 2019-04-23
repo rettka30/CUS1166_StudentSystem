@@ -118,3 +118,6 @@ class Submission(db.Model):
     assign_id = Column(Integer, ForeignKey('assignments.id'))
     assign_total = Column(Integer, ForeignKey('assignments.total'))
     # assign_type = Column(String, ForeignKey('assignments.type'))
+
+    def set_grade(self, grade):
+        self.points = grade
