@@ -26,6 +26,9 @@ class CreateAssignment(FlaskForm):
     total = IntegerField('Point Total for Assignment', validators=[DataRequired()])
     submit = SubmitField('Add Assignment')
 
+class SubmitGradeForm(FlaskForm):
+    submit = SubmitField('Submit')
+
 class GPAForm(FlaskForm):
     current_grades = StringField('Current Grades:', validators=[DataRequired()])
     submit = SubmitField('Submit')
