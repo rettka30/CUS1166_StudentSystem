@@ -54,9 +54,9 @@ class RateMyProfScraper:
                 print("error")
                 return "error"
             else:
-                print(self.professorlist[self.indexnumber][key])
+                # print(self.professorlist[self.indexnumber][key])
                 return self.professorlist[self.indexnumber][key]
 
-SJU= RateMyProfScraper(842)
-SJU.SearchProfessor("Christoforos Christoforou")
-SJU.PrintProfessorDetail("overall_rating")
+# SJU= RateMyProfScraper(842)
+# SJU.SearchProfessor("Christoforos Christoforou")
+# SJU.PrintProfessorDetail("overall_rating")
