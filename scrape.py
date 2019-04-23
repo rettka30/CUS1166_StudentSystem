@@ -34,7 +34,7 @@ class RateMyProfScraper:
 
         def SearchProfessor(self, ProfessorName):
             self.indexnumber = self.GetProfessorIndex(ProfessorName)
-            self.PrintProfessorInfo()
+            # self.PrintProfessorInfo()
             return self.indexnumber
 
         def GetProfessorIndex(self,ProfessorName):  # function searches for professor in list
