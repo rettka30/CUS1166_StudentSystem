@@ -35,15 +35,12 @@ def welcome():
 def home():
     return render_template('home.html')
 
-# @app.route('/logout')
-# @login_required
-# def logout():
-#     logout_user()
-#     if session.get('was_once_logged_in'):
-#         # prevent flashing automatically logged out message
-#         del session['was_once_logged_in']
-#     flash('You have successfully logged yourself out.')
-#     return redirect('/login')
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have successfully logged yourself out.')
+    return redirect('/login')
 
 @app.route("/logout")
 @login_required
