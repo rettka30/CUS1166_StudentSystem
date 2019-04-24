@@ -115,8 +115,11 @@ def login(type):
         return render_template('login.html', form=form)
 
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
+<<<<<<< HEAD
 # @login_required
 # @roles_required('Professor')
+=======
+>>>>>>> 03b3bcae061fe5b0846789b8cdaa6fb87a562d84
 def gradebook(id):
     assignment = Assignment.query.get(id)
     course = Course.query.get(assignment.course_id)
@@ -521,7 +524,6 @@ def gpa():
         result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
     if result != 0:
         grades = a_4(grades)
-# <<<<<<< HEAD
         GPA_chart.title = "GPA Chart"
         GPA_chart.y_labels = [
             {'label': 'A', 'value': 4.0},
@@ -536,9 +538,7 @@ def gpa():
             {'label': 'D', 'value': 1.0},
             {'label': 'D-', 'value': 0.7},
             {'label': 'F', 'value': 0}]
-# =======
         GPA_chart2.add("grades",grades)
-# >>>>>>> b43c1c36bdbaa58362b080afb9b30a902fb3cceb
         for element in grades:
             GPA_chart.add('', element)
 
@@ -571,6 +571,10 @@ def gpa_predictor(current_grades,times, future_grades):
     except:
         return 'please enter in the right form'
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 03b3bcae061fe5b0846789b8cdaa6fb87a562d84
 @app.route('/ratemyprof')
 def ratemyprof():
     scrape = RateMyProfScraper(842)
