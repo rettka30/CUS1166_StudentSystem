@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
 from forms import LoginForm, PasswordForm, SubmitGradeForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm, RegisterCourseForm
-from flask_login import current_user, LoginManager, login_user, login_required
+from flask_login import current_user, LoginManager, login_user, login_required, logout_user
 from flask_bootstrap import Bootstrap
 from flask_user import login_required, PasswordManager, UserManager, UserMixin, roles_required
 import datetime, pygal
@@ -35,6 +35,15 @@ def welcome():
 def home():
     return render_template('home.html')
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    if session.get('was_once_logged_in'):
+        # prevent flashing automatically logged out message
+        del session['was_once_logged_in']
+    flash('You have successfully logged yourself out.')
+    return redirect('/login')
 
 @app.route('/index/<type>/<int:id>')
 # @login_required
