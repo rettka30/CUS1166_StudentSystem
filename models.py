@@ -12,6 +12,7 @@ db = SQLAlchemy()
 class User(db.Model, UserMixin):
     __tablename__="users"
     id = db.Column(db.Integer, primary_key=True)
+    uniqueid = db.Column(db.String(5), index=True)
     name = db.Column(db.String(120), index=True, unique=False)
     gender = db.Column(db.String(6), index=True)
     email = db.Column(db.String(120), index=True)
@@ -20,13 +21,6 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean())
     roles = relationship("Role", secondary="user_roles")
     password = db.Column(db.String(128))
-
-    # back_populates="users"
-    # def set_password(self, password):
-    #     self.password_hash = generate_password_hash(password)
-    #
-    # def check_password(self, password):
-    #     return check_password_hash(self.password_hash, password)
 
 class Role(db.Model):
     __tablename__ = 'roles'
@@ -39,13 +33,12 @@ class UserRoles(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
     role_id = db.Column(db.Integer(), db.ForeignKey('roles.id'))
 
-
-
 class_registration_table = db.Table('registration',
     db.Column('student_id', Integer, ForeignKey('students.id')),
     db.Column('course_id', Integer, ForeignKey('courses.id'))
 )
-# Student Class; User, UserMixin,
+
+# Student Class; Inheirits User, UserMixin,
 class Student(User, db.Model):
     __tablename__= "students"
     id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
@@ -58,7 +51,7 @@ class Student(User, db.Model):
     def __repr__(self):
         return '<Student {}>'.format(self.id)
 
-# Professor Class
+# Professor Class, Inheirits User
 class Professor(User, db.Model):
     __tablename__="professors"
     id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
@@ -69,7 +62,7 @@ class Professor(User, db.Model):
     def __repr__(self):
         return '<Professor {}>'.format(self.id)
 
-# Administrator Class
+# Administrator Class, Inheirits User
 class Administrator(User, db.Model):
     __tablename__="administrators"
     id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
@@ -78,15 +71,11 @@ class Administrator(User, db.Model):
     def __repr__(self):
         return '<Administrator {}>'.format(self.id)
 
-# class Role(db.Model):
-#     __tablename__ = 'roles'
-#     id = db.Column(db.Integer(), primary_key=True)
-#     name = db.Column(db.String(50), unique=True)
-
 # Course Class
 class Course (db.Model):
     __tablename__= "courses"
     id = db.Column(db.Integer, primary_key=True)
+    uniqueid = db.Column(db.String(5), index=True)
     name = db.Column(db.String(120), index=True, unique=False)
     subject = db.Column(db.String(64), index=True)
     number = db.Column(db.String(8), index=True)
@@ -134,3 +123,9 @@ class Submission(db.Model):
 
     def set_grade(self, grade):
         self.points = grade
+
+#Unique ID Class
+class Unique(db.Model):
+    __tablename__= "unique"
+    prefix = db.Column(db.Integer, primary_key=True)
+    count = db.Column(db.Integer)
