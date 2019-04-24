@@ -13,7 +13,11 @@
     <div class="card">
             <div class="row" id="r7">
               <div class="col-auto" id="create">
-                <input class="btn btn-primary" type="submit" value="Create Administrator">
+                <form action = "http://localhost:5000/uploader" method = "POST"
+                  enctype = "multipart/form-data">
+                  <input type = "file" name = "file" />
+                  <input type = "submit"/>
+               </form>
               </div>
             </div>
       </div>
