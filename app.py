@@ -161,8 +161,14 @@ def create_student():
         b2=student_birthday[3:5]
         b3=student_birthday[6:10]
         student_password=b1+b2+b3
+        #create student route
+        ui = Unique.query.get(5)
+        id_prefix = str(ui.prefix)
+        id_count = str(ui.count)
+        unique_id = id_prefix+id_count
+        ui.count = ui.count+1
         student_role = Role(name='Student')
-        student = Student(name=student_name, gender=student_gender,
+        student = Student(uniqueid=unique_id, name=student_name, gender=student_gender,
             year=student_year, email=student_email, birthday=student_birthday,
             major=student_major, phone=student_phone)
         student.password = password_manager.hash_password(student_password)
@@ -191,8 +197,14 @@ def create_professor():
         p2=professor_birthday[3:5]
         p3=professor_birthday[6:10]
         professor_password=p1+p2+p3
+        #Go back Improve Logic
+        ui = Unique.query.get(2)
+        id_prefix = str(ui.prefix)
+        id_count = str(ui.count)
+        unique_id = id_prefix+id_count
+        ui.count = ui.count+1
         professor_role = Role(name='Professor')
-        professor = Professor(name=professor_name, gender=professor_gender,
+        professor = Professor(uniqueid=unique_id, name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
             birthday=professor_birthday, phone=professor_phone, active=True)
         professor.password = password_manager.hash_password(professor_password)
@@ -221,8 +233,14 @@ def create_administrator():
         a2=admin_birthday[3:5]
         a3=admin_birthday[6:10]
         admin_password=a1+a2+a3
+        #Go back Improve Logic
+        ui = Unique.query.get(1)
+        id_prefix = str(ui.prefix)
+        id_count = str(ui.count)
+        unique_id = id_prefix+id_count
+        ui.count = ui.count+1
         admin_role = Role(name='Admin')
-        admin = Administrator(name=admin_name, gender=admin_gender,
+        admin = Administrator(uniqueid=unique_id, name=admin_name, gender=admin_gender,
             department=admin_department, email=admin_email,
             birthday=admin_birthday, phone=admin_phone, active=True)
         admin.password = password_manager.hash_password(admin_password)
@@ -352,7 +370,13 @@ def create_course():
         professor_name = request.form.get('professor_name')
         professor = Professor.query.filter_by(name=professor_name).first()
         professor_id = professor.id
-        course = Course(name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
+        #Go Back Improve Logic
+        ui = Unique.query.get(8)
+        id_prefix = str(ui.prefix)
+        id_count = str(ui.count)
+        unique_id = id_prefix+id_count
+        ui.count = ui.count+1
+        course = Course(uniqueid=unique_id, name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for('course_list'))
