@@ -197,11 +197,7 @@ def create_professor():
         professor = Professor(name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
             birthday=professor_birthday, phone=professor_phone, active=True)
-<<<<<<< HEAD
         professor.password = password_manager.hash_password(professor_password)
-=======
-        user.password = password_manager.hash_password(professor_password)
->>>>>>> b6062801b6a57ec5c4f4d5aabe6d893716aaed0f
         professor.roles = [professor_role,]
         db.session.add(professor)
         db.session.commit()
