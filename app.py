@@ -115,11 +115,8 @@ def login(type):
         return render_template('login.html', form=form)
 
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
-<<<<<<< HEAD
 # @login_required
 # @roles_required('Professor')
-=======
->>>>>>> 03b3bcae061fe5b0846789b8cdaa6fb87a562d84
 def gradebook(id):
     assignment = Assignment.query.get(id)
     course = Course.query.get(assignment.course_id)
