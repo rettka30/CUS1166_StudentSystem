@@ -1,14 +1,15 @@
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
+#from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from flask_user import UserManager, UserMixin
+from flask_user import UserManager, UserMixin, PasswordManager
 from datetime import datetime
 db = SQLAlchemy()
 
-class User(UserMixin, db.Model):
+
+class User(db.Model, UserMixin):
     __tablename__="users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), index=True, unique=False)
@@ -16,20 +17,36 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True)
     phone = db.Column(db.String(120), index=True)
     birthday = db.Column(db.String(120), index=True)
-    password_hash = db.Column(db.String(128))
+    active = db.Column(db.Boolean())
+    roles = relationship("Role", secondary="user_roles")
+    password = db.Column(db.String(128))
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+    # back_populates="users"
+    # def set_password(self, password):
+    #     self.password_hash = generate_password_hash(password)
+    #
+    # def check_password(self, password):
+    #     return check_password_hash(self.password_hash, password)
 
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+class UserRoles(db.Model):
+    __tablename__ = 'user_roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id'))
+
+
 
 class_registration_table = db.Table('registration',
     db.Column('student_id', Integer, ForeignKey('students.id')),
     db.Column('course_id', Integer, ForeignKey('courses.id'))
 )
-# Student Class
-class Student(User, UserMixin, db.Model):
+# Student Class; User, UserMixin,
+class Student(db.Model):
     __tablename__= "students"
     id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
     year = db.Column(db.String(10), index=True)
@@ -42,7 +59,7 @@ class Student(User, UserMixin, db.Model):
         return '<Student {}>'.format(self.id)
 
 # Professor Class
-class Professor(User, UserMixin, db.Model):
+class Professor(db.Model):
     __tablename__="professors"
     id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
     department = db.Column(db.String(120), index=True)
@@ -53,7 +70,7 @@ class Professor(User, UserMixin, db.Model):
         return '<Professor {}>'.format(self.id)
 
 # Administrator Class
-class Administrator(User, UserMixin, db.Model):
+class Administrator(db.Model):
     __tablename__="administrators"
     id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
     department = db.Column(db.String(120), index=True)
@@ -61,16 +78,10 @@ class Administrator(User, UserMixin, db.Model):
     def __repr__(self):
         return '<Administrator {}>'.format(self.id)
 
-class Role(db.Model):
-    __tablename__ = 'roles'
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(50), unique=True)
-
-class UserRoles(db.Model):
-    __tablename__ = 'user_roles'
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
-    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id'))
+# class Role(db.Model):
+#     __tablename__ = 'roles'
+#     id = db.Column(db.Integer(), primary_key=True)
+#     name = db.Column(db.String(50), unique=True)
 
 # Course Class
 class Course (db.Model):
