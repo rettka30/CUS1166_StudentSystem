@@ -114,13 +114,6 @@ def login(type):
             return redirect(url_for('index', type="Administrator", id=form.id.data))
         return render_template('login.html', form=form)
 
-<<<<<<< HEAD
-@app.route("/gradebook")
-# @login_required
-# @roles_required('Professor')
-def gradebook():
-    pass
-=======
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
 def gradebook(id):
     assignment = Assignment.query.get(id)
@@ -132,7 +125,6 @@ def gradebook(id):
     #
     #     return redirect(url_for('assignment', id=id))
     return render_template('gradebook.html', assignment=assignment, students=students, form=form)
->>>>>>> 3e68395eebc242f5e15bf1913f238650f527e506
 
 @app.route('/create_student', methods=['GET', 'POST'])
 @login_required
@@ -527,7 +519,6 @@ def gpa():
         result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
     if result != 0:
         grades = a_4(grades)
-# <<<<<<< HEAD
         GPA_chart.title = "GPA Chart"
         GPA_chart.y_labels = [
             {'label': 'A', 'value': 4.0},
@@ -542,9 +533,7 @@ def gpa():
             {'label': 'D', 'value': 1.0},
             {'label': 'D-', 'value': 0.7},
             {'label': 'F', 'value': 0}]
-# =======
         GPA_chart2.add("grades",grades)
-# >>>>>>> b43c1c36bdbaa58362b080afb9b30a902fb3cceb
         for element in grades:
             GPA_chart.add('', element)
 
@@ -578,26 +567,6 @@ def gpa_predictor(current_grades,times, future_grades):
         return 'please enter in the right form'
 
 
-<<<<<<< HEAD
-# @app.route('/ratemyprof')
-# def ratemyprof():
-#     scrape = RateMyProfScraper(842)
-#     json_data=requests.get(scrape).json()
-#
-#     json_tDept = scrape.json_data['tDept']
-#     json_tSid = scrape.json_data['tSid']
-#     json_institution_name  = scrape.json_data['institution_name']
-#     json_tFname = scrape.json_data['tFname']
-#     json_tMiddlename = scrape.json_data['tMiddlename']
-#     json_tLname = scrape.json_data['tLname']
-#     json_tid = scrape.json_data['tid']
-#     json_tNumRatings = scrape.json_data['tNumRatings']
-#     json_rating_class = scrape.json_data['rating_class']
-#     json_contentType = scrape.json_data['contentType']
-#     json_categoryType = scrape.json_data['categoryType']
-#     json_overall_rating = scrape.json_data['overall_rating']
-#     return render_template('ratemyprof.html')
-=======
 @app.route('/ratemyprof')
 def ratemyprof():
     scrape = RateMyProfScraper(842)
@@ -630,4 +599,3 @@ def ratemyprof():
     return render_template('ratemyprof.html', tDept=json_tDept, tSid=json_tSid, institution_name=json_institution_name,
                             tFname=json_tFname, tMiddlename=json_tMiddlename, tLname=json_tLname, tid=json_tid, tNumRatings=json_tNumRatings,
                             rating_class=json_rating_class, contentType=json_contentType, categoryType=json_categoryType, overall_rating=json_overall_rating)
->>>>>>> 3e68395eebc242f5e15bf1913f238650f527e506
