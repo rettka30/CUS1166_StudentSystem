@@ -38,7 +38,7 @@ def home():
 
 
 @app.route('/index/<type>/<int:id>')
-@login_required
+# @login_required
 # @roles_required('<type>')
 def index(type, id):
     if type == "Student":
@@ -56,28 +56,28 @@ def index(type, id):
         return render_template('error.html')
 
 @app.route('/student_roster')
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def student_roster():
     students = Student.query.all()
     return render_template('student_roster.html', students=students)
 
 @app.route('/professor_roster')
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def professor_roster():
     professors = Professor.query.all()
     return render_template('professor_roster.html', professors=professors)
 
 @app.route('/administrator_roster')
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def administrator_roster():
     admins = Administrator.query.all()
     return render_template('administrator_roster.html', admins=admins)
 
 @app.route('/login/<type>', methods=['GET','POST'])
-@login_required
+# @login_required
 # @roles_required('<type>')
 def login(type):
     if type == "Student":
@@ -115,6 +115,11 @@ def login(type):
         return render_template('login.html', form=form)
 
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
+<<<<<<< HEAD
+# @login_required
+# @roles_required('Professor')
+=======
+>>>>>>> 03b3bcae061fe5b0846789b8cdaa6fb87a562d84
 def gradebook(id):
     assignment = Assignment.query.get(id)
     course = Course.query.get(assignment.course_id)
@@ -127,8 +132,8 @@ def gradebook(id):
     return render_template('gradebook.html', assignment=assignment, students=students, form=form)
 
 @app.route('/create_student', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_student():
     # Get information from the form.
     form = CreateStudentForm()
@@ -156,8 +161,8 @@ def create_student():
     return render_template('create_student.html', form = form)
 
 @app.route('/create_professor', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_professor():
     # Get information from the form.
     form = CreateProfessorForm()
@@ -205,15 +210,15 @@ def create_administrator():
         admin_role = Role(name='Admin')
         admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
         admin.set_password(admin_password)
-        admin.roles = [admin_role,]
+        admin.roles = [admin_role]
         db.session.add(admin)
         db.session.commit()
         return redirect(url_for('administrator_roster'))
     return render_template('create_administrator.html', form = form)
 
 @app.route('/delete/<type>/<int:id>')
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def delete(type, id):
     if type == "Student":
         student = Student.query.get(id)
@@ -240,7 +245,7 @@ def delete(type, id):
 
 
 @app.route('/edit/<type>/<int:id>', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def edit(type, id):
     if type == "Student":
         student = Student.query.get(id)
@@ -296,7 +301,7 @@ def edit(type, id):
         return render_template('error.html')
 
 @app.route('/details/<type>/<int:id>')
-@login_required
+# @login_required
 def details(type, id):
     if type == "Student":
         student = Student.query.get(id)
@@ -317,8 +322,8 @@ def details(type, id):
 
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_course():
     # Get information from the form.
     professors = Professor.query.all()
@@ -336,14 +341,14 @@ def create_course():
     return render_template('create_course.html', professors=professors)
 
 @app.route('/course_list')
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def course_list():
     courses = Course.query.all()
     return render_template('course_list.html', courses=courses)
 
 @app.route('/change_password/<type>/<int:id>',methods=['GET','POST'])
-@login_required
+# @login_required
 def change_password(type, id):
     if type == "Student":
         user = Student.query.get(id)
@@ -391,8 +396,8 @@ def change_password(type, id):
         return render_template('error.html')
 
 @app.route('/registered/<int:id>')
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def registered(id):
     student = Student.query.get(id)
     registered = student.courses
@@ -400,8 +405,8 @@ def registered(id):
     return render_template('registered.html', student=student, registered=registered, Professor=professor)
 
 @app.route('/search_course/<int:id>', methods=['GET','POST'])
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def search_course(id):
     form = SearchCourseForm()
     #course_subject = form.course_subject.data
@@ -417,8 +422,8 @@ def search_course(id):
     return render_template('search_course.html', form=form, Professor=professor, courses=courses)
 
 @app.route('/register/<int:id>', methods=['GET','POST'])
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def register(id):
     form = RegisterCourseForm()
     if form.validate_on_submit():
@@ -432,8 +437,8 @@ def register(id):
     return render_template('register.html', form=form)
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
-@login_required
-@roles_required('Profesor')
+# @login_required
+# @roles_required('Profesor')
 def add_assignment(id):
     form = CreateAssignment()
     if form.validate_on_submit():
@@ -448,15 +453,15 @@ def add_assignment(id):
     return render_template('add_assignment.html', form=form)
 
 @app.route('/assignment/<int:id>')
-@login_required
-@roles_required('Student', 'Professor')
+# @login_required
+# @roles_required('Student', 'Professor')
 def assignment(id):
     assignment = Assignment.query.get(id)
     return render_template('assignment.html', assignment=assignment)
 
 @app.route('/course/roster/<int:id>')
-@login_required
-@roles_required('Student', 'Professor')
+# @login_required
+# @roles_required('Student', 'Professor')
 def course_roster(id):
     course = Course.query.get(id)
     students = course.students
@@ -576,7 +581,10 @@ def gpa_predictor(current_grades,times, future_grades):
     except:
         return 'please enter in the right form'
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 03b3bcae061fe5b0846789b8cdaa6fb87a562d84
 @app.route('/ratemyprof')
 def ratemyprof():
     scrape = RateMyProfScraper(842)
