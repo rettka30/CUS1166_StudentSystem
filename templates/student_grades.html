@@ -15,16 +15,16 @@
         <table class="table table-striped" >
           <tr>
             <th>Submission ID</th>
-            <th>Student Name</th>
+            <th>Assignment Name</th>
             <th>Points</th>
             <th>Max Points</th>
           </tr>
           {% for submission in submissions %}
           <tr class="text-left">
             <td>{{submission.id}}</td>
-            <td><a href="{{ url_for('details', type='Student', id=student.id) }}">{{student.name}}</a></td>
+            <td><a href="{{ url_for('assignment', id=submission.assign_id) }}">{{Assignment.query.get(submission.assign_id)}}</a></td>
             <td>{{submission.points}}</td>
-            <td>{{submission.assign_total}}</td>
+            <td>{{submission.assign_total}}</td>assignment
           </tr>
           {% endfor %}
         </table>
