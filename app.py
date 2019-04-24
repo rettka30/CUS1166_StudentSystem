@@ -38,7 +38,7 @@ def home():
 
 
 @app.route('/index/<type>/<int:id>')
-@login_required
+# @login_required
 # @roles_required('<type>')
 def index(type, id):
     if type == "Student":
@@ -56,28 +56,28 @@ def index(type, id):
         return render_template('error.html')
 
 @app.route('/student_roster')
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def student_roster():
     students = Student.query.all()
     return render_template('student_roster.html', students=students)
 
 @app.route('/professor_roster')
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def professor_roster():
     professors = Professor.query.all()
     return render_template('professor_roster.html', professors=professors)
 
 @app.route('/administrator_roster')
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def administrator_roster():
     admins = Administrator.query.all()
     return render_template('administrator_roster.html', admins=admins)
 
 @app.route('/login/<type>', methods=['GET','POST'])
-@login_required
+# @login_required
 # @roles_required('<type>')
 def login(type):
     if type == "Student":
@@ -114,14 +114,9 @@ def login(type):
             return redirect(url_for('index', type="Administrator", id=form.id.data))
         return render_template('login.html', form=form)
 
-<<<<<<< HEAD
-@app.route("/gradebook")
+@app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
 # @login_required
 # @roles_required('Professor')
-def gradebook():
-    pass
-=======
-@app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
 def gradebook(id):
     assignment = Assignment.query.get(id)
     course = Course.query.get(assignment.course_id)
@@ -132,11 +127,10 @@ def gradebook(id):
     #
     #     return redirect(url_for('assignment', id=id))
     return render_template('gradebook.html', assignment=assignment, students=students, form=form)
->>>>>>> 3e68395eebc242f5e15bf1913f238650f527e506
 
 @app.route('/create_student', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_student():
     # Get information from the form.
     form = CreateStudentForm()
@@ -164,8 +158,8 @@ def create_student():
     return render_template('create_student.html', form = form)
 
 @app.route('/create_professor', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_professor():
     # Get information from the form.
     form = CreateProfessorForm()
@@ -213,15 +207,15 @@ def create_administrator():
         admin_role = Role(name='Admin')
         admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
         admin.set_password(admin_password)
-        admin.roles = [admin_role,]
+        admin.roles = [admin_role]
         db.session.add(admin)
         db.session.commit()
         return redirect(url_for('administrator_roster'))
     return render_template('create_administrator.html', form = form)
 
 @app.route('/delete/<type>/<int:id>')
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def delete(type, id):
     if type == "Student":
         student = Student.query.get(id)
@@ -248,7 +242,7 @@ def delete(type, id):
 
 
 @app.route('/edit/<type>/<int:id>', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def edit(type, id):
     if type == "Student":
         student = Student.query.get(id)
@@ -304,7 +298,7 @@ def edit(type, id):
         return render_template('error.html')
 
 @app.route('/details/<type>/<int:id>')
-@login_required
+# @login_required
 def details(type, id):
     if type == "Student":
         student = Student.query.get(id)
@@ -325,8 +319,8 @@ def details(type, id):
 
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_course():
     # Get information from the form.
     professors = Professor.query.all()
@@ -344,14 +338,14 @@ def create_course():
     return render_template('create_course.html', professors=professors)
 
 @app.route('/course_list')
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def course_list():
     courses = Course.query.all()
     return render_template('course_list.html', courses=courses)
 
 @app.route('/change_password/<type>/<int:id>',methods=['GET','POST'])
-@login_required
+# @login_required
 def change_password(type, id):
     if type == "Student":
         user = Student.query.get(id)
@@ -399,8 +393,8 @@ def change_password(type, id):
         return render_template('error.html')
 
 @app.route('/registered/<int:id>')
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def registered(id):
     student = Student.query.get(id)
     registered = student.courses
@@ -408,8 +402,8 @@ def registered(id):
     return render_template('registered.html', student=student, registered=registered, Professor=professor)
 
 @app.route('/search_course/<int:id>', methods=['GET','POST'])
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def search_course(id):
     form = SearchCourseForm()
     #course_subject = form.course_subject.data
@@ -425,8 +419,8 @@ def search_course(id):
     return render_template('search_course.html', form=form, Professor=professor, courses=courses)
 
 @app.route('/register/<int:id>', methods=['GET','POST'])
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def register(id):
     form = RegisterCourseForm()
     if form.validate_on_submit():
@@ -440,8 +434,8 @@ def register(id):
     return render_template('register.html', form=form)
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
-@login_required
-@roles_required('Profesor')
+# @login_required
+# @roles_required('Profesor')
 def add_assignment(id):
     form = CreateAssignment()
     if form.validate_on_submit():
@@ -456,15 +450,15 @@ def add_assignment(id):
     return render_template('add_assignment.html', form=form)
 
 @app.route('/assignment/<int:id>')
-@login_required
-@roles_required('Student', 'Professor')
+# @login_required
+# @roles_required('Student', 'Professor')
 def assignment(id):
     assignment = Assignment.query.get(id)
     return render_template('assignment.html', assignment=assignment)
 
 @app.route('/course/roster/<int:id>')
-@login_required
-@roles_required('Student', 'Professor')
+# @login_required
+# @roles_required('Student', 'Professor')
 def course_roster(id):
     course = Course.query.get(id)
     students = course.students
@@ -577,27 +571,6 @@ def gpa_predictor(current_grades,times, future_grades):
     except:
         return 'please enter in the right form'
 
-
-<<<<<<< HEAD
-# @app.route('/ratemyprof')
-# def ratemyprof():
-#     scrape = RateMyProfScraper(842)
-#     json_data=requests.get(scrape).json()
-#
-#     json_tDept = scrape.json_data['tDept']
-#     json_tSid = scrape.json_data['tSid']
-#     json_institution_name  = scrape.json_data['institution_name']
-#     json_tFname = scrape.json_data['tFname']
-#     json_tMiddlename = scrape.json_data['tMiddlename']
-#     json_tLname = scrape.json_data['tLname']
-#     json_tid = scrape.json_data['tid']
-#     json_tNumRatings = scrape.json_data['tNumRatings']
-#     json_rating_class = scrape.json_data['rating_class']
-#     json_contentType = scrape.json_data['contentType']
-#     json_categoryType = scrape.json_data['categoryType']
-#     json_overall_rating = scrape.json_data['overall_rating']
-#     return render_template('ratemyprof.html')
-=======
 @app.route('/ratemyprof')
 def ratemyprof():
     scrape = RateMyProfScraper(842)
@@ -630,4 +603,3 @@ def ratemyprof():
     return render_template('ratemyprof.html', tDept=json_tDept, tSid=json_tSid, institution_name=json_institution_name,
                             tFname=json_tFname, tMiddlename=json_tMiddlename, tLname=json_tLname, tid=json_tid, tNumRatings=json_tNumRatings,
                             rating_class=json_rating_class, contentType=json_contentType, categoryType=json_categoryType, overall_rating=json_overall_rating)
->>>>>>> 3e68395eebc242f5e15bf1913f238650f527e506
