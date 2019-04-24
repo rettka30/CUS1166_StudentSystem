@@ -459,28 +459,26 @@ def assignment(id):
 @app.route('/course/roster/<int:id>')
 # @login_required
 # @roles_required('Student', 'Professor')
-def course_roster(id):
+def student_course_roster(id):
     course = Course.query.get(id)
     students = course.students
     return render_template('course_roster.html', course=course, students=students)
 
-@app.route('/student_grades/<int:student_id>')
-@login_required
-@roles_required('Student', 'Professor')
-def student_grades(student_id):
-    submissions = Submission.query.felter(Submission.student_id=student_id)
+@app.route('/student_grades/<int:id>')
+# @login_required
+# @roles_required('Student', 'Professor')
+def student_grades(id):
+    submissions = Submission.query.filter_by(student_id=id)
+    student = Student.query.get(id)
+    return render_template('student_grades.html', submissions=submissions, student=student)
 
-    return render_template('student_grades.html', submissions = submissions, Assignment = Assignments)
-
-
-@app.route('/student_grades/<int:student_id>/<int:course_id>')
-@login_required
-@roles_required('Student', 'Professor')
-def course_roster(student_id, course_id):
-    submissions = Submission.query.felter(Submission.student_id=student_id, Submission.assign_course_id=course_id)
-    Assignments = Assignment
-
-    return render_template('student_grades.html', submissions = submissions, Assignment = Assignments)
+@app.route('/course_roster/<int:id>/<int:course_id>')
+# @login_required
+# @roles_required('Student', 'Professor')
+def course_roster(id,course_id):
+    submissions = Submission.query.filter_by(student_id=id, assign_course_id=course_id)
+    student = Student.query.get(id)
+    return render_template('student_grades.html', submissions=submissions, student=student)
 
 def main():
     if (len(sys.argv)==2):
@@ -494,9 +492,6 @@ def main():
 if __name__ == "__main__":
     with app.app_context():
         main()
-
-
-
 
 
 def gpa_calculate(grades):
@@ -586,10 +581,6 @@ def gpa_predictor(current_grades,times, future_grades):
     except:
         return 'please enter in the right form'
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 03b3bcae061fe5b0846789b8cdaa6fb87a562d84
 @app.route('/ratemyprof')
 def ratemyprof():
     scrape = RateMyProfScraper(842)
