@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/create.css">
+{% endblock %}
+
+{% block app_content %}
+<div class="row">
+  <div class="centercolumn">
+    <div class="card">
+            <div class="row" id="r7">
+              <div class="col-auto" id="create">
+                <input class="btn btn-primary" type="submit" value="Create Administrator">
+              </div>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

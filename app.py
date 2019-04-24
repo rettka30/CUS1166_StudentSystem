@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
 from forms import LoginForm, PasswordForm, SubmitGradeForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm, RegisterCourseForm
-from flask_login import current_user, LoginManager, login_user, login_required
+from flask_login import current_user, LoginManager, login_user, login_required, logout_user
 from flask_bootstrap import Bootstrap
 from flask_user import login_required, PasswordManager, UserManager, UserMixin, roles_required
 import datetime, pygal
@@ -35,6 +35,15 @@ def welcome():
 def home():
     return render_template('home.html')
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    if session.get('was_once_logged_in'):
+        # prevent flashing automatically logged out message
+        del session['was_once_logged_in']
+    flash('You have successfully logged yourself out.')
+    return redirect('/login')
 
 @app.route('/index/<type>/<int:id>')
 # @login_required
@@ -76,8 +85,8 @@ def administrator_roster():
     return render_template('administrator_roster.html', admins=admins)
 
 @app.route('/login/<type>', methods=['GET','POST'])
-# @login_required
-# @roles_required('<type>')
+@login_required
+@roles_required('<type>')
 def login(type):
     if type == "Student":
         if current_user.is_authenticated:
@@ -190,7 +199,7 @@ def create_professor():
         professor_role = Role(name='Professor')
         professor = Professor(name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
-            birthday=professor_birthday, phone=professor_phone)
+            birthday=professor_birthday, phone=professor_phone, active=True)
         user.password = password_manager.hash_password(professor_password)
         professor.roles = [professor_role,]
         db.session.add(professor)
@@ -223,9 +232,6 @@ def create_administrator():
             birthday=admin_birthday, phone=admin_phone, active=True)
         admin.password = password_manager.hash_password(admin_password)
         admin.roles = [admin_role,]
-        # admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
-        # admin.set_password(admin_password)
-        # admin.roles = [admin_role]
         db.session.add(admin)
         db.session.commit()
         return redirect(url_for('administrator_roster'))
@@ -497,6 +503,22 @@ def course_roster(id,course_id):
     submissions = Submission.query.filter_by(student_id=id, assign_course_id=course_id)
     student = Student.query.get(id)
     return render_template('student_grades.html', submissions=submissions, student=student)
+
+@app.route('/submission_page/<int:id>/<int:assignment_id>', methods=['GET','POST'])
+def submission_page(id, assignment_id):
+    assignment = Assignment.query.get(assignment_id)
+    if request.method == 'POST':
+        submission = Submission(student_id=id, assign_id=assignment.id, assign_total=assignment.total, assign_course_id=assignment.course_id)
+        db.session.add(submission)
+        db.session.commit()
+        return redirect(url_for('submission_confirmation',  id=submission.id))
+    return render_template('submission_page.html')
+
+@app.route('/submission_confirmation/<int:id>')
+def submission_confirmation(id):
+    submission = Submission.query.get(id)
+    student = Student.query.get(submission.student_id)
+    return render_template('submission_confirmation.html', submission=submission, student=student)
 
 def main():
     if (len(sys.argv)==2):
