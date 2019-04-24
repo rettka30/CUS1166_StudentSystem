@@ -52,6 +52,7 @@ class Student(db.Model):
     year = db.Column(db.String(10), index=True)
     major = db.Column(db.String(120), index=True)
     courses = relationship("Course", secondary=class_registration_table, back_populates="students")
+    submissions = relationship("Submission", backref="students")
     posts = relationship("Post", backref="students")
 
     def __repr__(self):
@@ -128,6 +129,7 @@ class Submission(db.Model):
     student_id = Column(Integer, ForeignKey('students.id'))
     assign_id = Column(Integer, ForeignKey('assignments.id'))
     assign_total = Column(Integer, ForeignKey('assignments.total'))
+    assign_course_id = Column(Integer, ForeignKey('assignments.course_id'))
     # assign_type = Column(String, ForeignKey('assignments.type'))
 
     def set_grade(self, grade):

@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+{% endblock %}
+
+{% block app_content %}
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card" id="opt">
+      <ul>
+
+      </ul>
+    </div>
+  </div>
+  <div class="centercolumn">
+    <div class="card">
+      <h4>Grades</h4>
+        <ul>
+          {% for assignment in assignments %}
+            <p><a href="{{ url_for('assignment', id=assignment.id )}}">{{assignment.name}}</a></p>
+          {% endfor %}
+        </ul>
+    </div>
+    <div class="table" id="opt">
+      <h1>Registered Students</h1>
+      <div style="text-align:center">
+        <table class="table table-striped" >
+          <tr>
+            <th>ID</th>
+            <th>Student Name</th>
+            <th>year</th>
+            <th>Major</th>
+          </tr>
+          {% for student in course.students %}
+          <tr class="text-left">
+            <td>{{student.id}}</td>
+            <td><a href="{{ url_for('details', type='Student', id=student.id) }}">{{student.name}}</a></td>
+            <td>{{student.year}}</td>
+            <td>{{student.major}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Options</h3>
+    </div>
+  </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <h1>Course</h1>
+      <p>Subject: {{course.subject}}</p>
+      <p>Course Number: {{course.number}}</p>
+      <p>Course Name: {{course.name}}</p>
+      <p>Course ID: {{course.id}}</p>
+      <p>Instructor: {{professor.name}}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
