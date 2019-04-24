@@ -31,7 +31,7 @@ class User(db.Model, UserMixin):
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(50), unique=True)
+    name = db.Column(db.String(50), unique=False)
 
 class UserRoles(db.Model):
     __tablename__ = 'user_roles'

@@ -35,15 +35,21 @@ def welcome():
 def home():
     return render_template('home.html')
 
-@app.route('/logout')
+# @app.route('/logout')
+# @login_required
+# def logout():
+#     logout_user()
+#     if session.get('was_once_logged_in'):
+#         # prevent flashing automatically logged out message
+#         del session['was_once_logged_in']
+#     flash('You have successfully logged yourself out.')
+#     return redirect('/login')
+
+@app.route("/logout")
 @login_required
 def logout():
     logout_user()
-    if session.get('was_once_logged_in'):
-        # prevent flashing automatically logged out message
-        del session['was_once_logged_in']
-    flash('You have successfully logged yourself out.')
-    return redirect('/login')
+    return redirect(url_for('welcome'))
 
 @app.route('/index/<type>/<int:id>')
 # @login_required
@@ -482,8 +488,8 @@ def assignment(id):
 # @roles_required('Student', 'Professor')
 def student_course_roster(id):
     course = Course.query.get(id)
-    assignments = Assignment
-    return render_template('course_roster.html', course=course, Assignment = assignments)
+    students = course.students
+    return render_template('course_roster.html', course=course, students=students)
 
 @app.route('/student_grades/<int:id>')
 # @login_required
