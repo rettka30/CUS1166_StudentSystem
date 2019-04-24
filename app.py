@@ -115,11 +115,8 @@ def login(type):
         return render_template('login.html', form=form)
 
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
-<<<<<<< HEAD
 # @login_required
 # @roles_required('Professor')
-=======
->>>>>>> 03b3bcae061fe5b0846789b8cdaa6fb87a562d84
 def gradebook(id):
     assignment = Assignment.query.get(id)
     course = Course.query.get(assignment.course_id)
@@ -467,15 +464,23 @@ def course_roster(id):
     students = course.students
     return render_template('course_roster.html', course=course, students=students)
 
-@app.route('/student_course/<int:student_id>/<int:course_id>')
+@app.route('/student_grades/<int:student_id>')
+@login_required
+@roles_required('Student', 'Professor')
+def student_grades(student_id):
+    submissions = Submission.query.felter(Submission.student_id=student_id)
+
+    return render_template('student_grades.html', submissions = submissions, Assignment = Assignments)
+
+
+@app.route('/student_grades/<int:student_id>/<int:course_id>')
 @login_required
 @roles_required('Student', 'Professor')
 def course_roster(student_id, course_id):
-    assignments =
-    submissions = Submission.query.felter(Submission.student_id=student_id, Submission.)
-    course = Course.query.get(id)
-    students = course.students
-    return render_template('course_roster.html', course=course, students=students)
+    submissions = Submission.query.felter(Submission.student_id=student_id, Submission.assign_course_id=course_id)
+    Assignments = Assignment
+
+    return render_template('student_grades.html', submissions = submissions, Assignment = Assignments)
 
 def main():
     if (len(sys.argv)==2):
