@@ -76,8 +76,8 @@ def administrator_roster():
     return render_template('administrator_roster.html', admins=admins)
 
 @app.route('/login/<type>', methods=['GET','POST'])
-# @login_required
-# @roles_required('<type>')
+@login_required
+@roles_required('<type>')
 def login(type):
     if type == "Student":
         if current_user.is_authenticated:
@@ -161,7 +161,7 @@ def create_student():
         student = Student(name=student_name, gender=student_gender,
             year=student_year, email=student_email, birthday=student_birthday,
             major=student_major, phone=student_phone)
-        user.password = password_manager.hash_password(student_password)
+        student.password = password_manager.hash_password(student_password)
         student.roles = [student_role,]
         db.session.add(student)
         db.session.commit()
@@ -191,7 +191,7 @@ def create_professor():
         professor = Professor(name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
             birthday=professor_birthday, phone=professor_phone)
-        user.password = hash_password(professor_password)
+        professor.password = hash_password(professor_password)
         professor.roles = [professor_role,]
         db.session.add(professor)
         db.session.commit()
@@ -223,9 +223,6 @@ def create_administrator():
             birthday=admin_birthday, phone=admin_phone, active=True)
         admin.password = password_manager.hash_password(admin_password)
         admin.roles = [admin_role,]
-        admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
-        admin.set_password(admin_password)
-        admin.roles = [admin_role]
         db.session.add(admin)
         db.session.commit()
         return redirect(url_for('administrator_roster'))
