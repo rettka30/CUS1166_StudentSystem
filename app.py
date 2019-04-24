@@ -61,7 +61,7 @@ def index(type, id):
 
 @app.route('/student_roster')
 @login_required
-@roles_required('Admin')
+#@roles_required('Admin')
 def student_roster():
     students = Student.query.all()
     return render_template('student_roster.html', students=students)
@@ -81,6 +81,11 @@ def administrator_roster():
     return render_template('administrator_roster.html', admins=admins)
 
 @app.route('/login/<type>', methods=['GET','POST'])
+<<<<<<< HEAD
+#@login_required
+#@roles_required('<type>')
+=======
+>>>>>>> 3f54c42e358de352c13812cd0ab0993fe1f97774
 def login(type):
     if type == "Student":
         if current_user.is_authenticated:
@@ -115,7 +120,7 @@ def login(type):
         if form.validate_on_submit():
             user = Administrator.query.filter_by(id=form.id.data).first()
             if password_manager.verify_password(form.password.data, user.password):
-                #login_user(user)
+                login_user(user)
                 return redirect(url_for('index', type="Administrator", id=form.id.data))
             else:
                 flash('Invalid id or password')
