@@ -498,6 +498,22 @@ def course_roster(id,course_id):
     student = Student.query.get(id)
     return render_template('student_grades.html', submissions=submissions, student=student)
 
+@app.route('/submission_page/<int:id>/<int:assignment_id>', methods=['GET','POST'])
+def submission_page(id, assignment_id):
+    assignment = Assignment.query.get(assignment_id)
+    if request.method == 'POST':
+        submission = Submission(student_id=id, assign_id=assignment.id, assign_total=assignment.total, assign_course_id=assignment.course_id)
+        db.session.add(submission)
+        db.session.commit()
+        return redirect(url_for('submission_confirmation',  id=submission.id))
+    return render_template('submission_page.html')
+
+@app.route('/submission_confirmation/<int:id>')
+def submission_confirmation(id):
+    submission = Submission.query.get(id)
+    student = Student.query.get(submission.student_id)
+    return render_template('submission_confirmation.html', submission=submission, student=student)
+
 def main():
     if (len(sys.argv)==2):
         print(sys.argv)
