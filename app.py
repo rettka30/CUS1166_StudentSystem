@@ -94,7 +94,7 @@ def login(type):
         form = LoginForm()
         if form.validate_on_submit():
             user = Student.query.filter_by(id=form.id.data).first()
-            if verify_password(form.password.data, user.password):
+            if password_manager.verify_password(form.password.data, user.password):
                 login_user(user)
             else:
                 flash('Invalid id or password')
@@ -107,7 +107,7 @@ def login(type):
         form = LoginForm()
         if form.validate_on_submit():
             user = Professor.query.filter_by(id=form.id.data).first()
-            if verify_password(form.password.data, user.password):
+            if password_manager.verify_password(form.password.data, user.password):
                 login_user(user)
             else:
                 flash('Invalid id or password')
@@ -120,16 +120,13 @@ def login(type):
         form = LoginForm()
         if form.validate_on_submit():
             user = Administrator.query.filter_by(id=form.id.data).first()
-            if verify_password(form.password.data, user.password):
-                login_user(user)
+            if password_manager.verify_password(form.password.data, user.password):
+                #login_user(user)
+                return redirect(url_for('index', type="Administrator", id=form.id.data))
             else:
                 flash('Invalid id or password')
                 return redirect(url_for('login', type='Administrator'))
-    # Original Code
-            # if user is None or not user.check_password(form.password.data):
-            #     flash('Invalid id or password')
-            #     return redirect(url_for('login', type='Administrator'))
-            return redirect(url_for('index', type="Administrator", id=form.id.data))
+        #    return redirect(url_for('index', type="Administrator", id=form.id.data))
         return render_template('login.html', form=form)
 
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
@@ -200,7 +197,7 @@ def create_professor():
         professor = Professor(name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
             birthday=professor_birthday, phone=professor_phone, active=True)
-        professor.password = hash_password(professor_password)
+        professor.password = password_manager.hash_password(professor_password)
         professor.roles = [professor_role,]
         db.session.add(professor)
         db.session.commit()
@@ -377,10 +374,10 @@ def change_password(type, id):
         #     return redirect(url_for('index', type="Student", id=id))
         form = PasswordForm()
         if form.validate_on_submit():
-            if user is None or not verify_password(form.password.data, user.password):
+            if user is None or not password_manager.verify_password(form.password.data, user.password):
                     flash('Invalid password')
                     return redirect(url_for('change_password', type='Student', id=id))
-            user.password = hash_password(form.np.data)
+            user.password = password_manager.hash_password(form.np.data)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('index', type='Student', id=id))
@@ -391,10 +388,10 @@ def change_password(type, id):
         #     return redirect(url_for('index', type="Student", id=id))
         form = PasswordForm()
         if form.validate_on_submit():
-            if user is None or not verify_password(form.password.data, user.password):
+            if user is None or not password_manager.verify_password(form.password.data, user.password):
                     flash('Invalid password')
                     return redirect(url_for('change_password', type='Professor', id=id))
-            user.password = hash_password(form.np.data)
+            user.password = password_manager.hash_password(form.np.data)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('index', type='Professor', id=id))
@@ -405,10 +402,10 @@ def change_password(type, id):
         #     return redirect(url_for('index', type="Student", id=id))
         form = PasswordForm()
         if form.validate_on_submit():
-            if user is None or not verify_password(form.password.data, user.password):
+            if user is None or not password_manager.verify_password(form.password.data, user.password):
                     flash('Invalid password')
                     return redirect(url_for('change_password', type='Administrator', id=id))
-            user.password = hash_password(form.np.data)
+            user.password = password_manager.hash_password(form.np.data)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('index', type='Administrator', id=id))
