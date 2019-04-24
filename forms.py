@@ -3,9 +3,9 @@ from wtforms import StringField, IntegerField, PasswordField, SubmitField, Radio
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from models import Student, Professor, Administrator
+from flask_user.forms import LoginForm
 
-
-class LoginForm(FlaskForm):
+class LoginForm(LoginForm):
     id = IntegerField('ID Number', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign In')
