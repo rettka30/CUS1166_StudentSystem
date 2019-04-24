@@ -462,6 +462,16 @@ def course_roster(id):
     students = course.students
     return render_template('course_roster.html', course=course, students=students)
 
+@app.route('/student_course/<int:student_id>/<int:course_id>')
+@login_required
+@roles_required('Student', 'Professor')
+def course_roster(student_id, course_id):
+    assignments =
+    submissions = Submission.query.felter(Submission.student_id=student_id, Submission.)
+    course = Course.query.get(id)
+    students = course.students
+    return render_template('course_roster.html', course=course, students=students)
+
 def main():
     if (len(sys.argv)==2):
         print(sys.argv)
