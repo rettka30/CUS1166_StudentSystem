@@ -46,7 +46,7 @@ class_registration_table = db.Table('registration',
     db.Column('course_id', Integer, ForeignKey('courses.id'))
 )
 # Student Class; User, UserMixin,
-class Student(db.Model):
+class Student(User):
     __tablename__= "students"
     id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
     year = db.Column(db.String(10), index=True)
@@ -59,7 +59,7 @@ class Student(db.Model):
         return '<Student {}>'.format(self.id)
 
 # Professor Class
-class Professor(db.Model):
+class Professor(User):
     __tablename__="professors"
     id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
     department = db.Column(db.String(120), index=True)
@@ -70,7 +70,7 @@ class Professor(db.Model):
         return '<Professor {}>'.format(self.id)
 
 # Administrator Class
-class Administrator(db.Model):
+class Administrator(User):
     __tablename__="administrators"
     id = db.Column(db.Integer, ForeignKey('users.id'), primary_key=True)
     department = db.Column(db.String(120), index=True)

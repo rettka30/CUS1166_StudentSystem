@@ -161,7 +161,7 @@ def create_student():
         student = Student(name=student_name, gender=student_gender,
             year=student_year, email=student_email, birthday=student_birthday,
             major=student_major, phone=student_phone)
-        user.password = password_manager.hash_password(student_password)
+        student.password = password_manager.hash_password(student_password)
         student.roles = [student_role,]
         db.session.add(student)
         db.session.commit()
@@ -191,7 +191,7 @@ def create_professor():
         professor = Professor(name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
             birthday=professor_birthday, phone=professor_phone)
-        user.password = hash_password(professor_password)
+        user.password = password_manager.hash_password(professor_password)
         professor.roles = [professor_role,]
         db.session.add(professor)
         db.session.commit()
@@ -223,9 +223,9 @@ def create_administrator():
             birthday=admin_birthday, phone=admin_phone, active=True)
         admin.password = password_manager.hash_password(admin_password)
         admin.roles = [admin_role,]
-        admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
-        admin.set_password(admin_password)
-        admin.roles = [admin_role]
+        # admin = Administrator(name=admin_name, gender=admin_gender, department=admin_department, email=admin_email, birthday=admin_birthday, phone=admin_phone)
+        # admin.set_password(admin_password)
+        # admin.roles = [admin_role]
         db.session.add(admin)
         db.session.commit()
         return redirect(url_for('administrator_roster'))
@@ -371,10 +371,10 @@ def change_password(type, id):
         #     return redirect(url_for('index', type="Student", id=id))
         form = PasswordForm()
         if form.validate_on_submit():
-            if user is None or not verify_password(form.password.data, user.password):
+            if user is None or not password_manager.verify_password(form.password.data, user.password):
                     flash('Invalid password')
                     return redirect(url_for('change_password', type='Student', id=id))
-            user.password = hash_password(form.np.data)
+            user.password = password_manager.hash_password(form.np.data)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('index', type='Student', id=id))
@@ -385,10 +385,10 @@ def change_password(type, id):
         #     return redirect(url_for('index', type="Student", id=id))
         form = PasswordForm()
         if form.validate_on_submit():
-            if user is None or not verify_password(form.password.data, user.password):
+            if user is None or not password_manager.verify_password(form.password.data, user.password):
                     flash('Invalid password')
                     return redirect(url_for('change_password', type='Professor', id=id))
-            user.password = hash_password(form.np.data)
+            user.password = password_manager.hash_password(form.np.data)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('index', type='Professor', id=id))
@@ -399,10 +399,10 @@ def change_password(type, id):
         #     return redirect(url_for('index', type="Student", id=id))
         form = PasswordForm()
         if form.validate_on_submit():
-            if user is None or not verify_password(form.password.data, user.password):
+            if user is None or not password_manager.verify_password(form.password.data, user.password):
                     flash('Invalid password')
                     return redirect(url_for('change_password', type='Administrator', id=id))
-            user.password = hash_password(form.np.data)
+            user.password = password_manager.hash_password(form.np.data)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('index', type='Administrator', id=id))
@@ -479,8 +479,8 @@ def assignment(id):
 # @roles_required('Student', 'Professor')
 def student_course_roster(id):
     course = Course.query.get(id)
-    students = course.students
-    return render_template('course_roster.html', course=course, students=students)
+    assignments = Assignment
+    return render_template('course_roster.html', course=course, Assignment = assignments)
 
 @app.route('/student_grades/<int:id>')
 # @login_required
