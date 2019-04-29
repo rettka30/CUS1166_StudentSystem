@@ -12,7 +12,7 @@
     <div class="card" id="opt">
       <h1>Submissions: </h1>
       <div style="text-align:center">
-        <table class="table table-striped" >
+        <table class="table table-striped">
           <tr>
             <th>Submission ID</th>
             <th>Assignment Name</th>
@@ -22,7 +22,7 @@
           {% for submission in submissions %}
           <tr class="text-left">
             <td>{{submission.id}}</td>
-            <td><a href="{{ url_for('assignment', id=submission.assign_id) }}">{{Assignment.query.get(submission.assign_id)}}</a></td>
+            <td><a href="{{ url_for('assignment', id=submission.assign_id) }}">{{submission.assign_id}}</a></td>
             <td>{{submission.points}}</td>
             <td>{{submission.assign_total}}</td>assignment
           </tr>

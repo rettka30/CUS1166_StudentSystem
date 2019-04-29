@@ -53,6 +53,25 @@
   // Output the result
   $EXPORT.text(JSON.stringify(data));
   });
+
+  function myFunction(id) {
+          console.log("hello")
+          console.log(id)
+      document.getElementById("buttonAppear").innerHTML = '<button onclick="secondFunction('+id+')" id="button_'+id+'">Submit</button>';
+  }
+  function secondFunction(id){
+    var x = document.getElementById("button_"+id);
+    var assign_id = document.getElementById("assign_id").innerHTML;
+    var grade = document.getElementById('student_grade_'+id).innerHTML;
+    console.log(assign_id)
+    $.post("/gradebook/"+assign_id,
+    {
+      id: id,
+      grade: grade
+    }, function(){
+    });
+    x.style.display = "none";
+  }
 </script>
 
 <div class="card">
@@ -67,17 +86,19 @@
           <th class="text-center">Student Name</th>
           <th class="text-center">Grade</th>
           <th class="text-center">Max Points</th>
+          <th></th>
         </tr>
         {% for student in students %}
         <tr>
-          <td class="pt-3-half" contenteditable="false">{{student.id}}</td>
+          <td class="pt-3-half" contenteditable="false" id="student_id">{{student.id}}</td>
           <td class="pt-3-half" contenteditable="false">{{student.name}}</td>
-          <td class="pt-3-half" contenteditable="true">{{assignment.total}}</td>
+          <td class="pt-3-half" contenteditable="true" onclick="myFunction({{student.id}})" id="student_grade_{{student.id}}">{{assignment.total}}</td>
           <td class="pt-3-half" contenteditable="false">{{assignment.total}}</td>
+          <td><span id="buttonAppear"></span></td>
         </tr>
         {% endfor %}
       </table>
-      <input class="btn btn-primary" type="submit" value="Submit">
+      <h4 id="assign_id">{{assignment.id}}</h4>
     </div>
   </div>
 </div>

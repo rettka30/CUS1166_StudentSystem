@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import LoginForm, PasswordForm, SubmitGradeForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm, RegisterCourseForm
+from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm, RegisterCourseForm
 from flask_login import current_user, LoginManager, login_user, login_required, logout_user
 from flask_bootstrap import Bootstrap
 from flask_user import login_required, PasswordManager, UserManager, UserMixin, roles_required
@@ -128,14 +128,18 @@ def login(type):
 # @roles_required('Professor')
 def gradebook(id):
     assignment = Assignment.query.get(id)
-    course = Course.query.get(assignment.course_id)
+    course_id = assignment.course_id
+    course = Course.query.get(course_id)
     students = course.students
-    form = SubmitGradeForm()
-    # if form.validate_on_submit():
-    #     for student in students:
-    #
-    #     return redirect(url_for('assignment', id=id))
-    return render_template('gradebook.html', assignment=assignment, students=students, form=form)
+    if request.method == 'POST':
+        id = request.form['id']
+        grade = request.form['grade']
+        submission = Submission.query.filter_by(student_id=id, assign_id=assignment.id).first()
+        submission.set_grade(grade)
+        db.session.add(submission)
+        db.session.commit()
+        return redirect(url_for('gradebook', id=assignment.id))
+    return render_template('gradebook.html', assignment=assignment, students=students)
 
 @app.route('/create_student', methods=['GET', 'POST'])
 # @login_required
