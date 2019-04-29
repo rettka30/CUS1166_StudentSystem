@@ -85,8 +85,11 @@ def administrator_roster():
     return render_template('administrator_roster.html', admins=admins)
 
 @app.route('/login/<type>', methods=['GET','POST'])
+<<<<<<< HEAD
 #@login_required
 #@roles_required('<type>')
+=======
+>>>>>>> 24239b0cb0b4ca74e11fd0abadb8cf7a47a92363
 def login(type):
     if type == "Student":
         if current_user.is_authenticated:
