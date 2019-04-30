@@ -12,17 +12,17 @@
   <p id="direction">Please pick an option:</p>
   <div class="row" id="login">
     <div class="col-auto" id="student">
-      <a href="{{ url_for('login', type='Student')}}" class="button">
-          Student
+      <a href="{{ url_for('user.login') }}" class="button">
+        Student
       </a>
     </div>
     <div class="col-auto" id="professor">
-      <a href="{{ url_for('login', type='Professor')}}" class="button">
+      <a href="{{ url_for('user.login') }}" class="button">
         Professor
       </a>
     </div>
     <div class="col-auto" id="admin">
-      <a href="{{ url_for('login', type='Administrator')}}" class="button">
+      <a href="{{ url_for('user.login') }}" class="button">
         Administrator
       </a>
     </div>
