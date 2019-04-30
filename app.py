@@ -148,6 +148,7 @@ def gradebook(id):
     course_id = assignment.course_id
     course = Course.query.get(course_id)
     students = course.students
+    submissions = Submission.query.get(assign_id=assignment.id)
     if request.method == 'POST':
         id = request.form['id']
         grade = request.form['grade']
@@ -156,7 +157,7 @@ def gradebook(id):
         db.session.add(submission)
         db.session.commit()
         return redirect(url_for('gradebook', id=assignment.id))
-    return render_template('gradebook.html', assignment=assignment, students=students)
+    return render_template('gradebook.html', assignment=assignment, students=students, submissions=submissions)
 
 @app.route('/create_student', methods=['GET', 'POST'])
 # @login_required
@@ -474,6 +475,8 @@ def register(id):
 # @roles_required('Profesor')
 def add_assignment(id):
     form = CreateAssignment()
+    course = Course.query.get(id)
+    students = course.students
     if form.validate_on_submit():
         name = form.name.data
         description = form.description.data
@@ -482,6 +485,10 @@ def add_assignment(id):
         assignment = Assignment(name=name, description=description, type=type, total=total, course_id=id)
         db.session.add(assignment)
         db.session.commit()
+        for student in students:
+            submission = Submission(student_id=student.id, assign_id=assignment.id, assign_total=assignment.total, assign_course_id=assignment.course_id)
+            db.session.add(submission)
+            db.session.commit()
         return redirect(url_for('details', type='Course',  id=id))
     return render_template('add_assignment.html', form=form)
 
@@ -522,10 +529,11 @@ def course_roster(id,course_id):
 def submission_page(id, assignment_id):
     assignment = Assignment.query.get(assignment_id)
     student = Student.query.get(id)
+    submission = Submission.query.filter_by(student_id=id, assign_course_id=assignment.course_id)
     if request.method == 'POST' and 'file' in request.files:
         filename = files.save(request.files['file'])
-        submission = Submission(student_id=id, assign_id=assignment.id, assign_total=assignment.total, assign_course_id=assignment.course_id)
         submission.set_file(filename)
+        submission.submitted(True)
         db.session.add(submission)
         db.session.commit()
         return redirect(url_for('submission_confirmation',  id=submission.id))

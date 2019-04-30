@@ -83,17 +83,17 @@
       <table class="table table-bordered table-responsive-md table-striped text-center">
         <tr>
           <th class="text-center">Student ID</th>
-          <th class="text-center">Student Name</th>
           <th class="text-center">Grade</th>
           <th class="text-center">Max Points</th>
+          <th class="text-center">Turned In</th>
           <th></th>
         </tr>
-        {% for student in students %}
+        {% for submission in submissions %}
         <tr>
-          <td class="pt-3-half" contenteditable="false" id="student_id">{{student.id}}</td>
-          <td class="pt-3-half" contenteditable="false">{{student.name}}</td>
-          <td class="pt-3-half" contenteditable="true" onclick="myFunction({{student.id}})" id="student_grade_{{student.id}}">{{assignment.total}}</td>
+          <td class="pt-3-half" contenteditable="false" id="student_id">{{submission.student_id}}</td>
+          <td class="pt-3-half" contenteditable="true" onclick="myFunction({{student.id}})" id="student_grade_{{student.id}}">{{submission.grade}}</td>
           <td class="pt-3-half" contenteditable="false">{{assignment.total}}</td>
+          <td class="pt-3-half" contenteditable="false">{{submission.turned_in}}</td>
           <td><span id="buttonAppear"></span></td>
         </tr>
         {% endfor %}
