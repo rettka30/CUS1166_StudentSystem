@@ -92,53 +92,53 @@ def administrator_roster():
     admins = Administrator.query.all()
     return render_template('administrator_roster.html', admins=admins)
 
-@app.route('/login/<type>', methods=['GET','POST'])
-@login_required
-#@roles_required('<type>')
-def login(type):
-    if type == "Student":
-    #     if current_user.is_authenticated:
-    #         return redirect(url_for('index', type="Student", id=form.id.data))
-    #     form = LoginForm()
-    #     if form.validate_on_submit():
-    #         user = Student.query.filter_by(id=form.id.data).first()
-    #         if password_manager.verify_password(form.password.data, user.password):
-    #             login_user(user)
-    #         else:
-    #             flash('Invalid id or password')
-    #             return redirect(url_for('login', type='Student'))
-    #         return redirect(url_for('index', type="Student", id=form.id.data))
-    #     return render_template('login.html', form=form)
-        return redirect(url_for('index', type="Student", id=current_user.id))
-    elif type == "Professor":
-        # if current_user.is_authenticated:
-        #     return redirect(url_for('index', type="Professor", id=form.id.data))
-        # form = LoginForm()
-        # if form.validate_on_submit():
-        #     user = Professor.query.filter_by(id=form.id.data).first()
-        #     if password_manager.verify_password(form.password.data, user.password):
-        #         login_user(user)
-        #     else:
-        #         flash('Invalid id or password')
-        #         return redirect(url_for('login', type='Professor'))
-        #     return redirect(url_for('index', type="Professor", id=form.id.data))
-        # return render_template('login.html', form=form)
-        return redirect(url_for('index', type="Professor", id=current_user.id))
-    else:
-        # if current_user.is_authenticated:
-        #     return redirect(url_for('index', type="Administrator", id=form.id.data))
-        # form = LoginForm()
-        # if form.validate_on_submit():
-        #     user = Administrator.query.filter_by(id=form.id.data).first()
-        #     if password_manager.verify_password(form.password.data, user.password):
-        #         login_user(user)
-        #         flash('Successfully login')
-        #         return redirect(url_for('index', type="Administrator", id=form.id.data))
-        #     else:
-        #         flash('Invalid id or password')
-        #         return redirect(url_for('login', type='Administrator'))
-        # return render_template('login.html', form=form)
-        return redirect(url_for('index', type="Administrator", id=current_user.id))
+# @app.route('/login/<type>', methods=['GET','POST'])
+# @login_required
+# #@roles_required('<type>')
+# def login(type):
+#     if type == "Student":
+#     #     if current_user.is_authenticated:
+#     #         return redirect(url_for('index', type="Student", id=form.id.data))
+#     #     form = LoginForm()
+#     #     if form.validate_on_submit():
+#     #         user = Student.query.filter_by(id=form.id.data).first()
+#     #         if password_manager.verify_password(form.password.data, user.password):
+#     #             login_user(user)
+#     #         else:
+#     #             flash('Invalid id or password')
+#     #             return redirect(url_for('login', type='Student'))
+#     #         return redirect(url_for('index', type="Student", id=form.id.data))
+#     #     return render_template('login.html', form=form)
+#         return redirect(url_for('index', type="Student", id=current_user.id))
+#     elif type == "Professor":
+#         # if current_user.is_authenticated:
+#         #     return redirect(url_for('index', type="Professor", id=form.id.data))
+#         # form = LoginForm()
+#         # if form.validate_on_submit():
+#         #     user = Professor.query.filter_by(id=form.id.data).first()
+#         #     if password_manager.verify_password(form.password.data, user.password):
+#         #         login_user(user)
+#         #     else:
+#         #         flash('Invalid id or password')
+#         #         return redirect(url_for('login', type='Professor'))
+#         #     return redirect(url_for('index', type="Professor", id=form.id.data))
+#         # return render_template('login.html', form=form)
+#         return redirect(url_for('index', type="Professor", id=current_user.id))
+#     else:
+#         # if current_user.is_authenticated:
+#         #     return redirect(url_for('index', type="Administrator", id=form.id.data))
+#         # form = LoginForm()
+#         # if form.validate_on_submit():
+#         #     user = Administrator.query.filter_by(id=form.id.data).first()
+#         #     if password_manager.verify_password(form.password.data, user.password):
+#         #         login_user(user)
+#         #         flash('Successfully login')
+#         #         return redirect(url_for('index', type="Administrator", id=form.id.data))
+#         #     else:
+#         #         flash('Invalid id or password')
+#         #         return redirect(url_for('login', type='Administrator'))
+#         # return render_template('login.html', form=form)
+#         return redirect(url_for('index', type="Administrator", id=current_user.id))
 
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
 @login_required
