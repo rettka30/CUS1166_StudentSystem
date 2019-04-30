@@ -19,6 +19,18 @@ body {
   margin: auto;
 }
 
+.center {
+  float: left;
+  width: 50%;
+  margin-right: 150px;
+  float: right;
+}
+
+.card {
+  padding: 20px;
+  margin-top: 20px;
+}
+
 #login {
   display: inline-block;
   vertical-align: middle;
