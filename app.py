@@ -471,8 +471,8 @@ def register(id):
     return render_template('register.html', form=form)
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
-# @login_required
-# @roles_required('Profesor')
+@login_required
+@roles_required('Professor')
 def add_assignment(id):
     form = CreateAssignment()
     course = Course.query.get(id)
