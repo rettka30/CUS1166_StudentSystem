@@ -31,7 +31,17 @@
     </div>
   </nav>
 {% endblock %}
+
 {% block content %}
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <script>
+        alert({{ messages }})
+      </script>
+    {% endif %}
+  {% endwith %}
+
   <div class="container">
     {% block app_content %}
     {% endblock %}
