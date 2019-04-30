@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/create.css">
+{% endblock %}
+
+{% block app_content %}
+<div class="row">
+  <div class="centercolumn">
+    <div class="card">
+        <p><a href="{{url_for('static', filename='files/'+submission.document)}}" download>{{submission.document}}</a></p>
+        <embed src="{{url_for('static', filename='files/'+submission.document)}}" id="file"></embed>
+    </div>
+  </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <a href="{{ url_for('details', type='Course', id=submission.assign_id) }}" class="button">
+        Back
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

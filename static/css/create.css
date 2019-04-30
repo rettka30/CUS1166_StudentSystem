@@ -48,6 +48,11 @@ body {
   padding-left: 20px;
 }
 
+#file {
+  max-width:5000px;
+  max-height:5000px;
+}
+
 /* Fake image */
 .fakeimg {
   background-color: #aaa;

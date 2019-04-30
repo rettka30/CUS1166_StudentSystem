@@ -115,6 +115,7 @@ class Submission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     points = db.Column(db.Integer)
+    document = db.Column(db.String(120))
     student_id = Column(Integer, ForeignKey('students.id'))
     assign_id = Column(Integer, ForeignKey('assignments.id'))
     assign_total = Column(Integer, ForeignKey('assignments.total'))
@@ -123,6 +124,9 @@ class Submission(db.Model):
 
     def set_grade(self, grade):
         self.points = grade
+
+    def set_file(self, document):
+        self.document = document
 
 #Unique ID Class
 class Unique(db.Model):

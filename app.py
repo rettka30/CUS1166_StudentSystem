@@ -10,6 +10,7 @@ from flask_user import login_required, PasswordManager, UserManager, UserMixin, 
 import datetime, pygal
 import requests
 import urllib.parse
+from flask_uploads import UploadSet, configure_uploads, ALL
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -26,6 +27,12 @@ login.login_view = 'login'
 # Setup Flask-User
 user_manager = UserManager(app, db, User)
 password_manager = PasswordManager(app)
+
+#Flask-Uploads
+files = UploadSet('files', ALL)
+
+app.config['UPLOADED_FILES_DEST'] = 'static/files'
+configure_uploads(app, files)
 
 @app.route('/welcome')
 def welcome():
@@ -47,7 +54,7 @@ def logout():
     return redirect(url_for('welcome'))
 
 @app.route('/index/<type>/<int:id>')
-@login_required
+# @login_required
 # @roles_required('<type>')
 def index(type, id):
     if type == "Student":
@@ -152,8 +159,8 @@ def gradebook(id):
     return render_template('gradebook.html', assignment=assignment, students=students)
 
 @app.route('/create_student', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_student():
     # Get information from the form.
     form = CreateStudentForm()
@@ -183,8 +190,8 @@ def create_student():
     return render_template('create_student.html', form = form)
 
 @app.route('/create_professor', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_professor():
     # Get information from the form.
     form = CreateProfessorForm()
@@ -213,8 +220,8 @@ def create_professor():
     return render_template('create_professor.html', form = form)
 
 @app.route('/create_administrator', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_administrator():
     # Get information from the form.
     form = CreateAdministratorForm()
@@ -327,7 +334,7 @@ def edit(type, id):
         return render_template('error.html')
 
 @app.route('/details/<type>/<int:id>')
-@login_required
+# @login_required
 def details(type, id):
     if type == "Student":
         student = Student.query.get(id)
@@ -348,8 +355,8 @@ def details(type, id):
 
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_course():
     # Get information from the form.
     professors = Professor.query.all()
@@ -422,7 +429,7 @@ def change_password(type, id):
         return render_template('error.html')
 
 @app.route('/registered/<int:id>')
-@login_required
+# @login_required
 # @roles_required('Student')
 def registered(id):
     student = Student.query.get(id)
@@ -431,7 +438,7 @@ def registered(id):
     return render_template('registered.html', student=student, registered=registered, Professor=professor)
 
 @app.route('/search_course/<int:id>', methods=['GET','POST'])
-@login_required
+# @login_required
 # @roles_required('Student')
 def search_course(id):
     form = SearchCourseForm()
@@ -448,8 +455,8 @@ def search_course(id):
     return render_template('search_course.html', form=form, Professor=professor, courses=courses)
 
 @app.route('/register/<int:id>', methods=['GET','POST'])
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def register(id):
     form = RegisterCourseForm()
     if form.validate_on_submit():
@@ -463,8 +470,8 @@ def register(id):
     return render_template('register.html', form=form)
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
-@login_required
-@roles_required('Profesor')
+# @login_required
+# @roles_required('Profesor')
 def add_assignment(id):
     form = CreateAssignment()
     if form.validate_on_submit():
@@ -510,20 +517,23 @@ def course_roster(id,course_id):
     return render_template('student_grades.html', submissions=submissions, student=student)
 
 @app.route('/submission_page/<int:id>/<int:assignment_id>', methods=['GET','POST'])
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def submission_page(id, assignment_id):
     assignment = Assignment.query.get(assignment_id)
-    if request.method == 'POST':
+    student = Student.query.get(id)
+    if request.method == 'POST' and 'file' in request.files:
+        filename = files.save(request.files['file'])
         submission = Submission(student_id=id, assign_id=assignment.id, assign_total=assignment.total, assign_course_id=assignment.course_id)
+        submission.set_file(filename)
         db.session.add(submission)
         db.session.commit()
         return redirect(url_for('submission_confirmation',  id=submission.id))
-    return render_template('submission_page.html')
+    return render_template('submission_page.html', student=student, assignment=assignment)
 
 @app.route('/submission_confirmation/<int:id>')
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def submission_confirmation(id):
     submission = Submission.query.get(id)
     student = Student.query.get(submission.student_id)
