@@ -90,7 +90,7 @@ def administrator_roster():
 @login_required
 #@roles_required('<type>')
 def login(type):
-    if type == "Student":
+    # if type == "Student":
     #     if current_user.is_authenticated:
     #         return redirect(url_for('index', type="Student", id=form.id.data))
     #     form = LoginForm()
@@ -103,36 +103,37 @@ def login(type):
     #             return redirect(url_for('login', type='Student'))
     #         return redirect(url_for('index', type="Student", id=form.id.data))
     #     return render_template('login.html', form=form)
-        return redirect(url_for('index', type="Student", id=current_user.id))
-    elif type == "Professor":
-        # if current_user.is_authenticated:
-        #     return redirect(url_for('index', type="Professor", id=form.id.data))
-        # form = LoginForm()
-        # if form.validate_on_submit():
-        #     user = Professor.query.filter_by(id=form.id.data).first()
-        #     if password_manager.verify_password(form.password.data, user.password):
-        #         login_user(user)
-        #     else:
-        #         flash('Invalid id or password')
-        #         return redirect(url_for('login', type='Professor'))
-        #     return redirect(url_for('index', type="Professor", id=form.id.data))
-        # return render_template('login.html', form=form)
-        return redirect(url_for('index', type="Professor", id=current_user.id))
-    else:
-        # if current_user.is_authenticated:
-        #     return redirect(url_for('index', type="Administrator", id=form.id.data))
-        # form = LoginForm()
-        # if form.validate_on_submit():
-        #     user = Administrator.query.filter_by(id=form.id.data).first()
-        #     if password_manager.verify_password(form.password.data, user.password):
-        #         login_user(user)
-        #         flash('Successfully login')
-        #         return redirect(url_for('index', type="Administrator", id=form.id.data))
-        #     else:
-        #         flash('Invalid id or password')
-        #         return redirect(url_for('login', type='Administrator'))
-        # return render_template('login.html', form=form)
-        return redirect(url_for('index', type="Administrator", id=current_user.id))
+    #     return redirect(url_for('index', type="Student", id=current_user.id))
+    # elif type == "Professor":
+    #     if current_user.is_authenticated:
+    #         return redirect(url_for('index', type="Professor", id=form.id.data))
+    #     form = LoginForm()
+    #     if form.validate_on_submit():
+    #         user = Professor.query.filter_by(id=form.id.data).first()
+    #         if password_manager.verify_password(form.password.data, user.password):
+    #             login_user(user)
+    #         else:
+    #             flash('Invalid id or password')
+    #             return redirect(url_for('login', type='Professor'))
+    #         return redirect(url_for('index', type="Professor", id=form.id.data))
+    #     return render_template('login.html', form=form)
+    #     return redirect(url_for('index', type="Professor", id=current_user.id))
+    # else:
+    #     if current_user.is_authenticated:
+    #         return redirect(url_for('index', type="Administrator", id=form.id.data))
+    #     form = LoginForm()
+    #     if form.validate_on_submit():
+    #         user = Administrator.query.filter_by(id=form.id.data).first()
+    #         if password_manager.verify_password(form.password.data, user.password):
+    #             login_user(user)
+    #             flash('Successfully login')
+    #             return redirect(url_for('index', type="Administrator", id=form.id.data))
+    #         else:
+    #             flash('Invalid id or password')
+    #             return redirect(url_for('login', type='Administrator'))
+    #     return render_template('login.html', form=form)
+    #     return redirect(url_for('index', type="Administrator", id=current_user.id))
+    return redirect(url_for('user.login'))
 
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
 @login_required
@@ -205,7 +206,7 @@ def create_professor():
         professor_type = "Professor"
         professor = Professor(uniqueid=professor_ui, name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
-            birthday=professor_birthday, phone=professor_phone, active=True, type=professor_tpye)
+            birthday=professor_birthday, phone=professor_phone, active=True, type=professor_type)
         professor.password = password_manager.hash_password(professor_password)
         professor.roles = [professor_role,]
         db.session.add(professor)
@@ -277,6 +278,7 @@ def delete(type, id):
 @login_required
 def edit(type, id):
     if type == "Student":
+        form = CreateStudentForm()
         student = Student.query.get(id)
         if request.method == 'POST':
             student.name = request.form.get('student_name')
@@ -291,6 +293,7 @@ def edit(type, id):
             return redirect(url_for('index', type='Student', id=id))
         return render_template('student_edit.html', student=student)
     elif type == "Professor":
+        form = CreateProfessorForm()
         professor = Professor.query.get(id)
         if request.method == 'POST':
             professor.name = request.form.get('professor_name')
@@ -304,6 +307,7 @@ def edit(type, id):
             return redirect(url_for('index', type='Professor', id=id))
         return render_template('prof_edit.html', professor=professor)
     elif type == "Administrator":
+        form = CreateAdministratorForm()
         admin = Administrator.query.get(id)
         if request.method == 'POST':
             admin.name = request.form.get('admin_name')
@@ -367,7 +371,7 @@ def create_course():
         professor = Professor.query.filter_by(name=professor_name).first()
         professor_id = professor.id
         course_ui = generateuniqueid("Course")
-        course = Course(unique_id=course_ui, name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
+        course = Course(uniqueid=course_ui, name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for('course_list'))
