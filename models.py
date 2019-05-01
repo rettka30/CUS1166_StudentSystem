@@ -136,4 +136,4 @@ class Submission(db.Model):
 class Unique(db.Model):
     __tablename__= "unique"
     prefix = db.Column(db.Integer, primary_key=True)
-    count = db.Column(db.Integer)
+    count = db.Column(db.Integer, index=True)

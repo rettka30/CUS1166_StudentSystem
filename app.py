@@ -188,7 +188,8 @@ def create_student():
         b3=student_birthday[6:10]
         student_password=b1+b2+b3
         student_role = Role(name='Student')
-        student = Student(name=student_name, gender=student_gender,
+        student_ui = generateuniqueid("Student")
+        student = Student(uniqueid=student_ui, name=student_name, gender=student_gender,
             year=student_year, email=student_email, birthday=student_birthday,
             major=student_major, phone=student_phone)
         student.password = password_manager.hash_password(student_password)
@@ -218,7 +219,8 @@ def create_professor():
         p3=professor_birthday[6:10]
         professor_password=p1+p2+p3
         professor_role = Role(name='Professor')
-        professor = Professor(name=professor_name, gender=professor_gender,
+        professor_ui = generateuniqueid("Professor")
+        professor = Professor(uniqueid=professor_ui, name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
             birthday=professor_birthday, phone=professor_phone, active=True)
         professor.password = password_manager.hash_password(professor_password)
@@ -248,7 +250,8 @@ def create_administrator():
         a3=admin_birthday[6:10]
         admin_password=a1+a2+a3
         admin_role = Role(name='Admin')
-        admin = Administrator(name=admin_name, gender=admin_gender,
+        admin_ui = generateuniqueid("Administrator")
+        admin = Administrator(uniqueid=admin_ui, name=admin_name, gender=admin_gender,
             department=admin_department, email=admin_email,
             birthday=admin_birthday, phone=admin_phone, active=True)
         admin.password = password_manager.hash_password(admin_password)
@@ -379,7 +382,8 @@ def create_course():
         professor_name = request.form.get('professor_name')
         professor = Professor.query.filter_by(name=professor_name).first()
         professor_id = professor.id
-        course = Course(name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
+        course_ui = generateuniqueid("Course")
+        course = Course(unique_id=course_ui, name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for('course_list'))
@@ -725,3 +729,32 @@ def ratemyprof(name):
     scrape = RateMyProfScraper(842)
     json_object = scrape.SearchProfessor(name)
     return json_object
+
+def generateuniqueid(type):
+    if type == "Administrator":  #Prefix:1
+        ui = Unique.query.get(1)
+        id_prefix = str(ui.prefix)
+        id_count = str(ui.count)
+        unique_id = id_prefix+id_count
+        ui.count = ui.count+1
+    elif type == "Professor":  #Prefix:2,3,4
+        ui = Unique.query.get(2)
+        id_prefix = str(ui.prefix)
+        id_count = str(ui.count)
+        unique_id = id_prefix+id_count
+        ui.count = ui.count+1
+    elif type == "Student": #Prefix:5,6,7
+        ui = Unique.query.get(5)
+        id_prefix = str(ui.prefix)
+        id_count = str(ui.count)
+        unique_id = id_prefix+id_count
+        ui.count = ui.count+1
+    elif type == "Course": #Prefix:8,9
+        ui = Unique.query.get(8)
+        id_prefix = str(ui.prefix)
+        id_count = str(ui.count)
+        unique_id = id_prefix+id_count
+        ui.count = ui.count+1
+    else:
+        unique_id = null
+    return unique_id
