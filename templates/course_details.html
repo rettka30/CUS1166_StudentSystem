@@ -26,27 +26,6 @@
           {% endfor %}
         </ul>
     </div>
-    <div class="table" id="opt">
-      <h1>Registered Students</h1>
-      <div style="text-align:center">
-        <table class="table table-striped" >
-          <tr>
-            <th>ID</th>
-            <th>Student Name</th>
-            <th>year</th>
-            <th>Major</th>
-          </tr>
-          {% for student in course.students %}
-          <tr class="text-left">
-            <td>{{student.id}}</td>
-            <td><a href="{{ url_for('details', type='Student', id=student.id) }}">{{student.name}}</a></td>
-            <td>{{student.year}}</td>
-            <td>{{student.major}}</td>
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
-    </div>
     <div class="card">
       <h3>Options</h3>
     </div>

@@ -537,13 +537,53 @@ def student_course_roster(id):
     assignments = Assignment
     return render_template('course_roster.html', course=course, Assignment = assignments)
 
-@app.route('/student_grades/<int:id>')
+@app.route('/student_grades/<int:id>/<int:course_id>')
 @login_required
 # @roles_required('Student', 'Professor')
-def student_grades(id):
-    submissions = Submission.query.filter_by(student_id=id)
+def student_grades(id, course_id):
+    course = Course.query.get(course_id)
+    submissions = Submission.query.filter_by(student_id=id, assign_course_id=course_id).all()
     student = Student.query.get(id)
-    return render_template('student_grades.html', submissions=submissions, student=student)
+    total_earned = 0
+    total_points = 0
+    letter_grade = ""
+    for submission in submissions:
+        total_earned += submission.points
+        total_points += submission.assign_total
+    percentage = (total_earned/total_points)*100
+    if percentage >= 95.0:
+        letter_grade = "A+"
+    elif percentage < 95.0 and percentage >= 91.0:
+        letter_grade = "A"
+    elif percentage < 91.0 and percentage >= 87.0:
+        letter_grade = "B+"
+    elif percentage < 87.0 and percentage >= 83.0:
+        letter_grade = "B"
+    elif percentage < 83.0 and percentage >= 80.0:
+        letter_grade = "B-"
+    elif percentage < 80.0 and percentage >= 77.0:
+        letter_grade = "C+"
+    elif percentage < 77.0 and percentage >= 74.0:
+        letter_grade = "C"
+    elif percentage < 74.0 and percentage >= 70.0:
+        letter_grade = "C-"
+    elif percentage < 70.0 and percentage >= 67.0:
+        letter_grade = "D+"
+    elif percentage < 67.0 and percentage >= 65.0:
+        letter_grade = "D"
+    elif percentage < 65.0 and percentage >= 60.0:
+        letter_grade = "D-"
+    else :
+        letter_grade = "F"
+    return render_template('student_grades.html', course=course, submissions=submissions, student=student,
+                            total_earned=total_earned, total_points=total_points, percentage=percentage, letter_grade=letter_grade)
+
+@app.route('/classes/grades/<int:id>')
+@login_required
+def student_class_gradebook(id):
+    student = Student.query.get(id)
+    courses = student.courses
+    return render_template('classes_gradebook.html', courses=courses, student=student)
 
 @app.route('/course_roster/<int:id>/<int:course_id>')
 @login_required
