@@ -7,7 +7,8 @@ from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreatePro
 from flask_login import current_user, LoginManager, login_user, login_required, logout_user
 from flask_bootstrap import Bootstrap
 from flask_user import login_required, PasswordManager, UserManager, UserMixin, roles_required
-import datetime, pygal
+from scrape import *
+import datetime, pygal, time
 import requests
 import urllib.parse
 from flask_uploads import UploadSet, configure_uploads, ALL
@@ -189,9 +190,10 @@ def create_student():
         student_password=b1+b2+b3
         student_role = Role(name='Student')
         student_ui = generateuniqueid("Student")
+        student_type = "Student"
         student = Student(uniqueid=student_ui, name=student_name, gender=student_gender,
             year=student_year, email=student_email, birthday=student_birthday,
-            major=student_major, phone=student_phone)
+            major=student_major, phone=student_phone, active=True, type=student_type)
         student.password = password_manager.hash_password(student_password)
         student.roles = [student_role,]
         db.session.add(student)
@@ -220,9 +222,10 @@ def create_professor():
         professor_password=p1+p2+p3
         professor_role = Role(name='Professor')
         professor_ui = generateuniqueid("Professor")
+        professor_type = "Professor"
         professor = Professor(uniqueid=professor_ui, name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
-            birthday=professor_birthday, phone=professor_phone, active=True)
+            birthday=professor_birthday, phone=professor_phone, active=True, type=professor_tpye)
         professor.password = password_manager.hash_password(professor_password)
         professor.roles = [professor_role,]
         db.session.add(professor)
@@ -251,9 +254,10 @@ def create_administrator():
         admin_password=a1+a2+a3
         admin_role = Role(name='Admin')
         admin_ui = generateuniqueid("Administrator")
+        admin_type = "Administrator"
         admin = Administrator(uniqueid=admin_ui, name=admin_name, gender=admin_gender,
             department=admin_department, email=admin_email,
-            birthday=admin_birthday, phone=admin_phone, active=True)
+            birthday=admin_birthday, phone=admin_phone, active=True, type=admin_type)
         admin.password = password_manager.hash_password(admin_password)
         admin.roles = [admin_role,]
         db.session.add(admin)
@@ -380,6 +384,9 @@ def create_course():
         course_subject = request.form.get('course_subject')
         course_number = request.form.get('course_number')
         professor_name = request.form.get('professor_name')
+        day = request.form.get('day')
+        start_time = request.form.get('start_time')
+        end_time = request.form.get('end_time')
         professor = Professor.query.filter_by(name=professor_name).first()
         professor_id = professor.id
         course_ui = generateuniqueid("Course")
@@ -476,11 +483,11 @@ def search_course(id):
 def register(id):
     form = RegisterCourseForm()
     if form.validate_on_submit():
-        course_name=form.course_name.data
+        course_subject=form.course_subject.data
         return redirect(url_for('results', id=id, subject=course_subject))
     return render_template('register.html', form=form)
 
-@app.route('/results/<int:id>/<int:subject>')
+@app.route('/results/<int:id>/<subject>')
 def results(id, subject):
     student = Student.query.get(id)
     courses = Course.query.filter_by(subject=subject).all()
@@ -491,21 +498,22 @@ def course_overview(id, course_id):
     course = Course.query.get(course_id)
     student = Student.query.get(id)
     professor = Professor.query.get(course.professor_id)
-    x = ratemyprof(professor.name)
-    tDept = scrape.PrintProfessorDetail('tDept')
-    tSid = scrape.PrintProfessorDetail('tSid')
-    institution_name = scrape.PrintProfessorDetail('institution_name')
-    tid = scrape.PrintProfessorDetail('tid')
-    tNumRatings = scrape.PrintProfessorDetail('tNumRatings')
-    rating_class = scrape.PrintProfessorDetail('rating_class')
-    overall_rating=scrape.PrintProfessorDetail("overall_rating")
+    x = ratemyprof()
+    json_object = x.SearchProfessor(professor.name)
+    tDept = x.PrintProfessorDetail('tDept')
+    tSid = x.PrintProfessorDetail('tSid')
+    institution_name = x.PrintProfessorDetail('institution_name')
+    tid = x.PrintProfessorDetail('tid')
+    tNumRatings = x.PrintProfessorDetail('tNumRatings')
+    rating_class = x.PrintProfessorDetail('rating_class')
+    overall_rating=x.PrintProfessorDetail("overall_rating")
     if request.method == 'POST':
         student.courses.append(course)
         db.session.add(student)
         db.session.commit()
         return redirect(url_for('registered', id=id))
     return render_template('course_overview.html', tDept=tDept, tSid=tSid, institution_name=institution_name,
-                tid=tid, tNumRatings=tNumRatings, rating_class=rating_class, overall_rating=overall_rating, student=student, course=course)
+                tid=tid, tNumRatings=tNumRatings, rating_class=rating_class, overall_rating=overall_rating, student=student, course=course, professor=professor)
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
 @login_required
@@ -725,10 +733,9 @@ def gpa_predictor(current_grades,times, future_grades):
     except:
         return 'please enter in the right form'
 
-def ratemyprof(name):
+def ratemyprof():
     scrape = RateMyProfScraper(842)
-    json_object = scrape.SearchProfessor(name)
-    return json_object
+    return scrape
 
 def generateuniqueid(type):
     if type == "Administrator":  #Prefix:1
