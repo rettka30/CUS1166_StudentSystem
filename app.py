@@ -460,11 +460,6 @@ def search_course(id):
 def register(id):
     form = RegisterCourseForm()
     if form.validate_on_submit():
-<<<<<<< HEAD
-        course_id=form.course_id.data
-        course = Course.query.get(course_id)
-        student =Student.query.get(id)
-=======
         course_subject=form.course_subject.data
         return redirect(url_for('results', id=id, subject=course_subject))
     return render_template('register.html', form=form)
@@ -490,17 +485,12 @@ def course_overview(id, course_id):
     rating_class = x.PrintProfessorDetail('rating_class')
     overall_rating=x.PrintProfessorDetail("overall_rating")
     if request.method == 'POST':
->>>>>>> 10e16beca5b067e6dd879a03a6b26772f7bbe8fc
         student.courses.append(course)
         db.session.add(student)
         db.session.commit()
         return redirect(url_for('registered', id=id))
-<<<<<<< HEAD
-    return render_template('register.html', form=form)
-=======
     return render_template('course_overview.html', tDept=tDept, tSid=tSid, institution_name=institution_name,
                 tid=tid, tNumRatings=tNumRatings, rating_class=rating_class, overall_rating=overall_rating, student=student, course=course, professor=professor)
->>>>>>> 10e16beca5b067e6dd879a03a6b26772f7bbe8fc
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
 @login_required
@@ -670,40 +660,6 @@ def gpa_predictor(current_grades,times, future_grades):
     except:
         return 'please enter in the right form'
 
-<<<<<<< HEAD
-@app.route('/ratemyprof')
-def ratemyprof():
-    scrape = RateMyProfScraper(842)
-    json_object = scrape.SearchProfessor("Christoforos Christoforou")
-    json_tDept = scrape.PrintProfessorDetail("tDept")
-    json_tSid = scrape.PrintProfessorDetail("tSid")
-    json_institution_name = scrape.PrintProfessorDetail("institution_name")
-    json_tFname = scrape.PrintProfessorDetail("tFname")
-    json_tMiddlename = scrape.PrintProfessorDetail("tMiddlename")
-    json_tLname = scrape.PrintProfessorDetail("tLname")
-    json_tid = scrape.PrintProfessorDetail("tid")
-    json_tNumRatings = scrape.PrintProfessorDetail("tNumRatings")
-    json_rating_class = scrape.PrintProfessorDetail("rating_class")
-    json_contentType = scrape.PrintProfessorDetail("contentType")
-    json_categoryType = scrape.PrintProfessorDetail("categoryType")
-    json_overall_rating = scrape.PrintProfessorDetail("overall_rating")
-    # json_data=requests.get(scrape).json()
-    # json_tDept = scrape.json_data['tDept']
-    # json_tSid = scrape.json_data['tSid']
-    # json_institution_name  = scrape.json_data['institution_name']
-    # json_tFname = scrape.json_data['tFname']
-    # json_tMiddlename = scrape.json_data['tMiddlename']
-    # json_tLname = scrape.json_data['tLname']
-    # json_tid = scrape.json_data['tid']
-    # json_tNumRatings = scrape.json_data['tNumRatings']
-    # json_rating_class = scrape.json_data['rating_class']
-    # json_contentType = scrape.json_data['contentType']
-    # json_categoryType = scrape.json_data['categoryType']
-    # json_overall_rating = scrape.json_data['overall_rating']
-    return render_template('ratemyprof.html', tDept=json_tDept, tSid=json_tSid, institution_name=json_institution_name,
-                            tFname=json_tFname, tMiddlename=json_tMiddlename, tLname=json_tLname, tid=json_tid, tNumRatings=json_tNumRatings,
-                            rating_class=json_rating_class, contentType=json_contentType, categoryType=json_categoryType, overall_rating=json_overall_rating)
-=======
 def ratemyprof():
     scrape = RateMyProfScraper(842)
     return scrape
@@ -736,4 +692,3 @@ def generateuniqueid(type):
     else:
         unique_id = null
     return unique_id
->>>>>>> 10e16beca5b067e6dd879a03a6b26772f7bbe8fc
