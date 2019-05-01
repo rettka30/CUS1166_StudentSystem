@@ -205,7 +205,7 @@ def create_professor():
         professor_type = "Professor"
         professor = Professor(uniqueid=professor_ui, name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
-            birthday=professor_birthday, phone=professor_phone, active=True, type=professor_tpye)
+            birthday=professor_birthday, phone=professor_phone, active=True, type=professor_type)
         professor.password = password_manager.hash_password(professor_password)
         professor.roles = [professor_role,]
         db.session.add(professor)
@@ -367,7 +367,7 @@ def create_course():
         professor = Professor.query.filter_by(name=professor_name).first()
         professor_id = professor.id
         course_ui = generateuniqueid("Course")
-        course = Course(unique_id=course_ui, name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
+        course = Course(uniqueid=course_ui, name=course_name, subject=course_subject, number=course_number, professor_id=professor_id, day=day, start_time=start_time, end_time=end_time)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for('course_list'))
@@ -475,22 +475,24 @@ def course_overview(id, course_id):
     course = Course.query.get(course_id)
     student = Student.query.get(id)
     professor = Professor.query.get(course.professor_id)
-    x = ratemyprof()
-    json_object = x.SearchProfessor(professor.name)
-    tDept = x.PrintProfessorDetail('tDept')
-    tSid = x.PrintProfessorDetail('tSid')
-    institution_name = x.PrintProfessorDetail('institution_name')
-    tid = x.PrintProfessorDetail('tid')
-    tNumRatings = x.PrintProfessorDetail('tNumRatings')
-    rating_class = x.PrintProfessorDetail('rating_class')
-    overall_rating=x.PrintProfessorDetail("overall_rating")
+    scraper = RateMyProfScraper(842)
+    json_object = scraper.SearchProfessor(professor.name)
+    tDept = scraper.PrintProfessorDetail('tDept')
+    tSid = scraper.PrintProfessorDetail('tSid')
+    institution_name = scraper.PrintProfessorDetail('institution_name')
+    tid = scraper.PrintProfessorDetail('tid')
+    tNumRatings = scraper.PrintProfessorDetail('tNumRatings')
+    rating_class = scraper.PrintProfessorDetail('rating_class')
+    overall_rating=scraper.PrintProfessorDetail("overall_rating")
+    url = 'https://www.ratemyprofessors.com/ShowRatings.jsp?tid=' + str(tid)
     if request.method == 'POST':
         student.courses.append(course)
         db.session.add(student)
         db.session.commit()
         return redirect(url_for('registered', id=id))
     return render_template('course_overview.html', tDept=tDept, tSid=tSid, institution_name=institution_name,
-                tid=tid, tNumRatings=tNumRatings, rating_class=rating_class, overall_rating=overall_rating, student=student, course=course, professor=professor)
+                tid=tid, tNumRatings=tNumRatings, rating_class=rating_class, overall_rating=overall_rating,
+                student=student, course=course, professor=professor, url=url)
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
 @login_required
