@@ -214,8 +214,8 @@ def create_professor():
     return render_template('create_professor.html', form = form)
 
 @app.route('/create_administrator', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_administrator():
     # Get information from the form.
     form = CreateAdministratorForm()

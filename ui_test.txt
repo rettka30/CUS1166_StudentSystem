@@ -1,0 +1,8 @@
+from app import app
+from app import db
+from models import *
+from models import Unique
+with app.app_context():
+	uniques = Unique.query.all()
+	for u in uniques:
+		print(u.prefix, u.count)
