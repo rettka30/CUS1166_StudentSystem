@@ -14,6 +14,7 @@ flask-login = "*"
 pygal = "*"
 requests = "*"
 flask-user = "*"
+flask-uploads = "*"
 
 [requires]
 python_version = "3.6"
