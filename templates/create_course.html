@@ -30,7 +30,13 @@
         </select>
         <br>
         <label> Day </label>
-        <input type="text" name="day" value={{request.form.day}}>
+        <select name="days">
+          <option value="Monday">Monday</option>
+          <option value="Tuesday">Tuesday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thrusday">Thursday</option>
+          <option value="Friday">Friday</option>
+        </select>
         <br>
         <label> Start Time </label>
         <input type="time" min="9:00" max="22:00" name="start_time" value={{request.form.start_time}}>
