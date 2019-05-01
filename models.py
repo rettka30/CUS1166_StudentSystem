@@ -21,6 +21,7 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean())
     roles = relationship("Role", secondary="user_roles")
     password = db.Column(db.String(128))
+    type = db.Column(db.String(15))
 
 class Role(db.Model):
     __tablename__ = 'roles'
@@ -80,8 +81,8 @@ class Course (db.Model):
     subject = db.Column(db.String(64), index=True)
     number = db.Column(db.String(8), index=True)
     day = db.Column(db.String(10), index=True)
-    start_time = db.Column(db.Time, index=True)
-    end_time = db.Column(db.Time, index=True)
+    start_time = db.Column(db.String(4), index=True)
+    end_time = db.Column(db.String(4), index=True)
     professor_id = Column(Integer, ForeignKey('professors.id'))
     posts = relationship("Post", backref="courses")
     assignments = relationship("Assignment", backref="courses")
@@ -136,4 +137,4 @@ class Submission(db.Model):
 class Unique(db.Model):
     __tablename__= "unique"
     prefix = db.Column(db.Integer, primary_key=True)
-    count = db.Column(db.Integer)
+    count = db.Column(db.Integer, index=True)
