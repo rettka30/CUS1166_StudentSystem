@@ -1,0 +1,27 @@
+from app import app
+from app import db
+from models import *
+from models import Unique
+with app.app_context():
+	u = Unique(count='1111')
+	db.session.add(u)
+	u = Unique(count='1111')
+	db.session.add(u)
+	u = Unique(count='1111')
+	db.session.add(u)
+	u = Unique(count='1111')
+	db.session.add(u)
+	u = Unique(count='1111')
+	db.session.add(u)
+	u = Unique(count='1111')
+	db.session.add(u)
+	u = Unique(count='1111')
+	db.session.add(u)
+	u = Unique(count='1111')
+	db.session.add(u)
+	u = Unique(count='1111')
+	db.session.add(u)
+	db.session.commit()
+	uniques = Unique.query.all()
+	for u in uniques:
+		print(u.prefix, u.count)
