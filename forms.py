@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, PasswordField, SubmitField, RadioField, DateField, FloatField
+from wtforms import StringField, IntegerField, PasswordField, SelectField, SubmitField, RadioField, DateField, FloatField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from models import Student, Professor, Administrator
@@ -46,7 +46,8 @@ class SearchCourseForm(FlaskForm):
 class CreateStudentForm(FlaskForm):
     student_name = StringField('Student Name:', validators = [DataRequired()])
     student_gender = RadioField('Student Gender:', choices = [('Female','Female'),('Male','Male')])
-    student_year = StringField('Year In School:', validators = [DataRequired()])
+    student_year = SelectField('Year In School:', choices=[('Freshman', 'Freshman'),
+        ('Sophmore', 'Sophmore'), ('Junior', 'Junior'), ('Senior', 'Senior')], validators = [DataRequired()])
     student_email = EmailField('Email:', validators = [DataRequired(),Email()])
     student_birthday = DateField('Birthday: (ex. %m-%d-%y)', format='%m-%d-%Y')
     student_major = StringField('Major:', validators = [DataRequired()])

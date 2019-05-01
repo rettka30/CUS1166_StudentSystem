@@ -282,6 +282,7 @@ def delete(type, id):
 @login_required
 def edit(type, id):
     if type == "Student":
+        form = CreateStudentForm()
         student = Student.query.get(id)
         if request.method == 'POST':
             student.name = request.form.get('student_name')
@@ -294,8 +295,9 @@ def edit(type, id):
             db.session.add(student)
             db.session.commit()
             return redirect(url_for('index', type='Student', id=id))
-        return render_template('student_edit.html', student=student)
+        return render_template('student_edit.html', student=student, form=form)
     elif type == "Professor":
+        form = CreateProfessorForm()
         professor = Professor.query.get(id)
         if request.method == 'POST':
             professor.name = request.form.get('professor_name')
@@ -307,8 +309,9 @@ def edit(type, id):
             db.session.add(professor)
             db.session.commit()
             return redirect(url_for('index', type='Professor', id=id))
-        return render_template('prof_edit.html', professor=professor)
+        return render_template('prof_edit.html', professor=professor, form=form)
     elif type == "Administrator":
+        form = CreateAdministratorForm()
         admin = Administrator.query.get(id)
         if request.method == 'POST':
             admin.name = request.form.get('admin_name')
@@ -320,7 +323,7 @@ def edit(type, id):
             db.session.add(admin)
             db.session.commit()
             return redirect(url_for('index', type='Administrator', id=id))
-        return render_template('admin_edit.html', admin=admin)
+        return render_template('admin_edit.html', admin=admin, form=form)
     elif type == "Course":
         course = Course.query.get(id)
         if request.method == 'POST':
