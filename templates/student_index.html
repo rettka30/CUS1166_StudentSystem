@@ -44,10 +44,12 @@
       <p><a href="{{url_for('change_password', type='Student', id=student.id)}}">Change Password</a></p>
     </div>
     <div class="card">
-      <h3>Popular Post</h3>
-      <div class="fakeimg"><p>Image</p></div>
-      <div class="fakeimg"><p>Image</p></div>
-      <div class="fakeimg"><p>Image</p></div>
+      <h3>Submissions:</h3>
+      {% for submission in submissions %}
+      <p><a href="{{ url_for('submission_page', id=student.id, assignment_id=submission.assign_id) }}">
+                {{submission.assign_id}}
+      </a></p>
+      {% endfor %}
     </div>
   </div>
 </div>
