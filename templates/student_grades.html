@@ -22,11 +22,27 @@
           {% for submission in submissions %}
           <tr class="text-left">
             <td>{{submission.id}}</td>
-            <td><a href="{{ url_for('assignment', id=submission.assign_id) }}">{{submission.assign_id}}</a></td>
+            {% if submission.turned_in == True %}
+            <td><a href="{{ url_for('submission_confirmation', id=submission.id) }}">{{submission.assign_id}}</a></td>
+            {% else %}
+            <td><a href="{{ url_for('submission_page', id=sudent.id, assignment_id=submission.assign_id) }}">{{submission.assign_id}}</a></td>
+            {% endif %}
             <td>{{submission.points}}</td>
-            <td>{{submission.assign_total}}</td>assignment
+            <td>{{submission.assign_total}}</td>
           </tr>
           {% endfor %}
+          <tr class="text-left">
+            <td></td>
+            <td>Total:</td>
+            <td>{{total_earned}}</td>
+            <td>{{total_points}}</td>
+          </tr>
+          <tr class="text-left">
+            <td></td>
+            <td>Final Grade:</td>
+            <td>{{percentage}}%</td>
+            <td><<strong>{{letter_grade}}</strong></td>
+          </tr>
         </table>
       </div>
     </div>
