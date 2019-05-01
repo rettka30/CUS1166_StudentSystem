@@ -140,6 +140,14 @@ def administrator_roster():
 #         # return render_template('login.html', form=form)
 #         return redirect(url_for('index', type="Administrator", id=current_user.id))
 
+@app.route("/assignment/gradebooks/<int:id>")
+@login_required
+@roles_required('Professor')
+def gradebooks(id):
+    course = Course.query.get(id)
+    assignments = course.assignments
+    return render_template('gradebooks.html', course=course, assignments=assignments)
+
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
 @login_required
 @roles_required('Professor')
@@ -464,14 +472,36 @@ def search_course(id):
 def register(id):
     form = RegisterCourseForm()
     if form.validate_on_submit():
-        course_id=form.course_id.data
-        course = Course.query.get(course_id)
-        student =Student.query.get(id)
+        course_name=form.course_name.data
+        return redirect(url_for('results', id=id, subject=course_subject))
+    return render_template('register.html', form=form)
+
+@app.route('/results/<int:id>/<int:subject>')
+def results(id, subject):
+    student = Student.query.get(id)
+    courses = Course.query.filter_by(subject=subject).all()
+    return render_template('results.html', student=student, courses=courses)
+
+@app.route('/course_overview/<int:id>/<int:course_id>', methods=['GET','POST'])
+def course_overview(id, course_id):
+    course = Course.query.get(course_id)
+    student = Student.query.get(id)
+    professor = Professor.query.get(course.professor_id)
+    x = ratemyprof(professor.name)
+    tDept = scrape.PrintProfessorDetail('tDept')
+    tSid = scrape.PrintProfessorDetail('tSid')
+    institution_name = scrape.PrintProfessorDetail('institution_name')
+    tid = scrape.PrintProfessorDetail('tid')
+    tNumRatings = scrape.PrintProfessorDetail('tNumRatings')
+    rating_class = scrape.PrintProfessorDetail('rating_class')
+    overall_rating=scrape.PrintProfessorDetail("overall_rating")
+    if request.method == 'POST':
         student.courses.append(course)
         db.session.add(student)
         db.session.commit()
         return redirect(url_for('registered', id=id))
-    return render_template('register.html', form=form)
+    return render_template('course_overview.html', tDept=tDept, tSid=tSid, institution_name=institution_name,
+                tid=tid, tNumRatings=tNumRatings, rating_class=rating_class, overall_rating=overall_rating, student=student, course=course)
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
 @login_required
@@ -510,13 +540,53 @@ def student_course_roster(id):
     assignments = Assignment
     return render_template('course_roster.html', course=course, Assignment = assignments)
 
-@app.route('/student_grades/<int:id>')
+@app.route('/student_grades/<int:id>/<int:course_id>')
 @login_required
 # @roles_required('Student', 'Professor')
-def student_grades(id):
-    submissions = Submission.query.filter_by(student_id=id)
+def student_grades(id, course_id):
+    course = Course.query.get(course_id)
+    submissions = Submission.query.filter_by(student_id=id, assign_course_id=course_id).all()
     student = Student.query.get(id)
-    return render_template('student_grades.html', submissions=submissions, student=student)
+    total_earned = 0
+    total_points = 0
+    letter_grade = ""
+    for submission in submissions:
+        total_earned += submission.points
+        total_points += submission.assign_total
+    percentage = (total_earned/total_points)*100
+    if percentage >= 95.0:
+        letter_grade = "A+"
+    elif percentage < 95.0 and percentage >= 91.0:
+        letter_grade = "A"
+    elif percentage < 91.0 and percentage >= 87.0:
+        letter_grade = "B+"
+    elif percentage < 87.0 and percentage >= 83.0:
+        letter_grade = "B"
+    elif percentage < 83.0 and percentage >= 80.0:
+        letter_grade = "B-"
+    elif percentage < 80.0 and percentage >= 77.0:
+        letter_grade = "C+"
+    elif percentage < 77.0 and percentage >= 74.0:
+        letter_grade = "C"
+    elif percentage < 74.0 and percentage >= 70.0:
+        letter_grade = "C-"
+    elif percentage < 70.0 and percentage >= 67.0:
+        letter_grade = "D+"
+    elif percentage < 67.0 and percentage >= 65.0:
+        letter_grade = "D"
+    elif percentage < 65.0 and percentage >= 60.0:
+        letter_grade = "D-"
+    else :
+        letter_grade = "F"
+    return render_template('student_grades.html', course=course, submissions=submissions, student=student,
+                            total_earned=total_earned, total_points=total_points, percentage=percentage, letter_grade=letter_grade)
+
+@app.route('/classes/grades/<int:id>')
+@login_required
+def student_class_gradebook(id):
+    student = Student.query.get(id)
+    courses = student.courses
+    return render_template('classes_gradebook.html', courses=courses, student=student)
 
 @app.route('/course_roster/<int:id>/<int:course_id>')
 @login_required
@@ -651,35 +721,7 @@ def gpa_predictor(current_grades,times, future_grades):
     except:
         return 'please enter in the right form'
 
-@app.route('/ratemyprof')
-def ratemyprof():
+def ratemyprof(name):
     scrape = RateMyProfScraper(842)
-    json_object = scrape.SearchProfessor("Christoforos Christoforou")
-    json_tDept = scrape.PrintProfessorDetail("tDept")
-    json_tSid = scrape.PrintProfessorDetail("tSid")
-    json_institution_name = scrape.PrintProfessorDetail("institution_name")
-    json_tFname = scrape.PrintProfessorDetail("tFname")
-    json_tMiddlename = scrape.PrintProfessorDetail("tMiddlename")
-    json_tLname = scrape.PrintProfessorDetail("tLname")
-    json_tid = scrape.PrintProfessorDetail("tid")
-    json_tNumRatings = scrape.PrintProfessorDetail("tNumRatings")
-    json_rating_class = scrape.PrintProfessorDetail("rating_class")
-    json_contentType = scrape.PrintProfessorDetail("contentType")
-    json_categoryType = scrape.PrintProfessorDetail("categoryType")
-    json_overall_rating = scrape.PrintProfessorDetail("overall_rating")
-    # json_data=requests.get(scrape).json()
-    # json_tDept = scrape.json_data['tDept']
-    # json_tSid = scrape.json_data['tSid']
-    # json_institution_name  = scrape.json_data['institution_name']
-    # json_tFname = scrape.json_data['tFname']
-    # json_tMiddlename = scrape.json_data['tMiddlename']
-    # json_tLname = scrape.json_data['tLname']
-    # json_tid = scrape.json_data['tid']
-    # json_tNumRatings = scrape.json_data['tNumRatings']
-    # json_rating_class = scrape.json_data['rating_class']
-    # json_contentType = scrape.json_data['contentType']
-    # json_categoryType = scrape.json_data['categoryType']
-    # json_overall_rating = scrape.json_data['overall_rating']
-    return render_template('ratemyprof.html', tDept=json_tDept, tSid=json_tSid, institution_name=json_institution_name,
-                            tFname=json_tFname, tMiddlename=json_tMiddlename, tLname=json_tLname, tid=json_tid, tNumRatings=json_tNumRatings,
-                            rating_class=json_rating_class, contentType=json_contentType, categoryType=json_categoryType, overall_rating=json_overall_rating)
+    json_object = scrape.SearchProfessor(name)
+    return json_object

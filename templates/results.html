@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/roster.css">
+{% endblock %}
+
+{% block app_content %}
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card" id="opt">
+      <h1>Courses: </h1>
+      <div style="text-align:center">
+        <table class="table table-striped" >
+          <tr>
+            <th>ID</th>
+            <th>Subject</th>
+            <th>Course Name:</th>
+          </tr>
+          {% for course in courses %}
+          <tr class="text-left">
+            <td>{{course.id}}</td>
+            <td>{{course.subject}}</td>
+            <td><a href="{{ url_for('course_overview', id=student.id, course_id=course.id) }}">{{course.name}}</a></td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <a href="{{ url_for('register', id=student.id) }}" class="button">
+        Back
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

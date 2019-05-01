@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+{% endblock %}
+
+{% block app_content %}
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card" id="opt">
+      <ul>
+        <ol><a href="{{ url_for('results', id=student.id, subject=course.subject )}}" class="button">Back</a></ol>
+      </ul>
+    </div>
+  </div>
+  <div class="centercolumn">
+    <div class="card">
+      <h4>Course Info:</h4>
+      <p>ID: {{course.id}}</p>
+      <p>Subject: {{course.subject}}</p>
+      <p>Number: {{course.number}}</p>
+      <p>Name: {{course.name}}</p>
+      <p>Day: {{course.day}}</p>
+      <p>Time: {{course.start_time}} - {{course.end_time}}</p>
+    </div>
+  </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <h2>{{professor.name}}</h2>
+      <p>Department: {{tDept}}</p>
+      <p>School ID: {{tSid}}</p>
+      <p>School: {{institution_name}}</p>
+      <p>Professor ID: {{tid}}</p>
+      <p>Number of Ratings: {{tNumRatings}}</p>
+      <p>Rating: {{rating_class}}</p>
+      <p>Overall Rating: {{overall_rating}}</p>
+      <p>Taken from Rate My Professor</p>
+      <p><a href="https://www.ratemyprofessors.com/ShowRatings.jsp?tid={{tid}}">Rate My Professor</a></p>
+    </div>
+    <div class="card">
+      <form action="" method="POST">
+        <button type="submit"> Register </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <h2>Footer</h2>
+</div>
+{% endblock %}
