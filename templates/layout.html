@@ -26,8 +26,9 @@
           <li><a href="/">Home</a></li>
           {% if current_user.is_authenticated %}
             <li><a href="{{ url_for('index', type=current_user.type, id=current_user.id) }}">Index</a></li>
+          {% else %}
+            <li><a href="{{ url_for('user.login') }}">Sign In</a></li>
           {% endif %}
-          <li><a href="{{ url_for('user.login') }}">Sign In</a></li>
           <li><a href="{{ url_for('user.logout') }}">Sign out</a></li>
         </ul>
       </div>
