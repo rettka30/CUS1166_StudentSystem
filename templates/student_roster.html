@@ -30,7 +30,7 @@
           </tr>
           {% for student in students %}
           <tr class="text-left">
-            <td>{{student.id}}</td>
+            <td>{{student.uniqueid}}</td>
             <td><a href="{{ url_for('details', type='Student', id=student.id) }}">{{student.name}}</a></td>
             <td>{{student.year}}</td>
             <td>{{student.major}}</td>

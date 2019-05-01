@@ -30,7 +30,7 @@
           </tr>
           {% for professor in professors %}
           <tr class="text-left">
-            <td>{{professor.id}}</td>
+            <td>{{professor.uniqueid}}</td>
             <td><a href="{{ url_for('details', type='Professor', id=professor.id) }}">{{professor.name}}</a></td>
             <td>{{professor.email}}</td>
             <td>{{professor.department}}</td>

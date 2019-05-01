@@ -30,7 +30,7 @@
           </tr>
           {% for admin in admins %}
           <tr class="text-left">
-            <td>{{admin.id}}</td>
+            <td>{{admin.uniqueid}}</td>
             <td><a href="{{ url_for('details', type='Administrator', id=admin.id) }}">{{admin.name}}</a></td>
             <td>{{admin.email}}</td>
             <td>{{admin.department}}</td>
