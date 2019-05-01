@@ -16,7 +16,7 @@ class PasswordForm(FlaskForm):
     submit = SubmitField('Change')
 
 class RegisterCourseForm(FlaskForm):
-    course_id = IntegerField('Course ID', validators=[DataRequired()])
+    course_id = StringField('Course Subject:')
     submit = SubmitField('register')
 
 class CreateAssignment(FlaskForm):

@@ -469,14 +469,36 @@ def search_course(id):
 def register(id):
     form = RegisterCourseForm()
     if form.validate_on_submit():
-        course_id=form.course_id.data
-        course = Course.query.get(course_id)
-        student =Student.query.get(id)
+        course_name=form.course_name.data
+        return redirect(url_for('results', id=id, subject=course_subject))
+    return render_template('register.html', form=form)
+
+@app.route('/results/<int:id>/<int:subject>')
+def results(id, subject):
+    student = Student.query.get(id)
+    courses = Course.query.filter_by(subject=subject).all()
+    return render_template('results.html', student=student, courses=courses)
+
+@app.route('/course_overview/<int:id>/<int:course_id>', methods=['GET','POST'])
+def course_overview(id, course_id):
+    course = Course.query.get(course_id)
+    student = Student.query.get(id)
+    professor = Professor.query.get(course.professor_id)
+    x = ratemyprof(professor.name)
+    tDept = scrape.PrintProfessorDetail('tDept')
+    tSid = scrape.PrintProfessorDetail('tSid')
+    institution_name = scrape.PrintProfessorDetail('institution_name')
+    tid = scrape.PrintProfessorDetail('tid')
+    tNumRatings = scrape.PrintProfessorDetail('tNumRatings')
+    rating_class = scrape.PrintProfessorDetail('rating_class')
+    overall_rating=scrape.PrintProfessorDetail("overall_rating")
+    if request.method == 'POST':
         student.courses.append(course)
         db.session.add(student)
         db.session.commit()
         return redirect(url_for('registered', id=id))
-    return render_template('register.html', form=form)
+    return render_template('course_overview.html', tDept=tDept, tSid=tSid, institution_name=institution_name,
+                tid=tid, tNumRatings=tNumRatings, rating_class=rating_class, overall_rating=overall_rating, student=student, course=course)
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
 @login_required
@@ -656,35 +678,7 @@ def gpa_predictor(current_grades,times, future_grades):
     except:
         return 'please enter in the right form'
 
-@app.route('/ratemyprof')
-def ratemyprof():
+def ratemyprof(name):
     scrape = RateMyProfScraper(842)
-    json_object = scrape.SearchProfessor("Christoforos Christoforou")
-    json_tDept = scrape.PrintProfessorDetail("tDept")
-    json_tSid = scrape.PrintProfessorDetail("tSid")
-    json_institution_name = scrape.PrintProfessorDetail("institution_name")
-    json_tFname = scrape.PrintProfessorDetail("tFname")
-    json_tMiddlename = scrape.PrintProfessorDetail("tMiddlename")
-    json_tLname = scrape.PrintProfessorDetail("tLname")
-    json_tid = scrape.PrintProfessorDetail("tid")
-    json_tNumRatings = scrape.PrintProfessorDetail("tNumRatings")
-    json_rating_class = scrape.PrintProfessorDetail("rating_class")
-    json_contentType = scrape.PrintProfessorDetail("contentType")
-    json_categoryType = scrape.PrintProfessorDetail("categoryType")
-    json_overall_rating = scrape.PrintProfessorDetail("overall_rating")
-    # json_data=requests.get(scrape).json()
-    # json_tDept = scrape.json_data['tDept']
-    # json_tSid = scrape.json_data['tSid']
-    # json_institution_name  = scrape.json_data['institution_name']
-    # json_tFname = scrape.json_data['tFname']
-    # json_tMiddlename = scrape.json_data['tMiddlename']
-    # json_tLname = scrape.json_data['tLname']
-    # json_tid = scrape.json_data['tid']
-    # json_tNumRatings = scrape.json_data['tNumRatings']
-    # json_rating_class = scrape.json_data['rating_class']
-    # json_contentType = scrape.json_data['contentType']
-    # json_categoryType = scrape.json_data['categoryType']
-    # json_overall_rating = scrape.json_data['overall_rating']
-    return render_template('ratemyprof.html', tDept=json_tDept, tSid=json_tSid, institution_name=json_institution_name,
-                            tFname=json_tFname, tMiddlename=json_tMiddlename, tLname=json_tLname, tid=json_tid, tNumRatings=json_tNumRatings,
-                            rating_class=json_rating_class, contentType=json_contentType, categoryType=json_categoryType, overall_rating=json_overall_rating)
+    json_object = scrape.SearchProfessor(name)
+    return json_object

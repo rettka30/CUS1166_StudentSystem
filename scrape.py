@@ -51,7 +51,7 @@ class RateMyProfScraper:
 
         def PrintProfessorDetail(self,key):  # print search professor's name and RMP score
             if self.indexnumber == False:
-                print("error")
+                # print("error")
                 return "error"
             else:
                 # print(self.professorlist[self.indexnumber][key])
