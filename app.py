@@ -11,6 +11,7 @@ from scrape import *
 import datetime, pygal, time
 import requests
 import urllib.parse
+from flask_uploads import UploadSet, configure_uploads, ALL
 
 # app = Flask(__name__)
 # app.config.from_object(Config)
@@ -27,6 +28,12 @@ login.login_view = 'login'
 # Setup Flask-User
 user_manager = UserManager(app, db, User)
 password_manager = PasswordManager(app)
+
+#Flask-Uploads
+files = UploadSet('files', ALL)
+
+app.config['UPLOADED_FILES_DEST'] = 'static/files'
+configure_uploads(app, files)
 
 @app.route('/welcome')
 def welcome():
@@ -48,7 +55,7 @@ def logout():
     return redirect(url_for('welcome'))
 
 @app.route('/index/<type>/<int:id>')
-@login_required
+# @login_required
 # @roles_required('<type>')
 def index(type, id):
     if type == "Student":
@@ -80,77 +87,90 @@ def professor_roster():
     return render_template('professor_roster.html', professors=professors)
 
 @app.route('/administrator_roster')
-# @login_required
-# @roles_required('Admin')
+@login_required
+@roles_required('Admin')
 def administrator_roster():
     admins = Administrator.query.all()
     return render_template('administrator_roster.html', admins=admins)
 
-@app.route('/login/<type>', methods=['GET','POST'])
+# @app.route('/login/<type>', methods=['GET','POST'])
+# @login_required
+# #@roles_required('<type>')
+# def login(type):
+#     if type == "Student":
+#     #     if current_user.is_authenticated:
+#     #         return redirect(url_for('index', type="Student", id=form.id.data))
+#     #     form = LoginForm()
+#     #     if form.validate_on_submit():
+#     #         user = Student.query.filter_by(id=form.id.data).first()
+#     #         if password_manager.verify_password(form.password.data, user.password):
+#     #             login_user(user)
+#     #         else:
+#     #             flash('Invalid id or password')
+#     #             return redirect(url_for('login', type='Student'))
+#     #         return redirect(url_for('index', type="Student", id=form.id.data))
+#     #     return render_template('login.html', form=form)
+#         return redirect(url_for('index', type="Student", id=current_user.id))
+#     elif type == "Professor":
+#         # if current_user.is_authenticated:
+#         #     return redirect(url_for('index', type="Professor", id=form.id.data))
+#         # form = LoginForm()
+#         # if form.validate_on_submit():
+#         #     user = Professor.query.filter_by(id=form.id.data).first()
+#         #     if password_manager.verify_password(form.password.data, user.password):
+#         #         login_user(user)
+#         #     else:
+#         #         flash('Invalid id or password')
+#         #         return redirect(url_for('login', type='Professor'))
+#         #     return redirect(url_for('index', type="Professor", id=form.id.data))
+#         # return render_template('login.html', form=form)
+#         return redirect(url_for('index', type="Professor", id=current_user.id))
+#     else:
+#         # if current_user.is_authenticated:
+#         #     return redirect(url_for('index', type="Administrator", id=form.id.data))
+#         # form = LoginForm()
+#         # if form.validate_on_submit():
+#         #     user = Administrator.query.filter_by(id=form.id.data).first()
+#         #     if password_manager.verify_password(form.password.data, user.password):
+#         #         login_user(user)
+#         #         flash('Successfully login')
+#         #         return redirect(url_for('index', type="Administrator", id=form.id.data))
+#         #     else:
+#         #         flash('Invalid id or password')
+#         #         return redirect(url_for('login', type='Administrator'))
+#         # return render_template('login.html', form=form)
+#         return redirect(url_for('index', type="Administrator", id=current_user.id))
+
+@app.route("/assignment/gradebooks/<int:id>")
 @login_required
-#@roles_required('<type>')
-def login(type):
-    if type == "Student":
-    #     if current_user.is_authenticated:
-    #         return redirect(url_for('index', type="Student", id=form.id.data))
-    #     form = LoginForm()
-    #     if form.validate_on_submit():
-    #         user = Student.query.filter_by(id=form.id.data).first()
-    #         if password_manager.verify_password(form.password.data, user.password):
-    #             login_user(user)
-    #         else:
-    #             flash('Invalid id or password')
-    #             return redirect(url_for('login', type='Student'))
-    #         return redirect(url_for('index', type="Student", id=form.id.data))
-    #     return render_template('login.html', form=form)
-        return redirect(url_for('index', type="Student", id=current_user.id))
-    elif type == "Professor":
-        # if current_user.is_authenticated:
-        #     return redirect(url_for('index', type="Professor", id=form.id.data))
-        # form = LoginForm()
-        # if form.validate_on_submit():
-        #     user = Professor.query.filter_by(id=form.id.data).first()
-        #     if password_manager.verify_password(form.password.data, user.password):
-        #         login_user(user)
-        #     else:
-        #         flash('Invalid id or password')
-        #         return redirect(url_for('login', type='Professor'))
-        #     return redirect(url_for('index', type="Professor", id=form.id.data))
-        # return render_template('login.html', form=form)
-        return redirect(url_for('index', type="Professor", id=current_user.id))
-    else:
-        # if current_user.is_authenticated:
-        #     return redirect(url_for('index', type="Administrator", id=form.id.data))
-        # form = LoginForm()
-        # if form.validate_on_submit():
-        #     user = Administrator.query.filter_by(id=form.id.data).first()
-        #     if password_manager.verify_password(form.password.data, user.password):
-        #         login_user(user)
-        #         flash('Successfully login')
-        #         return redirect(url_for('index', type="Administrator", id=form.id.data))
-        #     else:
-        #         flash('Invalid id or password')
-        #         return redirect(url_for('login', type='Administrator'))
-        # return render_template('login.html', form=form)
-        return redirect(url_for('index', type="Administrator", id=current_user.id))
+@roles_required('Professor')
+def gradebooks(id):
+    course = Course.query.get(id)
+    assignments = course.assignments
+    return render_template('gradebooks.html', course=course, assignments=assignments)
 
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
 @login_required
 @roles_required('Professor')
 def gradebook(id):
     assignment = Assignment.query.get(id)
-    course = Course.query.get(assignment.course_id)
+    course_id = assignment.course_id
+    course = Course.query.get(course_id)
     students = course.students
-    form = SubmitGradeForm()
-    # if form.validate_on_submit():
-    #     for student in students:
-    #
-    #     return redirect(url_for('assignment', id=id))
-    return render_template('gradebook.html', assignment=assignment, students=students, form=form)
+    submissions = Submission.query.get(assign_id=assignment.id)
+    if request.method == 'POST':
+        id = request.form['id']
+        grade = request.form['grade']
+        submission = Submission.query.filter_by(student_id=id, assign_id=assignment.id).first()
+        submission.set_grade(grade)
+        db.session.add(submission)
+        db.session.commit()
+        return redirect(url_for('gradebook', id=assignment.id))
+    return render_template('gradebook.html', assignment=assignment, students=students, submissions=submissions)
 
 @app.route('/create_student', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_student():
     # Get information from the form.
     form = CreateStudentForm()
@@ -182,8 +202,8 @@ def create_student():
     return render_template('create_student.html', form = form)
 
 @app.route('/create_professor', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_professor():
     # Get information from the form.
     form = CreateProfessorForm()
@@ -205,7 +225,7 @@ def create_professor():
         professor_type = "Professor"
         professor = Professor(uniqueid=professor_ui, name=professor_name, gender=professor_gender,
             department=professor_department, email=professor_email,
-            birthday=professor_birthday, phone=professor_phone, active=True, type=professor_tpye)
+            birthday=professor_birthday, phone=professor_phone, active=True, type=professor_type)
         professor.password = password_manager.hash_password(professor_password)
         professor.roles = [professor_role,]
         db.session.add(professor)
@@ -277,6 +297,7 @@ def delete(type, id):
 @login_required
 def edit(type, id):
     if type == "Student":
+        form = CreateStudentForm()
         student = Student.query.get(id)
         if request.method == 'POST':
             student.name = request.form.get('student_name')
@@ -289,8 +310,9 @@ def edit(type, id):
             db.session.add(student)
             db.session.commit()
             return redirect(url_for('index', type='Student', id=id))
-        return render_template('student_edit.html', student=student)
+        return render_template('student_edit.html', student=student, form=form)
     elif type == "Professor":
+        form = CreateProfessorForm()
         professor = Professor.query.get(id)
         if request.method == 'POST':
             professor.name = request.form.get('professor_name')
@@ -302,8 +324,9 @@ def edit(type, id):
             db.session.add(professor)
             db.session.commit()
             return redirect(url_for('index', type='Professor', id=id))
-        return render_template('prof_edit.html', professor=professor)
+        return render_template('prof_edit.html', professor=professor, form=form)
     elif type == "Administrator":
+        form = CreateAdministratorForm()
         admin = Administrator.query.get(id)
         if request.method == 'POST':
             admin.name = request.form.get('admin_name')
@@ -315,7 +338,7 @@ def edit(type, id):
             db.session.add(admin)
             db.session.commit()
             return redirect(url_for('index', type='Administrator', id=id))
-        return render_template('admin_edit.html', admin=admin)
+        return render_template('admin_edit.html', admin=admin, form=form)
     elif type == "Course":
         course = Course.query.get(id)
         if request.method == 'POST':
@@ -330,7 +353,7 @@ def edit(type, id):
         return render_template('error.html')
 
 @app.route('/details/<type>/<int:id>')
-@login_required
+# @login_required
 def details(type, id):
     if type == "Student":
         student = Student.query.get(id)
@@ -351,8 +374,8 @@ def details(type, id):
 
 #Creates Courses
 @app.route('/create_course', methods=['GET', 'POST'])
-@login_required
-@roles_required('Admin')
+# @login_required
+# @roles_required('Admin')
 def create_course():
     # Get information from the form.
     professors = Professor.query.all()
@@ -429,7 +452,7 @@ def change_password(type, id):
         return render_template('error.html')
 
 @app.route('/registered/<int:id>')
-@login_required
+# @login_required
 # @roles_required('Student')
 def registered(id):
     student = Student.query.get(id)
@@ -438,7 +461,7 @@ def registered(id):
     return render_template('registered.html', student=student, registered=registered, Professor=professor)
 
 @app.route('/search_course/<int:id>', methods=['GET','POST'])
-@login_required
+# @login_required
 # @roles_required('Student')
 def search_course(id):
     form = SearchCourseForm()
@@ -455,8 +478,8 @@ def search_course(id):
     return render_template('search_course.html', form=form, Professor=professor, courses=courses)
 
 @app.route('/register/<int:id>', methods=['GET','POST'])
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def register(id):
     form = RegisterCourseForm()
     if form.validate_on_submit():
@@ -494,9 +517,11 @@ def course_overview(id, course_id):
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
 @login_required
-@roles_required('Profesor')
+@roles_required('Professor')
 def add_assignment(id):
     form = CreateAssignment()
+    course = Course.query.get(id)
+    students = course.students
     if form.validate_on_submit():
         name = form.name.data
         description = form.description.data
@@ -505,6 +530,10 @@ def add_assignment(id):
         assignment = Assignment(name=name, description=description, type=type, total=total, course_id=id)
         db.session.add(assignment)
         db.session.commit()
+        for student in students:
+            submission = Submission(student_id=student.id, assign_id=assignment.id, assign_total=assignment.total, assign_course_id=assignment.course_id)
+            db.session.add(submission)
+            db.session.commit()
         return redirect(url_for('details', type='Course',  id=id))
     return render_template('add_assignment.html', form=form)
 
@@ -520,16 +549,57 @@ def assignment(id):
 # @roles_required('Student', 'Professor')
 def student_course_roster(id):
     course = Course.query.get(id)
+    students = course.students
     assignments = Assignment
-    return render_template('course_roster.html', course=course, Assignment = assignments)
+    return render_template('course_roster.html', students=students, course=course, Assignment = assignments)
 
-@app.route('/student_grades/<int:id>')
+@app.route('/student_grades/<int:id>/<int:course_id>')
 @login_required
 # @roles_required('Student', 'Professor')
-def student_grades(id):
-    submissions = Submission.query.filter_by(student_id=id)
+def student_grades(id, course_id):
+    course = Course.query.get(course_id)
+    submissions = Submission.query.filter_by(student_id=id, assign_course_id=course_id).all()
     student = Student.query.get(id)
-    return render_template('student_grades.html', submissions=submissions, student=student)
+    total_earned = 0
+    total_points = 0
+    letter_grade = ""
+    for submission in submissions:
+        total_earned += submission.points
+        total_points += submission.assign_total
+    percentage = (total_earned/total_points)*100
+    if percentage >= 95.0:
+        letter_grade = "A+"
+    elif percentage < 95.0 and percentage >= 91.0:
+        letter_grade = "A"
+    elif percentage < 91.0 and percentage >= 87.0:
+        letter_grade = "B+"
+    elif percentage < 87.0 and percentage >= 83.0:
+        letter_grade = "B"
+    elif percentage < 83.0 and percentage >= 80.0:
+        letter_grade = "B-"
+    elif percentage < 80.0 and percentage >= 77.0:
+        letter_grade = "C+"
+    elif percentage < 77.0 and percentage >= 74.0:
+        letter_grade = "C"
+    elif percentage < 74.0 and percentage >= 70.0:
+        letter_grade = "C-"
+    elif percentage < 70.0 and percentage >= 67.0:
+        letter_grade = "D+"
+    elif percentage < 67.0 and percentage >= 65.0:
+        letter_grade = "D"
+    elif percentage < 65.0 and percentage >= 60.0:
+        letter_grade = "D-"
+    else :
+        letter_grade = "F"
+    return render_template('student_grades.html', course=course, submissions=submissions, student=student,
+                            total_earned=total_earned, total_points=total_points, percentage=percentage, letter_grade=letter_grade)
+
+@app.route('/classes/grades/<int:id>')
+@login_required
+def student_class_gradebook(id):
+    student = Student.query.get(id)
+    courses = student.courses
+    return render_template('classes_gradebook.html', courses=courses, student=student)
 
 @app.route('/course_roster/<int:id>/<int:course_id>')
 @login_required
@@ -540,20 +610,24 @@ def course_roster(id,course_id):
     return render_template('student_grades.html', submissions=submissions, student=student)
 
 @app.route('/submission_page/<int:id>/<int:assignment_id>', methods=['GET','POST'])
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def submission_page(id, assignment_id):
     assignment = Assignment.query.get(assignment_id)
-    if request.method == 'POST':
-        submission = Submission(student_id=id, assign_id=assignment.id, assign_total=assignment.total, assign_course_id=assignment.course_id)
+    student = Student.query.get(id)
+    submission = Submission.query.filter_by(student_id=id, assign_course_id=assignment.course_id)
+    if request.method == 'POST' and 'file' in request.files:
+        filename = files.save(request.files['file'])
+        submission.set_file(filename)
+        submission.submitted(True)
         db.session.add(submission)
         db.session.commit()
         return redirect(url_for('submission_confirmation',  id=submission.id))
-    return render_template('submission_page.html')
+    return render_template('submission_page.html', student=student, assignment=assignment)
 
 @app.route('/submission_confirmation/<int:id>')
-@login_required
-@roles_required('Student')
+# @login_required
+# @roles_required('Student')
 def submission_confirmation(id):
     submission = Submission.query.get(id)
     student = Student.query.get(submission.student_id)
