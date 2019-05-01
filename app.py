@@ -140,6 +140,14 @@ def login(type):
         # return render_template('login.html', form=form)
         return redirect(url_for('index', type="Administrator", id=current_user.id))
 
+@app.route("/assignment/gradebooks/<int:id>")
+@login_required
+@roles_required('Professor')
+def gradebooks(id):
+    course = Course.query.get(id)
+    assignments = course.assignments
+    return render_template('gradebooks.html', course=course, assignments=assignments)
+
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
 @login_required
 @roles_required('Professor')
