@@ -7,7 +7,8 @@ from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreatePro
 from flask_login import current_user, LoginManager, login_user, login_required, logout_user
 from flask_bootstrap import Bootstrap
 from flask_user import login_required, PasswordManager, UserManager, UserMixin, roles_required
-import datetime, pygal
+from scrape import *
+import datetime, pygal, time
 import requests
 import urllib.parse
 from flask_uploads import UploadSet, configure_uploads, ALL
@@ -377,9 +378,12 @@ def create_course():
         course_subject = request.form.get('course_subject')
         course_number = request.form.get('course_number')
         professor_name = request.form.get('professor_name')
+        day = request.form.get('day')
+        start_time = request.form.get('start_time')
+        end_time = request.form.get('end_time')
         professor = Professor.query.filter_by(name=professor_name).first()
         professor_id = professor.id
-        course = Course(name=course_name, subject=course_subject, number=course_number, professor_id=professor_id)
+        course = Course(name=course_name, subject=course_subject, number=course_number, professor_id=professor_id, day=day, start_time=start_time, end_time=end_time)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for('course_list'))
@@ -472,11 +476,11 @@ def search_course(id):
 def register(id):
     form = RegisterCourseForm()
     if form.validate_on_submit():
-        course_name=form.course_name.data
+        course_subject=form.course_subject.data
         return redirect(url_for('results', id=id, subject=course_subject))
     return render_template('register.html', form=form)
 
-@app.route('/results/<int:id>/<int:subject>')
+@app.route('/results/<int:id>/<subject>')
 def results(id, subject):
     student = Student.query.get(id)
     courses = Course.query.filter_by(subject=subject).all()
@@ -487,21 +491,22 @@ def course_overview(id, course_id):
     course = Course.query.get(course_id)
     student = Student.query.get(id)
     professor = Professor.query.get(course.professor_id)
-    x = ratemyprof(professor.name)
-    tDept = scrape.PrintProfessorDetail('tDept')
-    tSid = scrape.PrintProfessorDetail('tSid')
-    institution_name = scrape.PrintProfessorDetail('institution_name')
-    tid = scrape.PrintProfessorDetail('tid')
-    tNumRatings = scrape.PrintProfessorDetail('tNumRatings')
-    rating_class = scrape.PrintProfessorDetail('rating_class')
-    overall_rating=scrape.PrintProfessorDetail("overall_rating")
+    x = ratemyprof()
+    json_object = x.SearchProfessor(professor.name)
+    tDept = x.PrintProfessorDetail('tDept')
+    tSid = x.PrintProfessorDetail('tSid')
+    institution_name = x.PrintProfessorDetail('institution_name')
+    tid = x.PrintProfessorDetail('tid')
+    tNumRatings = x.PrintProfessorDetail('tNumRatings')
+    rating_class = x.PrintProfessorDetail('rating_class')
+    overall_rating=x.PrintProfessorDetail("overall_rating")
     if request.method == 'POST':
         student.courses.append(course)
         db.session.add(student)
         db.session.commit()
         return redirect(url_for('registered', id=id))
     return render_template('course_overview.html', tDept=tDept, tSid=tSid, institution_name=institution_name,
-                tid=tid, tNumRatings=tNumRatings, rating_class=rating_class, overall_rating=overall_rating, student=student, course=course)
+                tid=tid, tNumRatings=tNumRatings, rating_class=rating_class, overall_rating=overall_rating, student=student, course=course, professor=professor)
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
 @login_required
@@ -721,7 +726,6 @@ def gpa_predictor(current_grades,times, future_grades):
     except:
         return 'please enter in the right form'
 
-def ratemyprof(name):
+def ratemyprof():
     scrape = RateMyProfScraper(842)
-    json_object = scrape.SearchProfessor(name)
-    return json_object
+    return scrape
