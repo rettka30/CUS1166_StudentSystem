@@ -11,13 +11,16 @@
 <div class="row">
   <div class="centercolumn">
     <div class="card">
+        <p>Assignment has been submitted</p>
+        <p>{{submission.turned_in}}</p>
+        <p>Download Document:</p>
         <p><a href="{{url_for('static', filename='files/'+submission.document)}}" download>{{submission.document}}</a></p>
         <embed src="{{url_for('static', filename='files/'+submission.document)}}" id="file"></embed>
     </div>
   </div>
   <div class="rightcolumn">
     <div class="card">
-      <a href="{{ url_for('details', type='Course', id=submission.assign_id) }}" class="button">
+      <a href="{{ url_for('details', type='Course', id=submission.assign_course_id) }}" class="button">
         Back
       </a>
     </div>

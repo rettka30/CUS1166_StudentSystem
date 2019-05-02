@@ -26,13 +26,11 @@ class CreateAssignment(FlaskForm):
     total = IntegerField('Point Total for Assignment', validators=[DataRequired()])
     submit = SubmitField('Add Assignment')
 
-class GPAForm(FlaskForm):
-    current_grades = StringField('Current Grades:', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+# class GPAForm(FlaskForm):
+#     current_grades = StringField('Current Grades:', validators=[DataRequired()])
+#     submit = SubmitField('Submit')
 
 class GPAPForm(FlaskForm):
-    current_GPA =  FloatField('Current GPA:', validators=[DataRequired()])
-    Num_of_course = IntegerField('Num of Course took:', validators=[DataRequired()])
     future_grades = StringField('predict future Grades:', validators=[DataRequired()])
     submit = SubmitField('Submit')
 

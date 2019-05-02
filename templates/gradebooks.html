@@ -19,7 +19,7 @@
           </tr>
           {% for assignment in assignments %}
           <tr class="text-left">
-            <td>{{assignemnt.id}}</td>
+            <td>{{assignment.id}}</td>
             <td><a href="{{ url_for('gradebook', id=assignment.id) }}">{{assignment.name}}</a></td>
           </tr>
           {% endfor %}

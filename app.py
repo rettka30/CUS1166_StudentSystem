@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from models import *
-from forms import LoginForm, PasswordForm, GPAForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm, RegisterCourseForm
+from forms import LoginForm, PasswordForm, CreateStudentForm, CreateProfessorForm, CreateAdministratorForm, CreateAssignment, GPAPForm, RegisterCourseForm
 from flask_login import current_user, LoginManager, login_user, login_required, logout_user
 from flask_bootstrap import Bootstrap
 from flask_user import login_required, PasswordManager, UserManager, UserMixin, roles_required
@@ -11,6 +11,7 @@ from scrape import *
 import datetime, pygal, time
 import requests
 import urllib.parse
+from flask_uploads import UploadSet, configure_uploads, ALL
 
 # app = Flask(__name__)
 # app.config.from_object(Config)
@@ -27,6 +28,13 @@ login.login_view = 'login'
 # Setup Flask-User
 user_manager = UserManager(app, db, User)
 password_manager = PasswordManager(app)
+
+#Flask-Uploads
+files = UploadSet('files', ALL)
+
+app.config['UPLOADED_FILES_DEST'] = 'static/files'
+configure_uploads(app, files)
+
 
 @app.route('/welcome')
 def welcome():
@@ -135,19 +143,32 @@ def login(type):
         # return render_template('login.html', form=form)
         return redirect(url_for('index', type="Administrator", id=current_user.id))
 
+@app.route("/assignment/gradebooks/<int:id>")
+@login_required
+@roles_required('Professor')
+def gradebooks(id):
+    course = Course.query.get(id)
+    assignments = course.assignments
+    return render_template('gradebooks.html', course=course, assignments=assignments)
+
 @app.route("/gradebook/<int:id>", methods=['GET', 'POST'])
 @login_required
 @roles_required('Professor')
 def gradebook(id):
     assignment = Assignment.query.get(id)
-    course = Course.query.get(assignment.course_id)
+    course_id = assignment.course_id
+    course = Course.query.get(course_id)
     students = course.students
-    form = SubmitGradeForm()
-    # if form.validate_on_submit():
-    #     for student in students:
-    #
-    #     return redirect(url_for('assignment', id=id))
-    return render_template('gradebook.html', assignment=assignment, students=students, form=form)
+    submissions = Submission.query.filter_by(assign_id=assignment.id).all()
+    if request.method == 'POST':
+        id = request.form['id']
+        grade = request.form['grade']
+        submission = Submission.query.filter_by(student_id=id, assign_id=assignment.id).first()
+        submission.set_grade(grade)
+        db.session.add(submission)
+        db.session.commit()
+        return redirect(url_for('gradebook', id=assignment.id))
+    return render_template('gradebook.html', assignment=assignment, students=students, submissions=submissions)
 
 @app.route('/create_student', methods=['GET', 'POST'])
 @login_required
@@ -362,7 +383,7 @@ def create_course():
         course_subject = request.form.get('course_subject')
         course_number = request.form.get('course_number')
         professor_name = request.form.get('professor_name')
-        day = request.form.get('day')
+        day = request.form.get('days')
         start_time = request.form.get('start_time')
         end_time = request.form.get('end_time')
         professor = Professor.query.filter_by(name=professor_name).first()
@@ -435,8 +456,7 @@ def change_password(type, id):
 def registered(id):
     student = Student.query.get(id)
     registered = student.courses
-    professor=Professor
-    return render_template('registered.html', student=student, registered=registered, Professor=professor)
+    return render_template('registered.html', student=student, registered=registered)
 
 @app.route('/search_course/<int:id>', methods=['GET','POST'])
 @login_required
@@ -497,9 +517,11 @@ def course_overview(id, course_id):
 
 @app.route('/add_assignment/<int:id>', methods=['GET','POST'])
 @login_required
-@roles_required('Profesor')
+@roles_required('Professor')
 def add_assignment(id):
     form = CreateAssignment()
+    course = Course.query.get(id)
+    students = course.students
     if form.validate_on_submit():
         name = form.name.data
         description = form.description.data
@@ -517,7 +539,7 @@ def add_assignment(id):
 
 @app.route('/assignment/<int:id>/')
 @login_required
-@roles_required('Student', 'Professor')
+# @roles_required('Student', 'Professor')
 def assignment(id):
     assignment = Assignment.query.get(id)
     return render_template('assignment.html', assignment=assignment)
@@ -527,20 +549,60 @@ def assignment(id):
 # @roles_required('Student', 'Professor')
 def student_course_roster(id):
     course = Course.query.get(id)
-    assignments = Assignment
-    return render_template('course_roster.html', course=course, Assignment = assignments)
+    students = course.students
+    return render_template('course_roster.html', course=course, students=students)
 
-@app.route('/student_grades/<int:id>')
+@app.route('/student_grades/<int:id>/<int:course_id>')
 @login_required
-# @roles_required('Student', 'Professor')
-def student_grades(id):
-    submissions = Submission.query.filter_by(student_id=id)
+# @roles_required('Student', 'Professor')	# @roles_required('Student', 'Professor')
+def student_grades(id, course_id):
+    course = Course.query.get(course_id)
+    submissions = Submission.query.filter_by(student_id=id, assign_course_id=course_id).all()
     student = Student.query.get(id)
-    return render_template('student_grades.html', submissions=submissions, student=student)
+    total_earned = 0
+    total_points = 0
+    letter_grade = ""
+    for submission in submissions:
+        total_earned += submission.points
+        total_points += submission.assign_total
+    percentage = (total_earned/total_points)*100
+    if percentage >= 95.0:
+        letter_grade = "A+"
+    elif percentage < 95.0 and percentage >= 91.0:
+        letter_grade = "A"
+    elif percentage < 91.0 and percentage >= 87.0:
+        letter_grade = "B+"
+    elif percentage < 87.0 and percentage >= 83.0:
+        letter_grade = "B"
+    elif percentage < 83.0 and percentage >= 80.0:
+        letter_grade = "B-"
+    elif percentage < 80.0 and percentage >= 77.0:
+        letter_grade = "C+"
+    elif percentage < 77.0 and percentage >= 74.0:
+        letter_grade = "C"
+    elif percentage < 74.0 and percentage >= 70.0:
+        letter_grade = "C-"
+    elif percentage < 70.0 and percentage >= 67.0:
+        letter_grade = "D+"
+    elif percentage < 67.0 and percentage >= 65.0:
+        letter_grade = "D"
+    elif percentage < 65.0 and percentage >= 60.0:
+        letter_grade = "D-"
+    else :
+        letter_grade = "F"
+    return render_template('student_grades.html', course=course, submissions=submissions, student=student,
+                            total_earned=total_earned, total_points=total_points, percentage=percentage, letter_grade=letter_grade)
+
+@app.route('/classes/grades/<int:id>')
+@login_required
+def student_class_gradebook(id):
+    student = Student.query.get(id)
+    courses = student.courses
+    return render_template('classes_gradebook.html', courses=courses, student=student)
 
 @app.route('/course_roster/<int:id>/<int:course_id>')
 @login_required
-# @roles_required('Student', 'Professor')
+@roles_required('Student', 'Professor')
 def course_roster(id,course_id):
     submissions = Submission.query.filter_by(student_id=id, assign_course_id=course_id)
     student = Student.query.get(id)
@@ -552,14 +614,15 @@ def course_roster(id,course_id):
 def submission_page(id, assignment_id):
     assignment = Assignment.query.get(assignment_id)
     student = Student.query.get(id)
-    if request.method == 'POST':
-        submission = Submission.query.filter_by(student_id=id, assign_course_id=assignment.course_id)
+    if request.method == 'POST' and 'file' in request.files:
+        filename = files.save(request.files['file'])
+        submission = Submission.query.filter_by(student_id=id, assign_course_id=assignment.course_id).first()
         submission.set_file(filename)
         submission.submitted(True)
         db.session.add(submission)
         db.session.commit()
         return redirect(url_for('submission_confirmation',  id=submission.id))
-    return render_template('submission_page.html')
+    return render_template('submission_page.html', student=student, assignment=assignment)
 
 @app.route('/submission_confirmation/<int:id>')
 @login_required
@@ -600,29 +663,66 @@ def gpa_calculater(grades):
         return 'please enter in the right form'
 
 #gpa counter
-@app.route('/gpa', methods=['GET', 'POST'])
-def gpa():
+@app.route('/gpa/<int:id>', methods=['GET', 'POST'])
+def gpa(id):
+    student = Student.query.get(id)
+    courses = student.courses
+    grade = ""
+    counter = 0
+    counter2 = 0
+    for course in courses:
+        counter += 1
+    for course in courses:
+        total_earned = 0
+        total_points = 0
+        letter_grade = ""
+        counter2 += 1
+        submissions = Submission.query.filter_by(student_id=id, assign_course_id=course.id).all()
+        for submission in submissions:
+            total_earned += submission.points
+            total_points += submission.assign_total
+        percentage = (total_earned/total_points)*100
+        if percentage >= 95.0:
+            letter_grade = "A+"
+        elif percentage < 95.0 and percentage >= 91.0:
+            letter_grade = "A"
+        elif percentage < 91.0 and percentage >= 87.0:
+            letter_grade = "B+"
+        elif percentage < 87.0 and percentage >= 83.0:
+            letter_grade = "B"
+        elif percentage < 83.0 and percentage >= 80.0:
+            letter_grade = "B-"
+        elif percentage < 80.0 and percentage >= 77.0:
+            letter_grade = "C+"
+        elif percentage < 77.0 and percentage >= 74.0:
+            letter_grade = "C"
+        elif percentage < 74.0 and percentage >= 70.0:
+            letter_grade = "C-"
+        elif percentage < 70.0 and percentage >= 67.0:
+            letter_grade = "D+"
+        elif percentage < 67.0 and percentage >= 65.0:
+            letter_grade = "D"
+        elif percentage < 65.0 and percentage >= 60.0:
+            letter_grade = "D-"
+        else :
+            letter_grade = "F"
+        if counter2 < counter:
+            grade += letter_grade+", "
+        else:
+            grade += letter_grade
+
     result=0
     result1=0
-    form = GPAForm()
-    form1 = GPAPForm()
+    form = GPAPForm()
     GPA_chart = pygal.Bar()
     GPA_chart2 = pygal.Radar()
     graph_data = GPA_chart.render_data_uri()
     graph_data2 = GPA_chart2.render_data_uri()
-    # Get information from the form.
-    if form.validate_on_submit():
-        grades = form.current_grades.data
-        # = request.form.get('student_gender')
-        result = gpa_calculater(grades)
-    if form1.validate_on_submit():
-        current_GPA = form1.current_GPA.data
-        Num_of_course = form1.Num_of_course.data
-        future_grades = form1.future_grades.data
-        # = request.form.get('student_gender')
-        result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
+    result = gpa_calculater(grade)
+    current_GPA = result
+    Num_of_course = counter
     if result != 0:
-        grades = a_4(grades)
+        grades = a_4(grade)
         GPA_chart.title = "GPA Chart"
         GPA_chart.y_labels = [
             {'label': 'A', 'value': 4.0},
@@ -643,8 +743,12 @@ def gpa():
 
         graph_data = GPA_chart.render_data_uri()
         graph_data2 = GPA_chart2.render_data_uri()
+    if form.validate_on_submit():
+        future_grades = form.future_grades.data
+        # = request.form.get('student_gender')
+        result1 = gpa_predictor(current_GPA, Num_of_course, future_grades)
 
-    return render_template('gpa.html', graph_data = graph_data, graph_data2 = graph_data2, result = result, form = form, form1 = form1, result1 =result1)
+    return render_template('gpa.html', graph_data = graph_data, graph_data2 = graph_data2, result = result, form = form, result1 =result1, grade=grade, current_GPA=current_GPA, counter=counter, student=student)
 
 def gpa_predict(current_grades,times, future_grades):
     gpa_dict = {'F': 0, 'D-': 0.7, 'D': 1.0, 'D+': 1.3, 'C-': 1.7, 'C': 2.0, 'C+': 2.3, 'B-': 2.7, 'B': 3.0, 'B+': 3.3, 'A-': 3.7, 'A': 4.0, 'A+': 4.0}

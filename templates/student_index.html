@@ -14,7 +14,8 @@
         <ol><a href="{{ url_for('index', type='Student', id=student.id )}}" class="button">Profile</a></ol>
         <ol><a href="{{ url_for('edit', type='Student', id=student.id)}}" class="button">Edit Profile</a></ol>
         <ol><a href="{{ url_for('register', id=student.id)}}" class="button">Course Register</a></ol>
-        <ol><a href="{{ url_for('gpa')}}" class="button">GPA Calculator</a></ol>
+        <ol><a href="{{ url_for('student_class_gradebook', id=student.id)}}" class="button">Grades</a></ol>
+        <ol><a href="{{ url_for('gpa', id=student.id)}}" class="button">GPA Calculator</a></ol>
       </ul>
     </div>
   </div>
@@ -46,9 +47,15 @@
     <div class="card">
       <h3>Submissions:</h3>
       {% for submission in submissions %}
+      {% if submission.turned_in %}
+      <p><a href="{{ url_for('submission_confirmation', id=submission.id) }}">
+                {{submission.assign_id}}
+      </a></p>
+      {% else %}
       <p><a href="{{ url_for('submission_page', id=student.id, assignment_id=submission.assign_id) }}">
                 {{submission.assign_id}}
       </a></p>
+      {% endif %}
       {% endfor %}
     </div>
   </div>

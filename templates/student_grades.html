@@ -22,7 +22,7 @@
           {% for submission in submissions %}
           <tr class="text-left">
             <td>{{submission.id}}</td>
-            {% if submission.turned_in == True %}
+            {% if submission.turned_in %}
             <td><a href="{{ url_for('submission_confirmation', id=submission.id) }}">{{submission.assign_id}}</a></td>
             {% else %}
             <td><a href="{{ url_for('submission_page', id=sudent.id, assignment_id=submission.assign_id) }}">{{submission.assign_id}}</a></td>
@@ -41,7 +41,7 @@
             <td></td>
             <td>Final Grade:</td>
             <td>{{percentage}}%</td>
-            <td><<strong>{{letter_grade}}</strong></td>
+            <td><strong>{{letter_grade}}</strong></td>
           </tr>
         </table>
       </div>
@@ -49,7 +49,7 @@
   </div>
   <div class="rightcolumn">
     <div class="card">
-      <a href="{{ url_for('details', type='Student', id=student.id) }}" class="button">
+      <a href="{{ url_for('index', type='Student', id=student.id) }}" class="button">
         Back
       </a>
     </div>

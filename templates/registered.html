@@ -12,14 +12,12 @@
             <th>ID</th>
             <th>Course Name</th>
             <th>Course Date</th>
-            <th>Professor</th>
           </tr>
           {% for course in registered %}
           <tr class="text-left">
             <td>{{course.id}}</td>
             <td><a href="{{ url_for('details', type='Course', id=course.id) }}">{{course.name}}</a></td>
             <td>{{course.day}}</td>
-            <td>{{Professor.query.get(course.professor_id)}}</td>
           </tr>
           {% endfor %}
         </table>

@@ -19,8 +19,8 @@
           </tr>
           {% for course in courses %}
           <tr class="text-left">
-            <td>{{course.id}}</td>
-            <td><a href="{{ url_for('gradebook', id=student.id, course_id=course.id) }}">{{course.name}}</a></td>
+            <td>{{course.uniqueid}}</td>
+            <td><a href="{{ url_for('student_grades', id=student.id, course_id=course.id) }}">{{course.name}}</a></td>
           </tr>
           {% endfor %}
         </table>
