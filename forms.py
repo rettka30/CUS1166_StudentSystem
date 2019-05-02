@@ -31,7 +31,7 @@ class CreateAssignment(FlaskForm):
 #     submit = SubmitField('Submit')
 
 class GPAPForm(FlaskForm):
-    future_grades = StringField('predict future Grades:', validators=[DataRequired()])
+    future_grades = StringField('Predict Future Grades:', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class SearchCourseForm(FlaskForm):

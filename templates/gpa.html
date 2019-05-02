@@ -1,6 +1,12 @@
 {% extends 'layout.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block head %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/common.css">
+{% endblock %}
+
 {% block app_content %}
 
   <div class="page-header">
@@ -23,7 +29,7 @@
   			<embed type="image/svg+xml" src={{graph_data2|safe}} style='max-width:1000px'/>
   </div>
   <p>
-    <a href="{{ url_for('index', type='Student', id=student.id)}}">
+    <a href="{{ url_for('index', type='Student', id=student.id)}}" class="button">
       Back
     </a>
   </p>
